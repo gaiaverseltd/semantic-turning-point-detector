@@ -1,0 +1,5 @@
+results/*.json
+dist
+node_modules
+!results/turningPoints.json
+!results/turningPointsGpt4o.json

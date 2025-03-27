@@ -1,0 +1,29 @@
+{
+  "name": "@gaiaverse/semantic-turning-point-detector",
+  "version": "1.0.0",
+  "description": "",
+  "license": "MIT",
+  "author": "gaiaverseltd, Ziping Liu <ziping@gaiaverse.ai>",
+  "type": "commonjs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gaiaverseltd/semantic-turning-point-detector.git"
+  },
+  "main": "dist",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node --max-old-space-size=8192 dist/semanticTurningPointDetector.js"
+  },
+  "dependencies": {
+    "async": "^3.2.6",
+    "crypto": "^1.0.1",
+    "fs-extra": "^11.3.0",
+    "gpt-tokenizer": "^2.9.0",
+    "lru-cache": "^11.1.0",
+    "openai": "^4.90.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  }
+}
