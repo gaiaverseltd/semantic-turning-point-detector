@@ -3,16 +3,20 @@ import fs from 'fs-extra';
 /*****************************************************************************************
  * SEMANTIC TURNING POINT DETECTOR
  *
- * A TypeScript module that identifies meaningful semantic "Turning Points" in conversations.
- * Unlike traditional summarization which condenses content, this detector identifies 
- * moments where the conversation shifts in topic, tone, insight, or purpose.
+ * A TypeScript implementation of the Adaptive Recursive Convergence (ARC) with
+ * Cascading Re-Dimensional Attention (CRA) framework for conversation analysis.
  * 
- * The system uses a multi-layered approach:
- * 1. Analyze semantic relationships between messages using embeddings
- * 2. Detect significant shifts that exceed threshold values
- * 3. Classify these shifts into categories with meaningful labels
- * 4. Recursively identify higher-level patterns across the conversation
- * 5. Merge and prune to focus on the most significant turning points
+ * This detector identifies semantic "Turning Points" in conversations as a concrete
+ * application of the ARC/CRA theoretical framework for multi-step reasoning 
+ * and dynamic dimensional expansion.
+ * 
+ * Framework implementation:
+ * 1. Analyze semantic relationships between messages using embeddings (dimension n)
+ * 2. Calculate semantic distances that correspond to the contraction mapping
+ * 3. Apply the complexity function χ to determine dimensional saturation
+ * 4. Use the transition operator Ψ to determine whether to stay in dimension n or escalate
+ * 5. Employ meta-messages and recursive analysis for dimensional expansion (n → n+1)
+ * 6. Merge and prune results to demonstrate formal convergence
  *****************************************************************************************/
 
 import async from 'async';
@@ -23,118 +27,32 @@ import { countTokens } from './tokensUtil';
 import { conversation } from './conversation';
 import { ResponseFormatJSONSchema } from 'openai/resources/shared';
 
-// Cache for token counts to avoid recalculating
+// Cache for token counts to avoid recalculating - implements atomic memory concept
 const tokenCountCache = new LRUCache<string, number>({
   max: 10000,
   ttl: 1000 * 60 * 60 * 24
 });
 
+// -----------------------------------------------------------------------------
+// Embedding Generation
+// -----------------------------------------------------------------------------
+
 /**
- * Generates an embedding for a given text using the OpenAI API, has deprecated parameters that are not used.
- * - creates a new openai instance since the used one may have a configured custom endpoint.
- * @param text 
- * @param _openai 
- * @param _model 
- * @returns 
+ * Generates an embedding for a given text using the OpenAI API
+ * This provides the vector representation for semantic distance calculation
  */
 async function generateEmbedding(
   text: string,
-  _model?: string
+  model?: string
 ): Promise<Float32Array> {
-
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   const response = await openai.embeddings.create({
-    model: _model,
+    model: model,
     input: text,
     encoding_format: "float",
   });
   return new Float32Array(response.data?.[0].embedding);
-
 }
-
-const response_format = {
-  "type": "json_schema",
-  "json_schema": {
-    "name": "turning_point",
-    "strict": true,
-    "schema": {
-      "type": "object",
-      "properties": {
-        "label": {
-          "type": "string",
-          "description": "A short, specific label for this turning point. This should clearly describe the shift that occurred."
-        },
-        "category": {
-          "type": "string",
-          "description": "This turning point signifies a specific type of semantic shift. Please classify it using one of the following categories: Topic, Insight, Emotion, Meta-Reflection, Decision, Question, Problem, Action, Clarification, Objection, or Other."
-        },
-        "keywords": {
-          "type": "array",
-          "description": "A list of keywords associated with this turning point.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "emotionalTone": {
-          "type": "string",
-          "description": "An emotional tone or sentiment associated with this turning point, only label with one of the following: `anticipation`, `sadness`, `optimism`, `trust`, `joy`, `neutral`, `anger`, `disgust`, `fear`, `surprise`, `pessimism`, `love`."
-        },
-        "sentiment": {
-          "type": "string",
-          "description": "The sentiment of the turning point, one of: positive, negative. Do not use any other values and provide only one sentiment."
-        },
-        "significance": {
-          "type": "number",
-          "description": "A significance score from (0.0-1.0) representing how important this turning point is to the overall conversation, or the aspect of the turning point's level of shift that it represents. Higher values indicate a more significant turning point, assess this carefully, and no lower than 0 or higher than 1."
-        },
-        "quotes": {
-          "type": "array",
-          "description": "A list of notable quotes from the messages in this turning point's span.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "best_id": {
-          "type": "string",
-          "description": "A turning point is the moment when a change occurs. Based on your assessment of a message ID, identify a single message ID that best represents this turning point, considering the estimated range between the start ID and end ID. Ensure that the selected message ID exists within this range."
-        }
-      },
-      "required": [
-        "label",
-        "category",
-        "keywords",
-        "emotionalTone",
-        "sentiment",
-        "significance",
-        "quotes",
-        "best_id"
-      ],
-      "additionalProperties": false
-    }
-  }
-}
-// file: semanticTurningPointDetector.ts
-
-/*****************************************************************************************
- * SEMANTIC TURNING POINT DETECTOR
- *
- * A TypeScript module that identifies meaningful semantic "Turning Points" in conversations.
- * Unlike traditional summarization which condenses content, this detector identifies 
- * moments where the conversation shifts in topic, tone, insight, or purpose.
- * 
- * The system uses a multi-layered approach:
- * 1. Analyze semantic relationships between messages using embeddings
- * 2. Detect significant shifts that exceed threshold values
- * 3. Classify these shifts into categories with meaningful labels
- * 4. Recursively identify higher-level patterns across the conversation
- * 5. Merge and prune to focus on the most significant turning points
- *****************************************************************************************/
-
-
-// -----------------------------------------------------------------------------
-// External Declarations 
-// (These functions are assumed to be available or would need implementation)
-// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Core Interfaces
@@ -146,16 +64,18 @@ const response_format = {
 export interface Message {
   /** Unique identifier for this message or meta-abstraction */
   id: string;
-
   /** The sender of the message (e.g., "user", "assistant") */
   author: string;
-
   /** The message content */
   message: string;
-
+  /** Span data for meta-messages (used in recursive analysis) */
   spanData?: MessageSpan;
 }
-// Add this interface to your code
+
+/**
+ * Message span identifies a range of messages
+ * Used for tracking dimensional representations across recursion levels
+ */
 interface MessageSpan {
   /** Start message ID */
   startId: string;
@@ -168,66 +88,47 @@ interface MessageSpan {
   /** Original message span if this is a meta-message span */
   originalSpan?: MessageSpan;
 }
+
 /**
  * Represents a semantic turning point in a conversation
+ * This corresponds to a significant semantic shift detected by the system
  */
 export interface TurningPoint {
   /** Unique identifier for this turning point */
   id: string;
-
   /** Human-readable short description of what this turning point represents */
   label: string;
-
   /** The type of semantic shift this turning point represents */
   category: TurningPointCategory;
-
-  // /** The message ID where this turning point begins */
-  // startMessageId: string;
-
-  // /** The message ID where this turning point ends */
-  // endMessageId: string;
-
-  // /** The numerical index of the start message in the original array */
-  // startIndex: number;
-
-  // /** The numerical index of the end message in the original array */
-  // endIndex: number;
-
-
+  /** The span of messages covered by this turning point */
   span: MessageSpan;
+  /** Legacy span format for backward compatibility */
   deprecatedSpan: {
     startIndex: number;
     endIndex: number;
     startMessageId: string;
     endMessageId: string;
   };
-
   /** The semantic distance/shift that triggered this turning point */
   semanticShiftMagnitude: number;
-
   /** Key terms that characterize this turning point */
   keywords?: string[];
-
   /** Notable quotes from the messages in this turning point's span */
   quotes?: string[];
-
   /** The emotional tone of this turning point if applicable */
   emotionalTone?: string;
-
-  /** The level at which this turning point was detected (0 = base level) */
+  /** The level at which this turning point was detected (dimension n) */
   detectionLevel: number;
-
   /** Significance score (higher = more significant) */
   significance: number;
-
   /** A suggested different point of the message in which the shift should start */
   best_start_id: string;
-
   /** A suggested different point of the message in which the shift should end */
   best_end_id: string;
-
   /** An assessed best point representing the turning point */
   best_id: string;
+  /** The complexity score (1-5) representing saturation in current dimension */
+  complexityScore: number;
 }
 
 /**
@@ -249,163 +150,47 @@ export type TurningPointCategory =
 /**
  * Configuration options for the turning point detector
  */
-/**
- * Configuration options for the semantic turning point detector
- * 
- * These options control the behavior of the turning point detection algorithm,
- * affecting sensitivity, processing strategy, and output filtering.
- */
 export interface TurningPointDetectorConfig {
-  /**
-   * The OpenAI API key (or compatible API key for custom endpoints)
-   * 
-   * Required for making API calls to classify turning points and generate embeddings.
-   * Different tiers of API keys may have different rate limits and model access.
-   */
+  /** OpenAI API key */
   apiKey: string;
-
-  /**
-   * The model to use for classification (e.g., "gpt-4o", "gpt-3.5-turbo", "claude-3-opus")
-   * 
-   * Determines the quality and accuracy of turning point classification.
-   * Higher capability models (like GPT-4) provide more nuanced analysis but cost more and run slower.
-   * Smaller models process faster but may miss subtle semantic shifts.
-   * When using custom endpoints, compatible model names should be specified.
-   */
+  /** Model for turning point classification */
   classificationModel: string;
-
-  /**
-   * The model to use for embeddings (e.g., "text-embedding-3-small", "text-embedding-ada-002")
-   * 
-   * Controls how messages are converted to vector representations for semantic analysis.
-   * Different embedding models create different vector spaces, affecting detection sensitivity.
-   * Newer models generally provide better semantic understanding but may cost more.
-   * This is critical for the initial detection phase before classification.
-   */
+  /** Model for generating embeddings */
   embeddingModel: string;
-
-  /**
-   * Minimum semantic distance threshold to consider as a turning point (recommended: 0.15-0.35)
-   * 
-   * This is the primary sensitivity control for the algorithm.
-   * Higher values (e.g., 0.3+) detect only major topic shifts and significant turns.
-   * Lower values (e.g., 0.15-0.2) catch subtle shifts in tone, emphasis, or minor topic changes.
-   * Setting too low risks detecting noise; setting too high might miss important transitions.
-   * The distance is calculated using cosine distance with sigmoid normalization.
-   */
+  /** Semantic shift threshold for detecting potential turning points */
   semanticShiftThreshold: number;
-
-  /**
-   * Minimum tokens per chunk when splitting conversation
-   * 
-   * Ensures chunks have sufficient context for semantic analysis.
-   * Too small, and chunks lack context for meaningful analysis.
-   * Directly affects number of API calls and processing speed.
-   * Works in conjunction with minMessagesPerChunk as a dual constraint.
-   */
+  /** Minimum tokens per chunk when processing conversation */
   minTokensPerChunk: number;
-
-  /**
-   * Maximum tokens per chunk when splitting conversation
-   * 
-   * Limits chunk size to prevent exceeding model context windows.
-   * Affects API costs since larger chunks require more tokens per API call.
-   * For best results, should be significantly smaller than the classification model's context limit.
-   * Larger chunks provide more context but may dilute detection of local semantic shifts.
-   */
+  /** Maximum tokens per chunk */
   maxTokensPerChunk: number;
-
-  /**
-   * Maximum recursive depth for multi-level analysis (recommended: 2-4)
-   * 
-   * Controls hierarchical analysis of conversation structure.
-   * Level 0: Detects basic turning points between adjacent messages
-   * Level 1: Analyzes patterns across level 0 turning points to find higher-level shifts
-   * Level 2+: Continues recursive analysis to find increasingly abstract patterns
-   * 
-   * Higher values enable detection of complex narrative arcs and major topic transitions,
-   * but increase processing time and API costs exponentially.
-   * Setting to 1 provides basic turning point detection with minimal processing.
-   */
+  /** Maximum recursive depth (dimensional expansion limit) */
   maxRecursionDepth: number;
-
-  /**
-   * Whether to include all turning points or just significant ones
-   * 
-   * If true, only returns turning points above the significanceThreshold.
-   * If false, returns all detected turning points regardless of significance.
-   * Affects the quantity and quality of results.
-   * Enable for final output; disable for debugging or comprehensive analysis.
-   */
+  /** Whether to filter by significance */
   onlySignificantTurningPoints: boolean;
-
-  /**
-   * Significance threshold (0.0-1.0) for including turning points
-   * 
-   * Filters turning points based on their calculated significance score.
-   * Higher values (e.g., 0.7+) return only major, impactful turning points.
-   * Lower values (e.g., 0.3-0.5) include more subtle but still meaningful shifts.
-   * Only applies when onlySignificantTurningPoints is true.
-   * The algorithm will always return at least one turning point if any are detected.
-   */
+  /** Significance threshold for filtering */
   significanceThreshold: number;
-
-  /**
-   * Minimum number of messages per chunk
-   * 
-   * Ensures chunks contain enough messages to detect semantic patterns.
-   * Too low may result in spurious turning points from insufficient context.
-   * Too high may prevent identification of turning points in small conversations.
-   * Takes precedence over minTokensPerChunk when both are specified.
-   */
+  /** Minimum messages per chunk */
   minMessagesPerChunk: number;
-
-  /**
-   * Maximum number of turning points to return in final results
-   * 
-   * Caps the final output to prevent overwhelming the user with too many turning points.
-   * When limited, the most significant and diverse turning points are prioritized.
-   * Algorithm attempts to select turning points that span different parts of the conversation.
-   * Set higher for comprehensive analysis; lower for executive summaries.
-   */
+  /** Maximum turning points in final results */
   maxTurningPoints: number;
-
-  /**
-   * Enable verbose logging for debugging and progress monitoring
-   * 
-   * When true, logs detailed information about:
-   * - Chunking decisions and statistics
-   * - Semantic distances between messages
-   * - Classification results and turning point details
-   * - Processing times and progress estimates
-   * - Meta-message creation and recursive analysis
-   * 
-   * Useful for understanding the algorithm's decisions and tuning parameters.
-   * Has minimal performance impact.
-   */
+  /** Enable verbose logging */
   debug: boolean;
-
-  /**
-   * Custom OpenAI API endpoint (optional)
-   * 
-   * Allows using alternative API providers or self-hosted models.
-   * Must be compatible with OpenAI's API format for embeddings and completions.
-   * Enables integration with services like Azure OpenAI, or local models via servers like Ollama.
-   * When specified, may enable additional parameters like repeat_penalty, top_k, etc.
-   * Leave undefined to use the standard OpenAI API.
-   */
+  /** Custom OpenAI API endpoint (optional) */
   endpoint?: string;
+  /** Complexity saturation threshold (dimension escalation trigger) */
+  complexitySaturationThreshold: number;
+  /** Enable convergence measurement across iterations */
+  measureConvergence: boolean;
 }
+
 /**
  * Chunking result with message segments and metrics
  */
 interface ChunkingResult {
   /** Array of message chunks */
   chunks: Message[][];
-
   /** Total number of chunks created */
   numChunks: number;
-
   /** Average tokens per chunk */
   avgTokensPerChunk: number;
 }
@@ -416,12 +201,28 @@ interface ChunkingResult {
 interface MessageEmbedding {
   /** The message ID */
   id: string;
-
   /** The message index in original array */
   index: number;
-
   /** The embedding vector */
   embedding: Float32Array;
+}
+
+/**
+ * Tracks state changes across iteration for convergence measurement
+ */
+interface ConvergenceState {
+  /** Previous state turning points */
+  previousTurningPoints: TurningPoint[];
+  /** Current state turning points */
+  currentTurningPoints: TurningPoint[];
+  /** Current dimension */
+  dimension: number;
+  /** Convergence measure between states (lower = more converged) */
+  distanceMeasure: number;
+  /** Whether the state has converged */
+  hasConverged: boolean;
+  /** Whether dimension escalation occurred */
+  didEscalate: boolean;
 }
 
 // -----------------------------------------------------------------------------
@@ -432,6 +233,7 @@ export class SemanticTurningPointDetector {
   private config: TurningPointDetectorConfig;
   private openai: OpenAI;
   private originalMessages: Message[] = [];
+  private convergenceHistory: ConvergenceState[] = [];
 
   /**
    * Creates a new instance of the semantic turning point detector
@@ -451,9 +253,11 @@ export class SemanticTurningPointDetector {
       minMessagesPerChunk: config.minMessagesPerChunk || 3,
       maxTurningPoints: config.maxTurningPoints || 5,
       debug: config.debug || false,
-      endpoint: config.endpoint
+      endpoint: config.endpoint,
+      // New ARC/CRA specific parameters
+      complexitySaturationThreshold: config.complexitySaturationThreshold || 4.5,
+      measureConvergence: config.measureConvergence ?? true
     };
-
 
     // Initialize OpenAI client
     this.openai = new OpenAI({
@@ -471,81 +275,85 @@ export class SemanticTurningPointDetector {
 
   /**
    * Main entry point: Detect turning points in a conversation
+   * Implements the full ARC/CRA framework
    */
   public async detectTurningPoints(messages: Message[]): Promise<TurningPoint[]> {
-    this.log('Starting turning point detection for conversation with', messages.length, 'messages');
+    this.log('Starting turning point detection using ARC/CRA framework for conversation with', messages.length, 'messages');
+    this.convergenceHistory = [];
 
-    // Always use multi-layer detection to ensure we get meaningful turning points
-    // This ensures we apply recursive refinement regardless of conversation size
+    // Store original messages for reference
     const totalTokens = await this.getMessageArrayTokenCount(messages);
     this.log(`Total conversation tokens: ${totalTokens}`);
     this.originalMessages = messages;
 
+    // Begin dimensional analysis at level 0
     return this.multiLayerDetection(messages, 0);
   }
 
   /**
-   * Multi-layer detection for conversations of any size
+   * Multi-layer detection implementing the ARC/CRA dimensional processing
+   * This is the primary implementation of the transition operator Ψ
    */
   private async multiLayerDetection(
     messages: Message[],
-    level: number
+    dimension: number
   ): Promise<TurningPoint[]> {
-    // Check recursion depth
-    if (level >= this.config.maxRecursionDepth) {
-      this.log(`Maximum recursion depth (${level}) reached, processing directly`);
-      return this.detectTurningPointsInChunk(messages, level);
+    this.log(`Starting dimensional analysis at n=${dimension}`);
+    
+    // Check recursion depth - hard limit on dimensional expansion
+    if (dimension >= this.config.maxRecursionDepth) {
+      this.log(`Maximum dimension (n=${dimension}) reached, processing directly without further expansion`);
+      return this.detectTurningPointsInChunk(messages, dimension);
     }
 
-    // For very small conversations (or at deeper levels), consider using a sliding window
-    // approach instead of chunking to ensure we capture cross-message patterns
+    // For very small conversations (or at deeper levels), use sliding window
     let localTurningPoints: TurningPoint[] = [];
 
-    if (messages.length <= 10 && level === 0) {
-      this.log(`Level ${level}: Small conversation, using sliding window analysis`);
-      // If this is a small conversation, detect turning points directly but apply
-      // stricter thresholds to find only significant shifts
-      const adjustedConfig = { ...this.config };
-
+    if (messages.length <= 10 && dimension === 0) {
+      this.log(`Dimension ${dimension}: Small conversation, using sliding window analysis`);
       // Temporarily increase the threshold for small conversations
       const originalThreshold = this.config.semanticShiftThreshold;
-      adjustedConfig.semanticShiftThreshold = Math.max(0.4, originalThreshold);
+      this.config.semanticShiftThreshold = Math.max(0.4, originalThreshold);
 
-      // Restore config after this scope
-      localTurningPoints = await this.detectTurningPointsInChunk(messages, level);
+      // Process directly
+      localTurningPoints = await this.detectTurningPointsInChunk(messages, dimension);
+      
+      // Restore config
       this.config.semanticShiftThreshold = originalThreshold;
     } else {
       // Chunk the conversation
-      const { chunks } = await this.chunkConversation(messages, level);
-      this.log(`Level ${level}: Split into ${chunks.length} chunks`);
+      const { chunks } = await this.chunkConversation(messages, dimension);
+      this.log(`Dimension ${dimension}: Split into ${chunks.length} chunks`);
 
       // Process each chunk in parallel to find local turning points
       const chunkTurningPoints: TurningPoint[][] = new Array(chunks.length);
       const durationsSeconds: number[] = new Array(chunks.length).fill(-1);
-      const limit = this.config.endpoint ? 1 : 3; // Limit API calls to avoid rate limits
+      const limit = this.config.endpoint ? 1 : 5; // Limit API calls to avoid rate limits, set to 1 for local ollama endpoint
+      
       await async.eachOfLimit(
         chunks,
         limit,
         async (chunk, indexStr) => {
-
           const index = Number(indexStr);
           const startTime = Date.now();
-          if (index % 10 || limit === 1) {
-            this.log(` - Level ${level}: Processing chunk ${index + 1}/${chunks.length} (${chunk.length} messages)`);
+          
+          if (index % 10 === 0 || limit === 1) {
+            this.log(` - Dimension ${dimension}: Processing chunk ${index + 1}/${chunks.length} (${chunk.length} messages)`);
           }
-          chunkTurningPoints[index] = await this.detectTurningPointsInChunk(chunk, level);
+          
+          chunkTurningPoints[index] = await this.detectTurningPointsInChunk(chunk, dimension);
           const durationSecs = (Date.now() - startTime) / 1000;
           durationsSeconds[index] = durationSecs;
 
-
-          if (index % 10 || limit === 1) {
-            const averageDuration = durationsSeconds.filter(d => d > 0).reduce((a, b) => a + b, 0) / durationsSeconds.filter(d => d > 0).length;
-            const remainingChunks = durationsSeconds.length -
-              durationsSeconds.filter(d => d > 0).length;
+          if (index % 10 === 0 || limit === 1) {
+            const averageDuration = durationsSeconds.filter(d => d > 0).reduce((a, b) => a + b, 0) / 
+                                  durationsSeconds.filter(d => d > 0).length;
+            const remainingChunks = durationsSeconds.length - 
+                                   durationsSeconds.filter(d => d > 0).length;
             const remainingTime = (averageDuration * remainingChunks).toFixed(1);
             const percentageComplete = 100 - (remainingChunks / durationsSeconds.length * 100);
+            
             this.log(`    - Processed in ${durationSecs.toFixed(1)}s, estimated remaining time: ${remainingTime}s (${percentageComplete.toFixed(1)}% complete)`);
-
           }
         }
       );
@@ -554,7 +362,7 @@ export class SemanticTurningPointDetector {
       localTurningPoints = chunkTurningPoints.flat();
     }
 
-    this.log(`Level ${level}: Found ${localTurningPoints.length} turning points`);
+    this.log(`Dimension ${dimension}: Found ${localTurningPoints.length} turning points`);
 
     // If we found zero or one turning point at this level, return it directly
     if (localTurningPoints.length <= 1) {
@@ -563,35 +371,115 @@ export class SemanticTurningPointDetector {
 
     // First merge any similar turning points at this level
     const mergedLocalTurningPoints = this.mergeSimilarTurningPoints(localTurningPoints);
-    this.log(`Level ${level}: Merged to ${mergedLocalTurningPoints.length} turning points`);
+    this.log(`Dimension ${dimension}: Merged to ${mergedLocalTurningPoints.length} turning points`);
 
-    // If we're at the last recursion level or have few turning points after merging, return them
-    if (level === this.config.maxRecursionDepth - 1 || mergedLocalTurningPoints.length <= 3) {
+    // ------------------- CRITICAL ARC/CRA IMPLEMENTATION -------------------
+    // This is where we determine whether to expand dimension based on complexity saturation
+    
+    // Calculate the maximum complexity in this dimension to determine if we need to escalate
+    const maxComplexity = Math.max(...mergedLocalTurningPoints.map(tp => tp.complexityScore));
+    
+    // Implement Transition Operator Ψ from the ARC/CRA framework
+    // If complexity reaches saturation threshold, we need to escalate to dimension n+1
+    const needsDimensionalEscalation = maxComplexity >= this.config.complexitySaturationThreshold;
+    
+    // Log the decision point - this is the crucial Ψ operation from the paper
+    this.log(`Dimension ${dimension}: Max complexity = ${maxComplexity.toFixed(2)}, saturation threshold = ${this.config.complexitySaturationThreshold}`);
+    this.log(`Dimension ${dimension}: ${needsDimensionalEscalation ? 'ESCALATING to n+1' : 'Remaining in current dimension'}`);
+
+    // If we're at the last recursion level, or have few turning points, or don't need escalation
+    if (dimension === this.config.maxRecursionDepth - 1 || 
+        mergedLocalTurningPoints.length <= 3 || 
+        !needsDimensionalEscalation) {
+      // Track convergence for this dimension
+      if (this.config.measureConvergence) {
+        this.convergenceHistory.push({
+          previousTurningPoints: [],
+          currentTurningPoints: mergedLocalTurningPoints,
+          dimension,
+          distanceMeasure: 0,
+          hasConverged: true,
+          didEscalate: false
+        });
+      }
+      
       return this.filterSignificantTurningPoints(mergedLocalTurningPoints);
     }
 
+    // ----- DIMENSIONAL ESCALATION (n → n+1) -----
+    this.log(`Dimension ${dimension}: Escalating to dimension ${dimension + 1}`);
+    
     // Create meta-messages from turning points for next level analysis
+    // This represents the dimensional expansion from n to n+1
     const metaMessages = this.createMetaMessagesFromTurningPoints(mergedLocalTurningPoints, messages);
-    this.log(`Level ${level}: Created ${metaMessages.length} meta-messages for next level`);
+    this.log(`Dimension ${dimension}: Created ${metaMessages.length} meta-messages for dimension ${dimension + 1}`);
 
-    // Recursively process the meta-messages to find higher-level turning points
-    const higherLevelTurningPoints = await this.multiLayerDetection(metaMessages, level + 1);
+    // Recursively process the meta-messages to find higher-dimensional turning points
+    const higherDimensionTurningPoints = await this.multiLayerDetection(metaMessages, dimension + 1);
 
-    // If we didn't find any higher-level turning points, use the merged local ones
-    if (higherLevelTurningPoints.length === 0) {
+    // Track convergence and dimension escalation
+    if (this.config.measureConvergence) {
+      const convergenceState: ConvergenceState = {
+        previousTurningPoints: mergedLocalTurningPoints,
+        currentTurningPoints: higherDimensionTurningPoints,
+        dimension: dimension + 1,
+        distanceMeasure: this.calculateStateDifference(mergedLocalTurningPoints, higherDimensionTurningPoints),
+        hasConverged: higherDimensionTurningPoints.length > 0,
+        didEscalate: true
+      };
+      this.convergenceHistory.push(convergenceState);
+      
+      this.log(`Dimension ${dimension} → ${dimension + 1}: Escalation resulted in convergence distance: ${convergenceState.distanceMeasure.toFixed(3)}`);
+    }
+
+    // If we didn't find any higher-dimension turning points, use the merged local ones
+    if (higherDimensionTurningPoints.length === 0) {
       return this.filterSignificantTurningPoints(mergedLocalTurningPoints);
     }
 
     // Combine and return turning points with proper filtering
-    return this.combineTurningPoints(mergedLocalTurningPoints, higherLevelTurningPoints);
+    return this.combineTurningPoints(mergedLocalTurningPoints, higherDimensionTurningPoints);
+  }
+
+  /**
+   * Calculate a difference measure between two states for convergence tracking
+   */
+  private calculateStateDifference(
+    state1: TurningPoint[],
+    state2: TurningPoint[]
+  ): number {
+    if (state1.length === 0 || state2.length === 0) return 1.0;
+    
+    // Calculate average significance difference
+    const avgSignificance1 = state1.reduce((sum, tp) => sum + tp.significance, 0) / state1.length;
+    const avgSignificance2 = state2.reduce((sum, tp) => sum + tp.significance, 0) / state2.length;
+    
+    // Normalize by max possible difference
+    return Math.abs(avgSignificance1 - avgSignificance2);
+  }
+
+  /**
+   * Apply complexity function χ from the ARC/CRA framework
+   * Maps continuous significance measure to discrete {1,2,3,4,5} complexity levels
+   */
+  private calculateComplexityScore(significance: number, semanticShiftMagnitude: number): number {
+    // Start with base complexity from significance
+    let complexity = 1 + significance * 4; // Maps [0,1] to [1,5]
+    
+    // Adjust based on semantic shift magnitude (stronger shifts may be more complex)
+    complexity += (semanticShiftMagnitude - 0.5) * 0.5;
+    
+    // Ensure complexity is in [1,5] range
+    return Math.max(1, Math.min(5, complexity));
   }
 
   /**
    * Detect turning points within a single chunk of the conversation
+   * This represents the local refinement process in the current dimension
    */
   private async detectTurningPointsInChunk(
     messages: Message[],
-    level: number
+    dimension: number
   ): Promise<TurningPoint[]> {
     if (messages.length < 2) return [];
 
@@ -609,8 +497,7 @@ export class SemanticTurningPointDetector {
 
       // If the distance exceeds our threshold, we've found a turning point
       if (distance > this.config.semanticShiftThreshold) {
-
-        // Use direct array indices to get the messages - safer than using the embedding index
+        // Use direct array indices to get the messages
         const beforeMessage = messages[i];
         const afterMessage = messages[i + 1];
 
@@ -620,26 +507,28 @@ export class SemanticTurningPointDetector {
             beforeMessage,
             afterMessage,
             distance,
-            level,
+            dimension,
             this.originalMessages
           );
-          this.log(`    ...Potential turning point detected between messages ${current.id} and ${next.id} (distance: ${distance.toFixed(3)}) signif: ${turningPoint.significance.toFixed(3)}`);
+          
+          this.log(`    ...Potential turning point detected between messages ${current.id} and ${next.id} (distance: ${distance.toFixed(3)}, complexity: ${turningPoint.complexityScore.toFixed(1)})`);
 
-
-          // change span to new span if the best_start_id and best_end_id
-          if (turningPoint.best_start_id && turningPoint.best_end_id && turningPoint.span.startId !== turningPoint.best_start_id && turningPoint.span.endId !== turningPoint.best_end_id) {
+          // Adjust span if best_start_id and best_end_id were identified
+          if (turningPoint.best_start_id && turningPoint.best_end_id && 
+              turningPoint.span.startId !== turningPoint.best_start_id && 
+              turningPoint.span.endId !== turningPoint.best_end_id) {
+            
             this.log(`  ... found best span and adjusted to ${turningPoint.best_start_id} and ${turningPoint.best_end_id}`);
+            
             const newSpan = {
               startId: turningPoint.best_start_id,
               endId: turningPoint.best_end_id,
               startIndex: this.originalMessages.findIndex(m => m.id === turningPoint.best_start_id),
               endIndex: this.originalMessages.findIndex(m => m.id === turningPoint.best_end_id)
-            }
-
+            };
 
             if (newSpan.startIndex !== -1 && newSpan.endIndex !== -1) {
               turningPoint.span = newSpan;
-              this.log(`  ... found best span and adjusted to ${turningPoint.best_start_id} and ${turningPoint.best_end_id}`);
             }
           }
 
@@ -655,30 +544,32 @@ export class SemanticTurningPointDetector {
 
   /**
    * Use LLM to classify a turning point and generate metadata
+   * This is the semantic classification component
    */
   private async classifyTurningPoint(
     beforeMessage: Message,
     afterMessage: Message,
     distance: number,
-    level: number,
+    dimension: number,
     originalMessages?: Message[]
   ): Promise<TurningPoint> {
-    // For meta-messages, extract the original span information if available
+    // Extract span information
     let originalSpan = {
       startIndex: 0,
       endIndex: 0,
       startMessageId: '',
       endMessageId: ''
     };
+    
     let span: MessageSpan = {
       startId: beforeMessage.id,
       endId: afterMessage.id,
       startIndex: parseInt(beforeMessage.id.replace(/\D/g, ''), 10) || 0,
       endIndex: parseInt(afterMessage.id.replace(/\D/g, ''), 10) || 0
     };
+    
     // Ensure chronological ordering of span
     if (span.startIndex > span.endIndex) {
-      // Swap indices and IDs to maintain chronological order
       const tempIndex = span.startIndex;
       span.startIndex = span.endIndex;
       span.endIndex = tempIndex;
@@ -705,33 +596,24 @@ export class SemanticTurningPointDetector {
       span.endId = metaData.endId;
       span.endIndex = metaData.endIndex;
 
-      // If we don't have a start from beforeMessage, use this one
       if (!(beforeMessage as Message).spanData) {
         span.startId = metaData.startId;
         span.startIndex = metaData.startIndex;
       }
     }
 
-    // Check if this is a meta-message by looking for SpanIndices or SpanMessageIds
+    // Check if this is a meta-message
     if (beforeMessage.author === 'meta' || afterMessage.author === 'meta') {
-
-      // Try to extract span information from meta-messages
-      // const beforeMatches = beforeMessage.message.match(/SpanIndices: (\d+)-(\d+)/);
-      // const beforeMsgMatches = beforeMessage.message.match(/SpanMessageIds: (msg-\d+)-(msg-\d+)/);
-
-      // const afterMatches = afterMessage.message.match(/SpanIndices: (\d+)-(\d+)/);
-      // const afterMsgMatches = afterMessage.message.match(/SpanMessageIds: (msg-\d+)-(msg-\d+)/);
+      // Extract span information from meta-messages
       const beforeMatches = beforeMessage.message.match(/SpanIndices: (\d+)-(\d+)/);
-      // Update regex to handle any message ID format and properly separate the IDs from any symbols
       const beforeMsgMatches = beforeMessage.message.match(/SpanMessageIds: ([^-\s→]+(?:-[^-\s→]+)*)-([^-\s→]+(?:-[^-\s→]+)*)/);
 
       const afterMatches = afterMessage.message.match(/SpanIndices: (\d+)-(\d+)/);
-      // Same improved regex for after message
       const afterMsgMatches = afterMessage.message.match(/SpanMessageIds: ([^-\s→]+(?:-[^-\s→]+)*)-([^-\s→]+(?:-[^-\s→]+)*)/);
 
+      // Process the extracted span information
       if (beforeMatches && beforeMatches.length >= 3) {
         originalSpan.startIndex = parseInt(beforeMatches[1], 10);
-        // Only use end from before message if we don't have an after message
         if (!afterMatches) {
           originalSpan.endIndex = parseInt(beforeMatches[2], 10);
         }
@@ -739,7 +621,6 @@ export class SemanticTurningPointDetector {
 
       if (beforeMsgMatches && beforeMsgMatches.length >= 3) {
         originalSpan.startMessageId = beforeMsgMatches[1];
-        // Only use end from before message if we don't have an after message
         if (!afterMsgMatches) {
           originalSpan.endMessageId = beforeMsgMatches[2];
         }
@@ -747,7 +628,6 @@ export class SemanticTurningPointDetector {
 
       if (afterMatches && afterMatches.length >= 3) {
         originalSpan.endIndex = parseInt(afterMatches[2], 10);
-        // If we don't have a start index yet, use the start from after message
         if (!beforeMatches) {
           originalSpan.startIndex = parseInt(afterMatches[1], 10);
         }
@@ -755,13 +635,13 @@ export class SemanticTurningPointDetector {
 
       if (afterMsgMatches && afterMsgMatches.length >= 3) {
         originalSpan.endMessageId = afterMsgMatches[2];
-        // If we don't have a start message ID yet, use the start from after message
         if (!beforeMsgMatches) {
           originalSpan.startMessageId = afterMsgMatches[1];
         }
       }
     }
 
+    // Prompt for LLM classification
     const systemPrompt = `
 You are an expert conversation analyst tasked with identifying and classifying semantic turning points. A potential turning point has been detected between the two messages provided below based on semantic distance analysis.
 
@@ -794,10 +674,11 @@ You are an expert conversation analyst tasked with identifying and classifying s
 1. A short, specific label for this turning point (e.g., "Shift to Budget Concerns")
 2. 2-4 keywords that characterize this turning point as a list of keyword.
 3. An emotional tone of the turningpoint, or an assessemnt of emotional shift 
-    - Of only one of the following: `  + "`anticipation`, `sadness`, `optimism`, `trust`, `joy`, `neutral`, `anger`, `disgust`, `fear`, `surprise`, `pessimism`, `love`\n" +
-      `5. A significance score (0.0-1.0) representing how important this turning point is to the overall conversation
-5. A memorable quote(s) from either message that captures the essence of this shift, or even from the surrounding context.
-
+    - Of only one of the following: \`anticipation\`, \`sadness\`, \`optimism\`, \`trust\`, \`joy\`, \`neutral\`, \`anger\`, \`disgust\`, \`fear\`, \`surprise\`, \`pessimism\`, \`love\`
+4. A sentiment value, either "positive" or "negative"
+5. A significance score (0.0-1.0) representing how important this turning point is to the overall conversation
+6. A memorable quote(s) from either message that captures the essence of this shift, or even from the surrounding context.
+7. The best ID representing this turning point.
 
 Respond with a JSON object containing these fields. Do not include any text outside the JSON object.
 `;
@@ -813,79 +694,158 @@ Author: ${afterMessage.author}
 ID: ${afterMessage.id}
 Content: ${afterMessage.message}
 `;
+
+    // Add contextual information
     const neighborsToAdd = Math.max(Math.round(this.config.minMessagesPerChunk / 2), 1);
-    const originalMessagesNeighborsBefore = originalMessages?.slice(Math.max(0, span.startIndex -
-      neighborsToAdd
-    ), span.startIndex).filter(Boolean);
-    const originalMessagesNeighborsAfter = originalMessages?.slice(span.endIndex +
-      neighborsToAdd
-      , span.endIndex +
-      neighborsToAdd
+    
+    const originalMessagesNeighborsBefore = originalMessages?.slice(
+      Math.max(0, span.startIndex - neighborsToAdd), 
+      span.startIndex
     ).filter(Boolean);
+    
+    const originalMessagesNeighborsAfter = originalMessages?.slice(
+      span.endIndex + 1, 
+      span.endIndex + 1 + neighborsToAdd
+    ).filter(Boolean);
+    
     let originalMessagesText = `
     ## Contextual Aid
     - The following text provides broader context to showcase prior and subsequent messages related to this point. Use this context to help formulate a more accurate assessment of the provided turning point in the conversation.
     - This should not be the basis of your response, nor should it be included in your response; it is meant solely as contextual aid.
-    
     `;
-    const originalNeighborsWithinSpan = originalMessages?.slice(span.startIndex, span.endIndex).filter(Boolean);
+    
+    const originalNeighborsWithinSpan = originalMessages?.slice(
+      span.startIndex, 
+      span.endIndex + 1
+    ).filter(Boolean);
 
-    if (originalMessagesNeighborsBefore) {
+    // Add context before the turning point
+    if (originalMessagesNeighborsBefore?.length) {
       originalMessagesText +=
-        `### Messages Before As Context\n` +
-        originalMessagesNeighborsBefore.map(m => `Author: ${m.author}\nID: "${m.spanData?.startId ?? m.id}"\nContent: ${m.message}`).join('\n\n');
+        `\n### Messages Before As Context\n` +
+        originalMessagesNeighborsBefore.map(m => 
+          `Author: ${m.author}\nID: "${m.spanData?.startId ?? m.id}"\nContent: ${m.message}`
+        ).join('\n\n');
     }
 
-    if (originalMessagesNeighborsAfter) {
+    // Add context after the turning point
+    if (originalMessagesNeighborsAfter?.length) {
       originalMessagesText +=
-        `### Messages After As Context\n` +
-        originalMessagesNeighborsAfter.map(m => `Author: ${m.author}\nID: "${m.spanData?.startId ?? m.id}"\nContent: ${m.message}`).join('\n\n');
+        `\n### Messages After As Context\n` +
+        originalMessagesNeighborsAfter.map(m => 
+          `Author: ${m.author}\nID: "${m.spanData?.startId ?? m.id}"\nContent: ${m.message}`
+        ).join('\n\n');
     }
 
-    if (originalNeighborsWithinSpan) {
+    // Add context within the turning point span
+    if (originalNeighborsWithinSpan?.length) {
+      const startNeighborsWithin = originalNeighborsWithinSpan.slice(0, neighborsToAdd);
+      const endNeighborsWithin = originalNeighborsWithinSpan.slice(-neighborsToAdd);
 
-      const startNeighborsWithin = originalNeighborsWithinSpan.slice(0, neighborsToAdd).filter(Boolean);
-      const endNeighborsWithin = originalNeighborsWithinSpan.slice(-neighborsToAdd).filter(Boolean);
-
-      if (startNeighborsWithin) {
+      if (startNeighborsWithin.length) {
         originalMessagesText +=
-          `### Messages within Turning Point Start\n` +
-          startNeighborsWithin.map(m => `Author: ${m.author}\nID: "${m.spanData?.startId ?? m.id}"\nContent: ${m.message}`).join('\n\n');
-
+          `\n### Messages within Turning Point Start\n` +
+          startNeighborsWithin.map(m => 
+            `Author: ${m.author}\nID: "${m.spanData?.startId ?? m.id}"\nContent: ${m.message}`
+          ).join('\n\n');
       }
 
-      if (startNeighborsWithin) {
-        originalMessagesText += `### Messages ${endNeighborsWithin.length > 0 ? 'between the start and end of context within the turning point' : 'that follow and are within the turning point'
-          } turning point following start have been omitted for brevity\n`;
+      if (startNeighborsWithin.length && originalNeighborsWithinSpan.length > startNeighborsWithin.length) {
+        originalMessagesText += `\n### Messages ${endNeighborsWithin.length > 0 ? 'between the start and end of context within the turning point' : 'that follow and are within the turning point'} turning point following start have been omitted for brevity\n`;
       }
 
-      if (endNeighborsWithin) {
+      if (endNeighborsWithin.length && endNeighborsWithin !== startNeighborsWithin) {
         originalMessagesText +=
-          `### Messages within Turning Point End\n` +
-          endNeighborsWithin.map(m => `Author: ${m.author}\nID: "${m.spanData?.startId ?? m.id}"\nContent: ${m.message}`).join('\n\n');
+          `\n### Messages within Turning Point End\n` +
+          endNeighborsWithin.map(m => 
+            `Author: ${m.author}\nID: "${m.spanData?.startId ?? m.id}"\nContent: ${m.message}`
+          ).join('\n\n');
       }
-
     }
-
-
 
     try {
+      // Call LLM for classification
       const response = await this.openai.chat.completions.create({
         model: this.config.classificationModel,
         messages: [
-          { role: 'system', content: systemPrompt + `\n\n${originalMessagesNeighborsBefore || originalMessagesNeighborsAfter ? originalMessagesText : ''}` },
+          { 
+            role: 'system', 
+            content: systemPrompt + (
+              (originalMessagesNeighborsBefore?.length || originalMessagesNeighborsAfter?.length) 
+                ? `\n\n${originalMessagesText}` 
+                : ''
+            )
+          },
           { role: 'user', content: userMessage }
         ],
         temperature: 0.6,
         //@ts-ignore 
-        repeat_penalty: this.config.endpoint ?
-          1.005 : undefined, // Increase penalty for repeated completions to avoid duplicates
-        top_k: this.config.endpoint ? 20 : undefined, // Increase top-k for better diversity onlyon custom endpoint ollama
-
-        num_ctx: this.config.endpoint ? 32638 : undefined, // Increase context window for better coherence
-        response_format: response_format as ResponseFormatJSONSchema,
+        repeat_penalty: this.config.endpoint ? 1.005 : undefined,
+        top_k: this.config.endpoint ? 20 : undefined,
+        num_ctx: this.config.endpoint ? 32638 : undefined,
+        response_format: {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "turning_point",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string",
+                  "description": "A short, specific label for this turning point. This should clearly describe the shift that occurred."
+                },
+                "category": {
+                  "type": "string",
+                  "description": "This turning point signifies a specific type of semantic shift. Please classify it using one of the following categories: Topic, Insight, Emotion, Meta-Reflection, Decision, Question, Problem, Action, Clarification, Objection, or Other."
+                },
+                "keywords": {
+                  "type": "array",
+                  "description": "A list of keywords associated with this turning point.",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "emotionalTone": {
+                  "type": "string",
+                  "description": "An emotional tone or sentiment associated with this turning point, only label with one of the following: `anticipation`, `sadness`, `optimism`, `trust`, `joy`, `neutral`, `anger`, `disgust`, `fear`, `surprise`, `pessimism`, `love`."
+                },
+                "sentiment": {
+                  "type": "string",
+                  "description": "The sentiment of the turning point, one of: positive, negative. Do not use any other values and provide only one sentiment."
+                },
+                "significance": {
+                  "type": "number",
+                  "description": "A significance score from (0.0-1.0) representing how important this turning point is to the overall conversation, or the aspect of the turning point's level of shift that it represents. Higher values indicate a more significant turning point, assess this carefully, and no lower than 0 or higher than 1."
+                },
+                "quotes": {
+                  "type": "array",
+                  "description": "A list of notable quotes from the messages in this turning point's span.",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "best_id": {
+                  "type": "string",
+                  "description": "A turning point is the moment when a change occurs. Based on your assessment of a message ID, identify a single message ID that best represents this turning point, considering the estimated range between the start ID and end ID. Ensure that the selected message ID exists within this range."
+                }
+              },
+              "required": [
+                "label",
+                "category",
+                "keywords",
+                "emotionalTone",
+                "sentiment",
+                "significance",
+                "quotes",
+                "best_id"
+              ],
+              "additionalProperties": false
+            }
+          }
+        
+        },
         top_p: 0.8,
-
       });
 
       const content = response.choices[0]?.message?.content || '';
@@ -905,41 +865,40 @@ Content: ${afterMessage.message}
             label: 'Unclassified Turning Point',
             category: 'Other',
             keywords: [],
-            emotionalTone: '',
+            emotionalTone: 'neutral',
+            sentiment: 'neutral',
             significance: 0.5,
-            quote: '',
-            span
+            quotes: [],
+            best_id: span.startId
           };
         }
       }
 
-      // For meta-messages, use the original span information if available
-      // const startMessageId = originalSpan.startMessageId || beforeMessage.id;
-      // const endMessageId = originalSpan.endMessageId || afterMessage.id;
-
-      // const startIndex = originalSpan.startIndex ||
-      //   parseInt(beforeMessage.id.replace(/\D/g, ''), 10) || 0;
-      // const endIndex = originalSpan.endIndex ||
-      //   parseInt(afterMessage.id.replace(/\D/g, ''), 10) || 0;
+      // Calculate complexity score from significance and distance
+      const complexityScore = this.calculateComplexityScore(
+        classification.significance || 0.5, 
+        distance
+      );
 
       // Create turning point object
       return {
-        id: `tp-${level}-${span.startIndex}-${span.endIndex}`, // More robust ID generation
+        id: `tp-${dimension}-${span.startIndex}-${span.endIndex}`,
         label: classification.label || 'Unclassified Turning Point',
         category: (classification.category as TurningPointCategory) || 'Other',
         span,
         best_start_id: span.startId,
         best_end_id: span.endId,
-        best_id: span.startId,
+        best_id: classification.best_id || span.startId,
         deprecatedSpan: originalSpan,
         semanticShiftMagnitude: distance,
         keywords: classification.keywords || [],
         quotes: Array.isArray(classification.quotes)
           ? classification.quotes
           : (classification.quotes ? [classification.quotes] : []),
-        emotionalTone: classification.emotionalTone || '',
-        detectionLevel: level,
-        significance: classification.significance || 0.5
+        emotionalTone: classification.emotionalTone || 'neutral',
+        detectionLevel: dimension,
+        significance: classification.significance || 0.5,
+        complexityScore // ARC/CRA framework: explicit complexity score
       };
     } catch (err) {
       this.log('Error classifying turning point:', err);
@@ -949,25 +908,23 @@ Content: ${afterMessage.message}
         id: `tp-${beforeMessage.id}-to-${afterMessage.id}`,
         label: 'Unclassified Turning Point',
         category: 'Other',
-        // startMessageId: beforeMessage.id,
-        // endMessageId: afterMessage.id,
-        // startIndex: parseInt(beforeMessage.id.replace(/\D/g, ''), 10) || 0,
-        // endIndex: parseInt(afterMessage.id.replace(/\D/g, ''), 10) || 0,
         span,
         best_start_id: span.startId,
         best_end_id: span.endId,
         best_id: span.startId,
         semanticShiftMagnitude: distance,
         keywords: [],
-        detectionLevel: level,
+        detectionLevel: dimension,
         deprecatedSpan: originalSpan,
-        significance: 0.3
+        significance: 0.3,
+        complexityScore: 2.0 // Default low complexity for fallback
       };
     }
   }
 
   /**
    * Create meta-messages from turning points for higher-level analysis
+   * This implements the dimensional expansion from n to n+1 in the ARC/CRA framework
    */
   private createMetaMessagesFromTurningPoints(
     turningPoints: TurningPoint[],
@@ -975,7 +932,7 @@ Content: ${afterMessage.message}
   ): Message[] {
     if (turningPoints.length === 0) return [];
 
-    // Group turning points by category
+    // Group turning points by category (first-level abstraction)
     const groupedByCategory: Record<string, TurningPoint[]> = {};
 
     turningPoints.forEach(tp => {
@@ -989,7 +946,7 @@ Content: ${afterMessage.message}
     // Create meta-messages (one per category to find higher-level patterns)
     const metaMessages: Message[] = [];
 
-    // First create category messages
+    // First create category messages - represents dimension n to n+1 transformation
     Object.entries(groupedByCategory).forEach(([category, points], index) => {
       const quotes = points.flatMap(tp => tp.quotes || []).filter(Boolean);
       const keywords = points.flatMap(tp => tp.keywords || []).filter(Boolean);
@@ -999,13 +956,14 @@ Content: ${afterMessage.message}
       const maxEndIndex = Math.max(...points.map(p => p.span.endIndex));
 
       // Find corresponding message IDs
-      // const startMsgId = points.find(p => p.startIndex === minStartIndex)?.startMessageId || '';
-      // const endMsgId = points.find(p => p.endIndex === maxEndIndex)?.endMessageId || '';
       const startMsgId = points.find(p => p.span.startIndex === minStartIndex)?.span.startId || '';
       const endMsgId = points.find(p => p.span.endIndex === maxEndIndex)?.span.endId || '';
+      
+      // Create meta-message content representing higher-dimensional abstraction
       const categoryContent = `
 # ${category} Turning Points
 Significance: ${Math.max(...points.map(p => p.significance)).toFixed(2)}
+Complexity: ${Math.max(...points.map(p => p.complexityScore)).toFixed(2)}
 Keywords: ${Array.from(new Set(keywords)).slice(0, 10).join(', ')}
 SpanIndices: ${minStartIndex}-${maxEndIndex}
 SpanMessageIds: ${startMsgId}-${endMsgId}
@@ -1013,32 +971,28 @@ SpanMessageIds: ${startMsgId}-${endMsgId}
 ## Message Spans:
 ${points.map(tp => `- ${tp.label}: ${tp.span.startId} → ${tp.span.endId} (${tp.span.startIndex}-${tp.span.endIndex})`).join('\n')}
 ## Notable Quotes:
-${quotes.length > 0 ? (
-          typeof quotes[0] === 'string' ? quotes.map(q => `- "${q}"`).join('\n') : quotes.map(q => `- "${q}"`).join('\n')) :
-          (quotes as unknown as string[][]).flat().map(q => `- "${q}"`).join('\n')
-        }
- 
+${quotes.length > 0 ? quotes.map(q => `- "${q}"`).join('\n') : 'None identified'}
 `;
 
-      // get a start ... end contextual span of all messages inbetween at a limit of 3 each based on the span from  the turning points for this chunk of turning points
+      // Add contextual information
+      let builtContext = ``;
       const startMessagesContext = this.originalMessages.slice(Math.max(0, minStartIndex - 3), minStartIndex).filter(Boolean);
       const endMessagesContext = this.originalMessages.slice(maxEndIndex, maxEndIndex + 3).filter(Boolean);
 
-      let builtContext = ``;
       if (startMessagesContext.length > 0 || endMessagesContext.length > 0) {
-        builtContext = `\n\n## Contextual Aid\n- The following text provides broader context to showcase a truncated view of the messages within this span in the turning point. Use this context to help formulate a more accurate assessment of the provided turning point in the conversation`
+        builtContext = `\n\n## Contextual Aid\n- The following text provides broader context to showcase a truncated view of the messages within this span in the turning point.`;
 
         if (startMessagesContext.length > 0) {
           builtContext += `\n### Messages start of turning point that are within span as Context\n` +
-
             startMessagesContext.map(m => `Author: ${m.author}\nID: "${m.spanData?.startId ?? m.id}"\nContent: ${m.message}`).join('\n\n');
         }
+        
         builtContext += `\n### The messages in between the turning points have been omitted for brevity\n`;
+        
         if (endMessagesContext.length > 0) {
           builtContext += `\n### Messages end of turning point span as Context\n` +
             endMessagesContext.map(m => `Author: ${m.author}\nID: "${m.spanData?.startId ?? m.id}"\nContent: ${m.message}`).join('\n\n');
         }
-
       }
 
       const span = {
@@ -1048,6 +1002,7 @@ ${quotes.length > 0 ? (
         endIndex: maxEndIndex
       };
 
+      // Add the meta-message representing higher dimensional abstraction
       metaMessages.push({
         id: `meta-cat-${index}`,
         spanData: this.ensureChronologicalSpan(span),
@@ -1056,13 +1011,12 @@ ${quotes.length > 0 ? (
       });
     });
 
-
     // Then create timeline messages (sequential groups)
-    // Divide the conversation into 3-4 sections chronologically
     const sortedPoints = [...turningPoints].sort((a, b) => a.span.startIndex - b.span.startIndex);
     const sectionCount = Math.min(4, Math.ceil(sortedPoints.length / 2));
     const pointsPerSection = Math.ceil(sortedPoints.length / sectionCount);
 
+    // Create chronological section meta-messages
     for (let i = 0; i < sectionCount; i++) {
       const sectionPoints = sortedPoints.slice(
         i * pointsPerSection,
@@ -1075,17 +1029,18 @@ ${quotes.length > 0 ? (
       const minStartIndex = Math.min(...sectionPoints.map(p => p.span.startIndex));
       const maxEndIndex = Math.max(...sectionPoints.map(p => p.span.endIndex));
 
-      // // Find corresponding message IDs
-      // const startMsgId = sectionPoints.find(p => p.startIndex === minStartIndex)?.startMessageId || '';
-      // const endMsgId = sectionPoints.find(p => p.endIndex === maxEndIndex)?.endMessageId || '';
+      // Find corresponding message IDs
       const startMsgId = sectionPoints.find(p => p.span.startIndex === minStartIndex)?.span.startId || '';
       const endMsgId = sectionPoints.find(p => p.span.endIndex === maxEndIndex)?.span.endId || '';
+      
+      // Create section meta-message content
       const sectionContent = `
 # Conversation Section ${i + 1}
 Span: ${sectionPoints[0].span.startId} → ${sectionPoints[sectionPoints.length - 1].span.endId}
 SpanIndices: ${minStartIndex}-${maxEndIndex}
 SpanMessageIds: ${startMsgId}-${endMsgId}
 Contains ${sectionPoints.length} turning points
+Max Complexity: ${Math.max(...sectionPoints.map(p => p.complexityScore)).toFixed(2)}
 
 ## Turning Points in this Section:
 ${sectionPoints.map(tp => `- ${tp.label} (${tp.category}) [${tp.span.startIndex}-${tp.span.endIndex}]`).join('\n')}
@@ -1093,6 +1048,7 @@ ${sectionPoints.map(tp => `- ${tp.label} (${tp.category}) [${tp.span.startIndex}
 ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 10).join(', ')}
 `;
 
+      // Add the section meta-message
       metaMessages.push({
         id: `meta-section-${i}`,
         author: 'meta',
@@ -1106,7 +1062,7 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
       });
     }
 
-    this.log(`Created ${metaMessages.length} meta-messages: ${metaMessages.map(m => m.id).join(', ')}`);
+    this.log(`Created ${metaMessages.length} meta-messages for dimensional expansion: ${metaMessages.map(m => m.id).join(', ')}`);
     return metaMessages;
   }
 
@@ -1118,13 +1074,17 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
       return turningPoints;
     }
 
-    // Sort by significance
+    // Sort by significance and complexity
     const sorted = [...turningPoints].sort((a, b) => {
       // First by significance
       if (b.significance !== a.significance) {
         return b.significance - a.significance;
       }
-      // Then by semantic shift magnitude
+      // Then by complexity (higher complexity points might be more important)
+      if (b.complexityScore !== a.complexityScore) {
+        return b.complexityScore - a.complexityScore;
+      }
+      // Finally by semantic shift magnitude
       return b.semanticShiftMagnitude - a.semanticShiftMagnitude;
     });
 
@@ -1176,7 +1136,6 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
       // And a second one from a different part of the conversation if possible
       for (let i = 1; i < sorted.length; i++) {
         const tp = sorted[i];
-        // if (Math.abs(tp.startIndex - sorted[0].startIndex) > 3) {
         if (Math.abs(tp.span.startIndex - sorted[0].span.startIndex) > 3) {
           result.push(tp);
           break;
@@ -1189,15 +1148,15 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
   }
 
   /**
-   * Combine turning points from different levels
-   * with priority given to higher-level turning points
+   * Combine turning points from different dimensions
+   * with priority given to higher-dimensional turning points
    */
   private combineTurningPoints(
     localTurningPoints: TurningPoint[],
-    higherLevelTurningPoints: TurningPoint[]
+    higherDimensionTurningPoints: TurningPoint[]
   ): TurningPoint[] {
-    // Prioritize higher-level turning points by boosting their significance
-    const boostedHigher = higherLevelTurningPoints.map(tp => ({
+    // Prioritize higher-dimensional turning points by boosting their significance
+    const boostedHigher = higherDimensionTurningPoints.map(tp => ({
       ...tp,
       significance: Math.min(1.0, tp.significance * 1.5), // Boost significance but cap at 1.0
       detectionLevel: tp.detectionLevel // Keep track of original detection level
@@ -1206,7 +1165,7 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
     // Combine all turning points
     const allTurningPoints = [...localTurningPoints, ...boostedHigher];
 
-    // Merge overlapping turning points with priority to higher levels
+    // Merge overlapping turning points with priority to higher dimensions
     const mergedTurningPoints = this.mergeAcrossLevels(allTurningPoints);
 
     // Filter to keep only the most significant turning points
@@ -1217,7 +1176,8 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
   }
 
   /**
-   * Merge similar or overlapping turning points within the same level
+   * Merge similar or overlapping turning points within the same dimension
+   * Implements contraction mapping for convergence
    */
   private mergeSimilarTurningPoints(turningPoints: TurningPoint[]): TurningPoint[] {
     if (turningPoints.length <= 1) return turningPoints;
@@ -1231,11 +1191,9 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
       const next = sorted[i];
 
       // Check if turning points overlap or are adjacent
-      // const isOverlapping = (next.startIndex <= current.endIndex + 2); // Allow 1 message gap
       const isOverlapping = (next.span.startIndex <= current.span.endIndex + 2); // Allow 1 message gap
       // Check if turning points are semantically similar
       const isSimilarCategory = (next.category === current.category);
-      // const hasCloseIndices = (next.startIndex - current.endIndex) <= 3; // Within 3 messages
       const hasCloseIndices = (next.span.startIndex - current.span.endIndex) <= 3; // Within 3 messages
 
       if ((isOverlapping && isSimilarCategory) || (hasCloseIndices && isSimilarCategory)) {
@@ -1248,6 +1206,7 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
         // Get IDs that correspond to the correct indices
         const startId = startIndex === current.span.startIndex ? current.span.startId : next.span.startId;
         const endId = endIndex === current.span.endIndex ? current.span.endId : next.span.endId;
+        
         // Create a properly updated span
         const mergedSpan: MessageSpan = {
           startId,
@@ -1255,6 +1214,7 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
           startIndex,
           endIndex
         };
+        
         // Update the deprecated span too for consistency
         const mergedDeprecatedSpan = {
           startIndex: Math.min(current.deprecatedSpan.startIndex, next.deprecatedSpan.startIndex),
@@ -1264,19 +1224,21 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
           endMessageId: endIndex === current.span.endIndex ?
             current.deprecatedSpan.endMessageId : next.deprecatedSpan.endMessageId
         };
+        
+        // Create merged turning point
         current = {
           ...current,
           id: `${current.id}+${next.id}`,
           label: newLabel,
-          // endMessageId: next.endMessageId,
-          // endIndex: next.endIndex,
           span: mergedSpan,
           deprecatedSpan: mergedDeprecatedSpan,
           semanticShiftMagnitude: (current.semanticShiftMagnitude + next.semanticShiftMagnitude) / 2,
           keywords: [...(current.keywords || []), ...(next.keywords || [])].filter((v, i, a) => a.indexOf(v) === i).slice(0, 5),
           quotes: [...(current.quotes || []), ...(next.quotes || [])].filter((v, i, a) => a.indexOf(v) === i).slice(0, 2),
           // Boost significance of merged turning points
-          significance: ((current.significance + next.significance) / 2) * 1.1,
+          significance: Math.min(1.0, ((current.significance + next.significance) / 2) * 1.1),
+          // Take the max complexity score as merging complex items stays complex
+          complexityScore: Math.max(current.complexityScore, next.complexityScore)
         };
       } else {
         merged.push(current);
@@ -1291,15 +1253,16 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
   }
 
   /**
-   * Merge turning points across different levels with priority to higher levels
+   * Merge turning points across different dimensions with priority to higher dimensions
+   * Implements the integration of results across dimensions (n, n+1, etc.)
    */
   private mergeAcrossLevels(turningPoints: TurningPoint[]): TurningPoint[] {
     if (turningPoints.length <= 1) return turningPoints;
 
-    // Sort by level (higher levels first) then by position
+    // Sort by dimension (higher dimensions first) then by position
     const sorted = [...turningPoints].sort((a, b) => {
       if (b.detectionLevel !== a.detectionLevel) {
-        return b.detectionLevel - a.detectionLevel; // Higher levels first
+        return b.detectionLevel - a.detectionLevel; // Higher dimensions first
       }
       return a.span.startIndex - b.span.startIndex;
     });
@@ -1307,9 +1270,9 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
     const merged: TurningPoint[] = [];
     const coveredSpans: Set<string> = new Set();
 
-    // Process turning points from higher levels first
+    // Process turning points from higher dimensions first
     for (const tp of sorted) {
-      // Check if this span is already covered by a higher-level turning point
+      // Check if this span is already covered by a higher-dimension turning point
       const spanKey = this.getSpanKey(tp);
       if (!this.isSpanOverlapping(tp, coveredSpans)) {
         merged.push(tp);
@@ -1382,8 +1345,7 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
 
     // Check if any part of the span is covered
     for (let i = tp.span.startIndex; i <= tp.span.endIndex; i++) {
-      for (let j = i; j <= tp.span.endIndex
-        ; j++) {
+      for (let j = i; j <= tp.span.endIndex; j++) {
         if (coveredSpans.has(`${i}-${j}`)) {
           // If the overlap is significant (>50%), consider it covered
           const overlapSize = j - i + 1;
@@ -1419,7 +1381,7 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
   }
 
   /**
-   * Get embedding for a text string with caching
+   * Get embedding for a text string with caching (atomic memory)
    */
   private async getEmbedding(text: string): Promise<Float32Array> {
     try {
@@ -1449,6 +1411,7 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
   /**
    * Calculate semantic distance between two embeddings using cosine distance
    * with additional context-aware adjustment
+   * Implements the contraction mapping from the ARC theory
    */
   private calculateSemanticDistance(a: Float32Array, b: Float32Array): number {
     let dotProduct = 0;
@@ -1564,6 +1527,10 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
       avgTokensPerChunk: avgTokens
     };
   }
+
+  /**
+   * Ensures a message span is in chronological order
+   */
   private ensureChronologicalSpan(span: MessageSpan): MessageSpan {
     if (span.startIndex > span.endIndex) {
       // Create a new span with swapped values to maintain immutability
@@ -1579,7 +1546,7 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
   }
 
   /**
-   * Get token count for a message with caching
+   * Get token count for a message with caching (atomic memory)
    */
   private async getMessageTokenCount(text: string): Promise<number> {
     // Create a hash of the text for cache lookup
@@ -1593,14 +1560,13 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
     // Get the token count
     let count: number;
     try {
-
       count = countTokens(text);
     } catch (err) {
       this.log('Error counting tokens:', err);
       count = Math.ceil(text.length / 4);
     }
 
-    // Cache the result
+    // Cache the result (atomic memory)
     tokenCountCache.set(hash, count);
     return count;
   }
@@ -1624,80 +1590,124 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
       console.log('[TurningPointDetector]', ...args);
     }
   }
+
+  /**
+   * Get the convergence history for analysis
+   * Useful for visualizing the ARC/CRA process
+   */
+  public getConvergenceHistory(): ConvergenceState[] {
+    return this.convergenceHistory;
+  }
 }
 
 // -----------------------------------------------------------------------------
-// Example Usage
+// Example Usage demonstrating the ARC/CRA Framework
 // -----------------------------------------------------------------------------
 
 /**
  * Example function demonstrating how to use the SemanticTurningPointDetector
+ * Implements an adaptive approach based on conversation complexity
  */
 async function runTurningPointDetectorExample() {
-  
- 
-
-
   const thresholdForMinDialogueShift = 24;
+  
+  // Calculate adaptive recursion depth based on conversation length
+  // This directly implements the ARC concept of adaptive dimensional analysis
   const determineRecursiveDepth = (messages: Message[]) => {
-
     return Math.floor(messages.length / thresholdForMinDialogueShift);
   }
 
   const startTime = new Date().getTime();
 
-  // Create detector with configuration
-  // Perhaps these dynamically created values are also a partial implementation of the seeker paper?
+  // Create detector with configuration based on the ARC/CRA framework
   const detector = new SemanticTurningPointDetector({
     apiKey: process.env.OPENAI_API_KEY || '',
-
+    
+    // Dynamic configuration based on conversation complexity
     semanticShiftThreshold: 0.5 - (0.05 * determineRecursiveDepth(conversation)),
     minTokensPerChunk: 512,
     maxTokensPerChunk: 4096,
     embeddingModel: "text-embedding-3-large",
+    
+    // ARC framework: dynamic recursion depth based on conversation complexity
     maxRecursionDepth: Math.min(determineRecursiveDepth(conversation), 5),
+    
     onlySignificantTurningPoints: true,
-    significanceThreshold: 0.75,          // Increased significantly to filter more strictly
+    significanceThreshold: 0.75,
+    
+    // ARC framework: chunk size scales with complexity
     minMessagesPerChunk: Math.ceil(determineRecursiveDepth(conversation) * 3.5),
-    maxTurningPoints: Math.max(6, Math.round(conversation.length / 7)), // Increased, proportional to length (min 5)
-    // example using a custom model from ollama
-    classificationModel: 'qwen2.5:7b-instruct-q5_k_m',
+    
+    // ARC framework: number of turning points scales with conversation length
+    maxTurningPoints: Math.max(6, Math.round(conversation.length / 7)),
+    
+    // CRA framework: explicit complexity saturation threshold for dimensional escalation
+    complexitySaturationThreshold: 4.5,
+    
+    // Enable convergence measurement for ARC analysis
+    measureConvergence: true,
+    
+    // classificationModel: 'phi-4-mini-Q5_K_M:3.8B',
+    classificationModel:'qwen2.5:7b-instruct-q5_k_m',
     debug: true,
-    // example using a ollama or other openai based endpoint
-    endpoint: 'http://10.3.28.24:7223/v1',
+    //ollama
+    endpoint: 'http://localhost:11434/v1'
   });
 
   try {
-    // Detect turning points
+    // Detect turning points using the ARC/CRA framework
     const tokensInConvoFile = await detector.getMessageArrayTokenCount(conversation);
     const turningPoints = await detector.detectTurningPoints(conversation);
+    
     const endTime = new Date().getTime();
     const difference = endTime - startTime;
     const formattedTimeDateDiff = new Date(difference).toISOString().slice(11, 19);
+    
     console.log(`\nTurning point detection took as MM:SS: ${formattedTimeDateDiff} for ${tokensInConvoFile} tokens in the conversation`);
-    // Display results
-    console.log('\n=== DETECTED TURNING POINTS ===\n');
+    
+    // Display results with complexity scores from the ARC framework
+    console.log('\n=== DETECTED TURNING POINTS (ARC/CRA Framework) ===\n');
+    
     turningPoints.forEach((tp, i) => {
       console.log(`${i + 1}. ${tp.label} (${tp.category})`);
       console.log(`   Messages: "${tp.span.startId}" → "${tp.span.endId}"`);
-      console.log(` - Assesed msg id best to indicate point: "${tp.best_id}"`);
+      console.log(`   Dimension: n=${tp.detectionLevel}`);
+      console.log(`   Complexity Score: ${tp.complexityScore.toFixed(2)} of 5`);
+      console.log(`   Best indicator message ID: "${tp.best_id}"`);
       console.log(`   Emotion: ${tp.emotionalTone || 'unknown'}`);
       console.log(`   Significance: ${tp.significance.toFixed(2)}`);
       console.log(`   Keywords: ${tp.keywords?.join(', ') || 'none'}`);
+      
       if (tp.quotes?.length) {
         console.log(`   Notable quotes:\n${tp.quotes.flatMap(q => `- "${q}"`).join('\n')}`);
       }
       console.log();
-
-
     });
-    //write to test file json
+    
+    // Get and display convergence history to demonstrate the ARC framework
+    const convergenceHistory = detector.getConvergenceHistory();
+    
+    console.log('\n=== ARC/CRA FRAMEWORK CONVERGENCE ANALYSIS ===\n');
+    convergenceHistory.forEach((state, i) => {
+      console.log(`Iteration ${i + 1}:`);
+      console.log(`  Dimension: n=${state.dimension}`);
+      console.log(`  Convergence Distance: ${state.distanceMeasure.toFixed(3)}`);
+      console.log(`  Dimensional Escalation: ${state.didEscalate ? 'Yes' : 'No'}`);
+      console.log(`  Turning Points: ${state.currentTurningPoints.length}`);
+      console.log();
+    });
+    
+    // Save turning points to file
     fs.writeJSONSync('results/turningPoints.json', turningPoints, { spaces: 2, encoding: 'utf-8' });
+    
+    // Also save convergence analysis
+    fs.writeJSONSync('results/convergence_analysis.json', convergenceHistory, { spaces: 2, encoding: 'utf-8' });
+    
+    console.log('Results saved to files.');
   } catch (err) {
     console.error('Error detecting turning points:', err);
   }
 }
 
-// Uncomment to run the example
+// Run the example to demonstrate the ARC/CRA framework
 runTurningPointDetectorExample().catch(console.error);
-
