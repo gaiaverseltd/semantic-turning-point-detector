@@ -221,60 +221,78 @@ Silus, could Vorlag’s echo still linger in the core? Not just as data, but as 
 ## Results
 ### With Qwen 2.5:7b-instruct-q5_k_m
 
-  ```bash
+    ```bash
+    ts-node src/semanticTurningPointDetector.ts
+    [TurningPointDetector] Initialized with config: {
+    apiKey: '[REDACTED]',
+    classificationModel: 'qwen2.5:7b-instruct-q5_k_m',
+    embeddingModel: 'text-embedding-3-large',
+    semanticShiftThreshold: 0.35,
+    minTokensPerChunk: 512,
+    maxTokensPerChunk: 4096,
+    maxRecursionDepth: 3,
+    onlySignificantTurningPoints: true,
+    significanceThreshold: 0.75,
+    minMessagesPerChunk: 11,
+    maxTurningPoints: 10,
+    debug: true,
+    endpoint: 'http://localhost:11434/v1',
+    complexitySaturationThreshold: 4.5,
+    measureConvergence: true
+  }
   [TurningPointDetector] Starting turning point detection using ARC/CRA framework for conversation with 72 messages
   [TurningPointDetector] Total conversation tokens: 1551
   [TurningPointDetector] Starting dimensional analysis at n=0
   [TurningPointDetector] Created 7 chunks, avg 222 tokens, avg 10 messages per chunk
   [TurningPointDetector] Dimension 0: Split into 7 chunks
   [TurningPointDetector]  - Dimension 0: Processing chunk 1/7 (11 messages)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-1 and msg-2 (distance: 0.628, complexity: 4.5)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-1 and msg-2 (distance: 0.628, complexity: 4.3)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-2 and msg-3 (distance: 0.937, complexity: 4.6)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-3 and msg-4 (distance: 0.509, complexity: 4.4)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-4 and msg-5 (distance: 0.945, complexity: 4.6)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-3 and msg-4 (distance: 0.509, complexity: 4.2)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-4 and msg-5 (distance: 0.945, complexity: 4.4)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-5 and msg-6 (distance: 0.890, complexity: 4.8)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-6 and msg-7 (distance: 0.743, complexity: 4.5)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-7 and msg-8 (distance: 0.548, complexity: 4.4)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-8 and msg-9 (distance: 0.881, complexity: 4.8)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-8 and msg-9 (distance: 0.882, complexity: 4.8)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-9 and msg-10 (distance: 0.956, complexity: 4.6)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-10 and msg-11 (distance: 0.975, complexity: 4.4)
-  [TurningPointDetector]     - Processed in 23.4s, estimated remaining time: 140.4s (14.3% complete)
-  [TurningPointDetector]  - Dimension 0: Processing chunk 2/7 (11 messages)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-10 and msg-11 (distance: 0.975, complexity: 4.6)
+  [TurningPointDetector]     - Processed in 25.8s, estimated remaining time: 154.8s (14.3% complete)
+  [TurningPointDetector]  - Dimension 0: Processing chunk 2/7 (11 messages)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-10 and msg-11 (distance: 0.975, complexity: 4.4)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-11 and msg-12 (distance: 0.906, complexity: 4.6)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-12 and msg-13 (distance: 0.982, complexity: 4.6)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-13 and msg-14 (distance: 0.980, complexity: 4.6)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-14 and msg-15 (distance: 0.949, complexity: 4.6)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-14 and msg-15 (distance: 0.949, complexity: 4.8)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-15 and msg-16 (distance: 0.960, complexity: 4.6)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-16 and msg-17 (distance: 0.975, complexity: 4.6)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-16 and msg-17 (distance: 0.975, complexity: 4.8)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-17 and msg-18 (distance: 0.857, complexity: 4.6)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-18 and msg-19 (distance: 0.895, complexity: 4.8)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-19 and msg-20 (distance: 0.878, complexity: 4.8)
-  [TurningPointDetector]     - Processed in 21.6s, estimated remaining time: 112.6s (28.6% complete)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-19 and msg-20 (distance: 0.878, complexity: 4.6)
+  [TurningPointDetector]     - Processed in 20.1s, estimated remaining time: 114.7s (28.6% complete)
   [TurningPointDetector]  - Dimension 0: Processing chunk 3/7 (11 messages)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-19 and msg-20 (distance: 0.878, complexity: 4.8)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-20 and msg-21 (distance: 0.773, complexity: 4.5)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-21 and msg-22 (distance: 0.981, complexity: 4.6)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-22 and msg-23 (distance: 0.984, complexity: 4.6)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-22 and msg-23 (distance: 0.984, complexity: 4.8)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-23 and msg-24 (distance: 0.898, complexity: 4.6)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-24 and msg-25 (distance: 0.855, complexity: 4.4)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-24 and msg-25 (distance: 0.855, complexity: 4.6)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-25 and msg-26 (distance: 0.948, complexity: 4.6)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-26 and msg-27 (distance: 0.991, complexity: 4.6)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-27 and msg-28 (distance: 0.440, complexity: 4.2)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-26 and msg-27 (distance: 0.991, complexity: 4.4)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-27 and msg-28 (distance: 0.440, complexity: 4.4)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-28 and msg-29 (distance: 0.899, complexity: 4.6)
-  [TurningPointDetector]     - Processed in 21.8s, estimated remaining time: 89.1s (42.9% complete)
+  [TurningPointDetector]     - Processed in 20.5s, estimated remaining time: 88.5s (42.9% complete)
   [TurningPointDetector]  - Dimension 0: Processing chunk 4/7 (11 messages)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-28 and msg-29 (distance: 0.899, complexity: 4.6)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-29 and msg-30 (distance: 0.980, complexity: 4.6)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-30 and msg-31 (distance: 0.984, complexity: 4.6)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-31 and msg-32 (distance: 0.955, complexity: 4.4)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-31 and msg-32 (distance: 0.955, complexity: 4.6)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-32 and msg-33 (distance: 0.906, complexity: 4.6)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-33 and msg-34 (distance: 0.859, complexity: 4.6)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-33 and msg-34 (distance: 0.859, complexity: 4.8)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-34 and msg-35 (distance: 0.980, complexity: 4.6)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-35 and msg-36 (distance: 0.966, complexity: 4.4)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-35 and msg-36 (distance: 0.966, complexity: 4.6)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-36 and msg-37 (distance: 0.989, complexity: 4.6)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-37 and msg-38 (distance: 0.996, complexity: 4.6)
-  [TurningPointDetector]     - Processed in 20.9s, estimated remaining time: 65.8s (57.1% complete)
+  [TurningPointDetector]     - Processed in 20.0s, estimated remaining time: 64.7s (57.1% complete)
   [TurningPointDetector]  - Dimension 0: Processing chunk 5/7 (11 messages)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-37 and msg-38 (distance: 0.996, complexity: 4.6)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-38 and msg-39 (distance: 0.864, complexity: 4.8)
@@ -286,157 +304,195 @@ Silus, could Vorlag’s echo still linger in the core? Not just as data, but as 
   [TurningPointDetector]     ...Potential turning point detected between messages msg-44 and msg-45 (distance: 0.982, complexity: 4.6)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-45 and msg-46 (distance: 0.789, complexity: 4.5)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-46 and msg-47 (distance: 0.977, complexity: 4.6)
-  [TurningPointDetector]     - Processed in 21.3s, estimated remaining time: 43.6s (71.4% complete)
+  [TurningPointDetector]     - Processed in 20.5s, estimated remaining time: 42.7s (71.4% complete)
   [TurningPointDetector]  - Dimension 0: Processing chunk 6/7 (11 messages)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-46 and msg-47 (distance: 0.977, complexity: 4.6)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-47 and msg-48 (distance: 0.973, complexity: 4.6)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-48 and msg-49 (distance: 0.982, complexity: 4.4)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-47 and msg-48 (distance: 0.972, complexity: 4.6)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-48 and msg-49 (distance: 0.982, complexity: 4.6)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-49 and msg-50 (distance: 0.960, complexity: 4.4)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-50 and msg-51 (distance: 0.980, complexity: 4.6)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-51 and msg-52 (distance: 0.919, complexity: 4.2)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-52 and msg-53 (distance: 0.840, complexity: 4.4)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-53 and msg-54 (distance: 0.597, complexity: 4.2)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-51 and msg-52 (distance: 0.919, complexity: 4.4)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-52 and msg-53 (distance: 0.840, complexity: 4.6)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-53 and msg-54 (distance: 0.597, complexity: 4.4)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-54 and msg-55 (distance: 0.829, complexity: 4.6)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-55 and msg-56 (distance: 0.761, complexity: 4.5)
-  [TurningPointDetector]     - Processed in 22.6s, estimated remaining time: 21.9s (85.7% complete)
+  [TurningPointDetector]     - Processed in 22.1s, estimated remaining time: 21.5s (85.7% complete)
   [TurningPointDetector]  - Dimension 0: Processing chunk 7/7 (11 messages)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-55 and msg-56 (distance: 0.761, complexity: 4.5)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-55 and msg-56 (distance: 0.760, complexity: 4.5)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-56 and msg-57 (distance: 0.962, complexity: 4.6)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-57 and msg-58 (distance: 0.974, complexity: 4.6)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-58 and msg-59 (distance: 0.949, complexity: 4.4)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-59 and msg-60 (distance: 0.967, complexity: 5.0)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-58 and msg-59 (distance: 0.949, complexity: 4.6)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-59 and msg-60 (distance: 0.967, complexity: 4.8)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-60 and msg-61 (distance: 0.813, complexity: 4.8)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-61 and msg-62 (distance: 0.755, complexity: 4.5)
-  [TurningPointDetector]     ...Potential turning point detected between messages msg-62 and msg-63 (distance: 0.922, complexity: 4.6)
+  [TurningPointDetector]     ...Potential turning point detected between messages msg-62 and msg-63 (distance: 0.923, complexity: 4.6)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-63 and msg-64 (distance: 0.867, complexity: 4.6)
   [TurningPointDetector]     ...Potential turning point detected between messages msg-64 and msg-65 (distance: 0.959, complexity: 4.6)
-  [TurningPointDetector]     - Processed in 23.0s, estimated remaining time: 0.0s (100.0% complete)
+  [TurningPointDetector]     - Processed in 21.7s, estimated remaining time: 0.0s (100.0% complete)
   [TurningPointDetector] Dimension 0: Found 70 turning points
-  [TurningPointDetector] Dimension 0: Merged to 37 turning points
-  [TurningPointDetector] Dimension 0: Max complexity = 5.00, saturation threshold = 4.5
+  [TurningPointDetector] Dimension 0: Merged to 35 turning points
+  [TurningPointDetector] Dimension 0: Max complexity = 4.84, saturation threshold = 4.5
   [TurningPointDetector] Dimension 0: ESCALATING to n+1
   [TurningPointDetector] Dimension 0: Escalating to dimension 1
-  [TurningPointDetector] Created 14 meta-messages for dimensional expansion: meta-cat-0, meta-cat-1, meta-cat-2, meta-cat-3, meta-cat-4, meta-cat-5, meta-cat-6, meta-cat-7, meta-cat-8, meta-cat-9, meta-section-0, meta-section-1, meta-section-2, meta-section-3
-  [TurningPointDetector] Dimension 0: Created 14 meta-messages for dimension 1
+  [TurningPointDetector] Created 13 meta-messages for dimensional expansion: meta-cat-0, meta-cat-1, meta-cat-2, meta-cat-3, meta-cat-4, meta-cat-5, meta-cat-6, meta-cat-7, meta-cat-8, meta-section-0, meta-section-1, meta-section-2, meta-section-3
+  [TurningPointDetector] Dimension 0: Created 13 meta-messages for dimension 1
   [TurningPointDetector] Starting dimensional analysis at n=1
-  [TurningPointDetector] Created 2 chunks, avg 3003 tokens, avg 7 messages per chunk
+  [TurningPointDetector] Created 2 chunks, avg 2785 tokens, avg 7 messages per chunk
   [TurningPointDetector] Dimension 1: Split into 2 chunks
   [TurningPointDetector]  - Dimension 1: Processing chunk 1/2 (11 messages)
-  [TurningPointDetector]     ...Potential turning point detected between messages meta-cat-2 and meta-cat-3 (distance: 0.424, complexity: 4.4)
-  [TurningPointDetector]     ...Potential turning point detected between messages meta-cat-8 and meta-cat-9 (distance: 0.390, complexity: 4.6)
-  [TurningPointDetector]     ...Potential turning point detected between messages meta-cat-9 and meta-section-0 (distance: 0.506, complexity: 4.4)
-  [TurningPointDetector]     - Processed in 10.2s, estimated remaining time: 10.2s (50.0% complete)
-  [TurningPointDetector]  - Dimension 1: Processing chunk 2/2 (5 messages)
-  [TurningPointDetector]     ...Potential turning point detected between messages meta-cat-9 and meta-section-0 (distance: 0.503, complexity: 4.4)
-  [TurningPointDetector]     - Processed in 3.6s, estimated remaining time: 0.0s (100.0% complete)
-  [TurningPointDetector] Dimension 1: Found 4 turning points
-  [TurningPointDetector] Dimension 1: Merged to 4 turning points
-  [TurningPointDetector] Dimension 1: Max complexity = 4.58, saturation threshold = 4.5
+  [TurningPointDetector]     ...Potential turning point detected between messages meta-cat-6 and meta-cat-7 (distance: 0.358, complexity: 4.5)
+  [TurningPointDetector]     ...Potential turning point detected between messages meta-cat-7 and meta-cat-8 (distance: 0.448, complexity: 4.4)
+  [TurningPointDetector]     ...Potential turning point detected between messages meta-cat-8 and meta-section-0 (distance: 0.517, complexity: 4.4)
+  [TurningPointDetector]     - Processed in 9.5s, estimated remaining time: 9.5s (50.0% complete)
+  [TurningPointDetector]  - Dimension 1: Processing chunk 2/2 (4 messages)
+  [TurningPointDetector]     - Processed in 0.5s, estimated remaining time: 0.0s (100.0% complete)
+  [TurningPointDetector] Dimension 1: Found 3 turning points
+  [TurningPointDetector] Dimension 1: Merged to 2 turning points
+  [TurningPointDetector] Dimension 1: Max complexity = 4.53, saturation threshold = 4.5
   [TurningPointDetector] Dimension 1: ESCALATING to n+1
-  [TurningPointDetector] Dimension 1: Escalating to dimension 2
-  [TurningPointDetector] Created 5 meta-messages for dimensional expansion: meta-cat-0, meta-cat-1, meta-cat-2, meta-section-0, meta-section-1
-  [TurningPointDetector] Dimension 1: Created 5 meta-messages for dimension 2
-  [TurningPointDetector] Starting dimensional analysis at n=2
-  [TurningPointDetector] Dimension 2: Split into 1 chunks
-  [TurningPointDetector]  - Dimension 2: Processing chunk 1/1 (5 messages)
-  [TurningPointDetector]     ...Potential turning point detected between messages meta-cat-0 and meta-cat-1 (distance: 0.514, complexity: 4.4)
-  [TurningPointDetector]     ...Potential turning point detected between messages meta-cat-2 and meta-section-0 (distance: 0.709, complexity: 4.5)
-  [TurningPointDetector]     ...Potential turning point detected between messages meta-section-0 and meta-section-1 (distance: 0.483, complexity: 4.4)
-  [TurningPointDetector]     - Processed in 10.4s, estimated remaining time: 0.0s (100.0% complete)
-  [TurningPointDetector] Dimension 2: Found 3 turning points
-  [TurningPointDetector] Dimension 2: Merged to 2 turning points
-  [TurningPointDetector] Dimension 2: Max complexity = 4.50, saturation threshold = 4.5
-  [TurningPointDetector] Dimension 2: ESCALATING to n+1
-  [TurningPointDetector] Dimension 1 → 2: Escalation resulted in convergence distance: 0.070
-  [TurningPointDetector] Dimension 0 → 1: Escalation resulted in convergence distance: 0.040
+  [TurningPointDetector] Dimension 0 → 1: Escalation resulted in convergence distance: 0.033
 
-  Turning point detection took as MM:SS: 00:02:58 for 1551 tokens in the conversation
+  Turning point detection took as MM:SS: 00:02:40 for 1551 tokens in the conversation
 
   === DETECTED TURNING POINTS (ARC/CRA Framework) ===
 
-  1. degradation Discussion and Shift to Cognitive Process Understanding and Shift to Codex Consultation and Shift from Repair Efforts to Research (Insight)
+  1. memory Discussion and Shift from Insight to Action and Shift to Investigation (Insight)
     Messages: "msg-1" → "msg-11"
     Dimension: n=0
     Complexity Score: 4.79 of 5
     Best indicator message ID: "msg-2"
     Emotion: neutral
-    Significance: 1.00
-    Keywords: anomalous, quantum anomalies, micro-fractures, phase shifting, chronomantic interventions
+    Significance: 0.99
+    Keywords: anomalous, composition, quantum anomalies, micro-fractures, gear
     Notable quotes:
-  - "Composition is anomalous—iridium-tungsten alloy showing quantum anomalies."
+  - "Scanning CRG-007 now, Elara. Composition is anomalous—iridium-tungsten alloy showing quantum anomalies."
   - "Micro-fractures detected along unusual crystalline boundaries."
 
-  2. Shift to Security Breach and Bypass Key Risks (Objection)
-    Messages: "msg-12" → "msg-58"
-    Dimension: n=2
-    Complexity Score: 4.41 of 5
-    Best indicator message ID: "msg-14"
-    Emotion: pessimism
-    Significance: 1.00
-    Keywords: security, protocols, objection, penalties, bypass key
+  2. Shift to Action Commitment and Shift to Security Preparation (Decision)
+    Messages: "msg-16" → "msg-18"
+    Dimension: n=0
+    Complexity Score: 4.84 of 5
+    Best indicator message ID: "msg-17"
+    Emotion: determined
+    Significance: 0.96
+    Keywords: decided, bypass key, patrol routes, decision, security preparation
     Notable quotes:
-  - ""**Unauthorized Vault access breaches critical security protocols.** I must formally object."
-  - "Possessing that key has severe penalties."
+  - "**I've decided—we must use the bypass key.**"
+  - "I've decided—we must use the bypass key."
 
-  3. Shift from Repair Efforts to Research (Insight)
-    Messages: "msg-57" → "msg-26"
-    Dimension: n=1
-    Complexity Score: 4.40 of 5
-    Best indicator message ID: "meta-cat-9"
+  3. issue negative entropy Discussion and Shift to Internal Stress Concerns (Problem)
+    Messages: "msg-18" → "msg-21"
+    Dimension: n=0
+    Complexity Score: 4.80 of 5
+    Best indicator message ID: "msg-19"
+    Emotion: surprise
+    Significance: 1.00
+    Keywords: anomaly, pulsed, sensors, critical, negative entropy
+    Notable quotes:
+  - "Wait—your sensors pulsed oddly. What's happening?"
+  - "Anomalous negative entropy surge detected in Orrery core—Omega sector. Separate critical issue emerging."
+
+  4. gear Discussion and Shift to Echo Priority (Insight)
+    Messages: "msg-21" → "msg-26"
+    Dimension: n=0
+    Complexity Score: 4.84 of 5
+    Best indicator message ID: "msg-21"
     Emotion: neutral
     Significance: 1.00
-    Keywords: warning, residual flux, protective incantation
+    Keywords: echoes, resonance, CRG-007, stress, confirmed
     Notable quotes:
-  - "**Warning: interface will expose you to residual chronomantic flux.** Recommend protective incantation layering."
+  - "Negative entropy? Could these 'echoes' be causing CRG-007's stress internally?"
+  - "Confirmed—echo frequencies precisely match CRG-007’s memory-etching resonance."
 
-  4. Shift to Technical Execution and Shift to Null Field Engagement (Action)
+  5. safeguards Discussion (Insight)
+    Messages: "msg-29" → "msg-32"
+    Dimension: n=0
+    Complexity Score: 4.64 of 5
+    Best indicator message ID: "msg-30"
+    Emotion: neutral
+    Significance: 0.98
+    Keywords: ethics, implications, restoration, hypothesis, intentional
+    Notable quotes:
+  - "Implications immense; restoration ethics uncertain."
+  - "Maybe CRG-007’s damage and star omissions are intentional safeguards post-Vorlag’s incident."
+
+  6. emotional response Discussion (Emotion)
+    Messages: "msg-35" → "msg-38"
+    Dimension: n=0
+    Complexity Score: 4.65 of 5
+    Best indicator message ID: "msg-37"
+    Emotion: mixed
+    Significance: 0.98
+    Keywords: fear, curiosity, interference, heart racing, action
+    Notable quotes:
+  - "My heart races, Silus. Fear mixed with intense curiosity."
+  - "My heart races, Silus."
+
+  7. codex discovery Discussion (Topic)
+    Messages: "msg-40" → "msg-54"
+    Dimension: n=1
+    Complexity Score: 4.41 of 5
+    Best indicator message ID: "msg-41"
+    Emotion: neutral
+    Significance: 1.00
+    Keywords: codex, located, dais, specifications, harmonic
+    Notable quotes:
+  - "Codex located on central dais."
+  - "Codex specifies a tri-harmonic null field tuned to 3.14, 6.28, and 9.42 petahertz."
+
+  8. technical details Discussion (Insight)
+    Messages: "msg-54" → "msg-56"
+    Dimension: n=0
+    Complexity Score: 4.56 of 5
+    Best indicator message ID: "msg-55"
+    Emotion: neutral
+    Significance: 0.98
+    Keywords: tri-harmonic, null field, entropic echoes, calculations, suppression
+    Notable quotes:
+  - "That matches the dominant frequency of the entropic echoes."
+  - "Codex specifies a tri-harmonic null field tuned to 3.14, 6.28, and 9.42 petahertz."
+
+  9. Shift to Technical Execution and Shift to Gear Stabilization (Action)
     Messages: "msg-59" → "msg-61"
     Dimension: n=0
-    Complexity Score: 5.00 of 5
+    Complexity Score: 4.83 of 5
     Best indicator message ID: "msg-60"
     Emotion: optimism
-    Significance: 1.00
+    Significance: 0.99
     Keywords: energized, null field, insertion, engaging, ambient vibration
     Notable quotes:
   - "Array energized. Null field will stabilize in 12 seconds."
-  - "Null field will stabilize in 12 seconds."
+  - "There’s a shift in ambient vibration—it’s working!"
 
-  5. synchronization Discussion (Insight)
+  10. Shift to Gear Stabilization and Shift to Synchronization and Shift to Mnemonic Alignment (Insight)
     Messages: "msg-61" → "msg-64"
     Dimension: n=0
     Complexity Score: 4.61 of 5
     Best indicator message ID: "msg-62"
     Emotion: optimism
     Significance: 0.98
-    Keywords: harmonic, balance, stabilizing, memory, harmonizing
+    Keywords: stabilizing, temporal, gear, harmonizing, alignment
     Notable quotes:
   - "There’s a shift in ambient vibration—it’s working!"
-  - "**Temporal turbulence decreasing. Gear surface stabilizing.** Memory etching slowing significantly. Harmonic balance holding steady."
+  - "Temporal turbulence decreasing. Gear surface stabilizing."
 
 
   === ARC/CRA FRAMEWORK CONVERGENCE ANALYSIS ===
 
   Iteration 1:
-    Dimension: n=2
+    Dimension: n=1
     Convergence Distance: 0.000
     Dimensional Escalation: No
     Turning Points: 2
 
   Iteration 2:
-    Dimension: n=2
-    Convergence Distance: 0.070
+    Dimension: n=1
+    Convergence Distance: 0.033
     Dimensional Escalation: Yes
     Turning Points: 1
 
-  Iteration 3:
-    Dimension: n=1
-    Convergence Distance: 0.040
-    Dimensional Escalation: Yes
-    Turning Points: 2
-
   Results saved to files.
   ```
-
 ### With phi-4-mini-Q5_K_M
 
   ```bash

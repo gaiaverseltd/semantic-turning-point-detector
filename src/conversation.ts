@@ -100,4 +100,3 @@ const printConversation = (conversationInput: typeof conversation) => {
     console.log(`#### Message id: "${msg.id}" - author: "${msg.author}":\n${msg.message}\n`);
   });
 }
-printConversation(conversation);

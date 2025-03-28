@@ -1,8 +1,27 @@
 # Semantic Turning Point Detector
 
+## Detect meaningful shifts, structure conversations, and extract insights from dialogue.
+
+The **Semantic Turning Point Detector** is a lightweight but powerful tool for detecting **semantic turning points** in conversations or textual sequences. It recursively analyzes message chains (dialogues, transcripts, chat logs) and identifies where **key shifts in meaning, topic, or insight** occur. These turning points are crucial for:
+
+- **Conversation segmentation** — breaking down long dialogues into meaningful, coherent sections.
+- **Insight extraction** — detecting where significant moments or topic changes happen in natural conversations.
+- **Dialogue modeling** — preparing structured inputs for downstream AI models or analytics pipelines.
+- **AI reasoning pipelines** — providing higher-level structure to conversational data for further analysis, summarization, or reasoning.
+
+Under the hood, it implements a recursive reasoning mechanism based on *semantic distance* between messages. By computing **semantic complexity** and applying **bounded dimensional escalation**, it mimics how humans intuitively recognize when a conversation “shifts gears” or introduces a new idea.
+
+---
+
+### Example Use Cases
+- Automatically segment chat logs into meaningful sections.
+- Detect moments of insight or topic change in long-form interviews.
+- Prepare structured datasets for dialogue summarization or reasoning tasks.
+- Integrate with LLM workflows to improve response context awareness.
+
 This repository provides a **TypeScript implementation** of the **Adaptive Recursive Convergence (ARC) with Cascading Re-Dimensional Attention (CRA)** framework described in our research paper. Unlike traditional summarization which condenses content, this detector identifies moments where conversations shift in topic, tone, insight, or purpose, demonstrating a practical application of multi-dimensional reasoning.
 
-## Overview
+## Background and Architecture
 
 The Semantic Turning Point Detector is a concrete implementation of the ARC/CRA theoretical framework. It demonstrates how conversation analysis can benefit from dimensional expansion and adaptive complexity management. Key features include:
 
@@ -12,6 +31,121 @@ The Semantic Turning Point Detector is a concrete implementation of the ARC/CRA 
 - **Contraction-based convergence** that mathematically guarantees stable results
 - **Bounded dimensional escalation** that prevents infinite recursion
 - **Model-agnostic design** that works across different LLM architectures and sizes
+
+## Example Usage 
+
+```typescript
+/**
+ * Example function demonstrating how to use the SemanticTurningPointDetector
+ * Implements an adaptive approach based on conversation complexity
+ */
+async function runTurningPointDetectorExample() {
+  const thresholdForMinDialogueShift = 24;
+  
+  // Calculate adaptive recursion depth based on conversation length
+  // This directly implements the ARC concept of adaptive dimensional analysis
+  const determineRecursiveDepth = (messages: Message[]) => {
+    return Math.floor(messages.length / thresholdForMinDialogueShift);
+  }
+
+  const startTime = new Date().getTime();
+
+  // Create detector with configuration based on the ARC/CRA framework
+  const detector = new SemanticTurningPointDetector({
+    apiKey: process.env.OPENAI_API_KEY || '',
+    
+    // Dynamic configuration based on conversation complexity
+    semanticShiftThreshold: 0.5 - (0.05 * determineRecursiveDepth(conversation)),
+    minTokensPerChunk: 512,
+    maxTokensPerChunk: 4096,
+    embeddingModel: "text-embedding-3-large",
+    
+    // ARC framework: dynamic recursion depth based on conversation complexity
+    maxRecursionDepth: Math.min(determineRecursiveDepth(conversation), 5),
+    
+    onlySignificantTurningPoints: true,
+    significanceThreshold: 0.75,
+    
+    // ARC framework: chunk size scales with complexity
+    minMessagesPerChunk: Math.ceil(determineRecursiveDepth(conversation) * 3.5),
+    
+    // ARC framework: number of turning points scales with conversation length
+    maxTurningPoints: Math.max(6, Math.round(conversation.length / 7)),
+    
+    // CRA framework: explicit complexity saturation threshold for dimensional escalation
+    complexitySaturationThreshold: 4.5,
+    
+    // Enable convergence measurement for ARC analysis
+    measureConvergence: true,
+    
+    // classificationModel: 'phi-4-mini-Q5_K_M:3.8B',
+    classificationModel:'qwen2.5:7b-instruct-q5_k_m',
+    debug: true,
+    //ollama
+    endpoint: 'http://localhost:11434/v1'
+  });
+
+  try {
+    // Detect turning points using the ARC/CRA framework
+    const tokensInConvoFile = await detector.getMessageArrayTokenCount(conversation);
+    const turningPoints = await detector.detectTurningPoints(conversation);
+    
+    const endTime = new Date().getTime();
+    const difference = endTime - startTime;
+    const formattedTimeDateDiff = new Date(difference).toISOString().slice(11, 19);
+    
+    console.log(`\nTurning point detection took as MM:SS: ${formattedTimeDateDiff} for ${tokensInConvoFile} tokens in the conversation`);
+    
+    // Display results with complexity scores from the ARC framework
+    console.log('\n=== DETECTED TURNING POINTS (ARC/CRA Framework) ===\n');
+    
+    turningPoints.forEach((tp, i) => {
+      console.log(`${i + 1}. ${tp.label} (${tp.category})`);
+      console.log(`   Messages: "${tp.span.startId}" → "${tp.span.endId}"`);
+      console.log(`   Dimension: n=${tp.detectionLevel}`);
+      console.log(`   Complexity Score: ${tp.complexityScore.toFixed(2)} of 5`);
+      console.log(`   Best indicator message ID: "${tp.best_id}"`);
+      console.log(`   Emotion: ${tp.emotionalTone || 'unknown'}`);
+      console.log(`   Significance: ${tp.significance.toFixed(2)}`);
+      console.log(`   Keywords: ${tp.keywords?.join(', ') || 'none'}`);
+      
+      if (tp.quotes?.length) {
+        console.log(`   Notable quotes:\n${tp.quotes.flatMap(q => `- "${q}"`).join('\n')}`);
+      }
+      console.log();
+    });
+    
+    // Get and display convergence history to demonstrate the ARC framework
+    const convergenceHistory = detector.getConvergenceHistory();
+    
+    console.log('\n=== ARC/CRA FRAMEWORK CONVERGENCE ANALYSIS ===\n');
+    convergenceHistory.forEach((state, i) => {
+      console.log(`Iteration ${i + 1}:`);
+      console.log(`  Dimension: n=${state.dimension}`);
+      console.log(`  Convergence Distance: ${state.distanceMeasure.toFixed(3)}`);
+      console.log(`  Dimensional Escalation: ${state.didEscalate ? 'Yes' : 'No'}`);
+      console.log(`  Turning Points: ${state.currentTurningPoints.length}`);
+      console.log();
+    });
+    
+    // Save turning points to file
+    fs.writeJSONSync('results/turningPoints.json', turningPoints, { spaces: 2, encoding: 'utf-8' });
+    
+    // Also save convergence analysis
+    fs.writeJSONSync('results/convergence_analysis.json', convergenceHistory, { spaces: 2, encoding: 'utf-8' });
+    
+    console.log('Results saved to files.');
+  } catch (err) {
+    console.error('Error detecting turning points:', err);
+  }
+}
+```
+
+### Installation
+
+- `npm i @gaiaverse/semantic-turning-point-detector`
+
+
 
 ## Relation to the ARC/CRA Framework
 
@@ -207,7 +341,10 @@ One of the key innovations of our framework is its model-agnostic nature. The sa
 | Phi-4-mini (3.8B) | 2:07 | n=1 | 10 | 4.84 |
 | GPT-4o | 0:48 | n=1 | 10 | 4.84 |
 
-This consistent behavior demonstrates that ARC/CRA captures fundamental principles of recursive convergence and dimensional expansion regardless of model architecture.
+This consistent behavior demonstrates that ARC/CRA captures fundamental principles of recursive convergence and dimensional expansion regardless of model architecture. See the results that can be found in the `results` directory after running the detector, and the provided ones for the model.
+
+To see the results as well from the readme, checkout [README.results.md](README.results.md) for the output of the detector on a sample conversation, for each model used.
+
 
 ## Example Output
 

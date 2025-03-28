@@ -1,174 +1,102 @@
 [
   {
-    "id": "tp-0-2-3+tp-0-3-4+tp-0-4-5+tp-0-5-6",
-    "label": "adaptive behavior hypothesis Discussion",
+    "id": "tp-0-1-2+tp-0-2-3+tp-0-3-4+tp-0-4-5+tp-0-5-6+tp-0-6-7+tp-0-7-8+tp-0-8-9+tp-0-9-10+tp-0-10-11+tp-0-10-11",
+    "label": "memory Discussion and Shift from Insight to Action and Shift to Investigation",
     "category": "Insight",
     "span": {
-      "startId": "msg-2",
-      "endId": "msg-6",
-      "startIndex": 2,
-      "endIndex": 6
+      "startId": "msg-1",
+      "endId": "msg-11",
+      "startIndex": 1,
+      "endIndex": 11
     },
-    "best_start_id": "msg-2",
-    "best_end_id": "msg-3",
-    "best_id": "msg-3",
+    "best_start_id": "msg-1",
+    "best_end_id": "msg-2",
+    "best_id": "msg-2",
     "deprecatedSpan": {
       "startIndex": 0,
       "endIndex": 0,
       "startMessageId": "",
       "endMessageId": ""
     },
-    "semanticShiftMagnitude": 0.8618415597901317,
+    "semanticShiftMagnitude": 0.9480746105383868,
     "keywords": [
-      "phase shifting",
-      "temporal stabilization",
-      "chronomantic interventions",
-      "temporal synchronization",
-      "internal management"
+      "anomalous",
+      "composition",
+      "quantum anomalies",
+      "micro-fractures",
+      "gear"
     ],
     "quotes": [
-      "Exactly! It appears more like phase shifting than mechanical wear. My attempts at temporal stabilization caused a violent backlash.",
-      "Backlash registered as chroniton shear. Perhaps the gear’s 'temporal synchronization' is internally managed rather than externally imposed?"
+      "Scanning CRG-007 now, Elara. Composition is anomalous—iridium-tungsten alloy showing quantum anomalies.",
+      "Micro-fractures detected along unusual crystalline boundaries."
     ],
-    "emotionalTone": "surprise",
+    "emotionalTone": "neutral",
     "detectionLevel": 0,
-    "significance": 0.91795,
-    "complexityScore": 4.418580058452593
+    "significance": 0.9900000000000001,
+    "complexityScore": 4.79499882316513
   },
   {
-    "id": "tp-0-7-8+tp-0-8-9+tp-0-9-10",
-    "label": "recognition Discussion",
-    "category": "Insight",
+    "id": "tp-0-16-17+tp-0-17-18",
+    "label": "Shift to Action Commitment and Shift to Security Preparation",
+    "category": "Decision",
     "span": {
-      "startId": "msg-7",
-      "endId": "msg-10",
-      "startIndex": 7,
-      "endIndex": 10
+      "startId": "msg-16",
+      "endId": "msg-18",
+      "startIndex": 16,
+      "endIndex": 18
     },
-    "best_start_id": "msg-7",
-    "best_end_id": "msg-8",
-    "best_id": "msg-9",
+    "best_start_id": "msg-16",
+    "best_end_id": "msg-17",
+    "best_id": "msg-17",
     "deprecatedSpan": {
       "startIndex": 0,
       "endIndex": 0,
       "startMessageId": "",
       "endMessageId": ""
     },
-    "semanticShiftMagnitude": 0.8352754511361362,
+    "semanticShiftMagnitude": 0.9162923509710649,
     "keywords": [
-      "memory",
-      "mnemonic alloy",
-      "cognition",
-      "recognition",
-      "temporal stresses"
+      "decided",
+      "bypass key",
+      "patrol routes",
+      "decision",
+      "security preparation"
     ],
     "quotes": [
-      "Analyzing Artificer log 77.4—fracture patterns match mnemonic alloy memory-etching effects with 92% certainty.",
-      "It's memory, not wear! CRG-007 is recording temporal stresses into its alloy, actively consuming itself through cognition."
+      "**I've decided—we must use the bypass key.**",
+      "I've decided—we must use the bypass key."
     ],
-    "emotionalTone": "surprise",
+    "emotionalTone": "determined",
     "detectionLevel": 0,
-    "significance": 0.9845000000000002,
-    "complexityScore": 4.790669009085827
+    "significance": 0.9625000000000001,
+    "complexityScore": 4.837631737395424
   },
   {
-    "id": "tp-0-10-11+tp-0-10-11+tp-0-11-12",
-    "label": "Shift to Codex Consultation and Shift to Action and Urgency",
-    "category": "Action",
-    "span": {
-      "startId": "msg-10",
-      "endId": "msg-12",
-      "startIndex": 10,
-      "endIndex": 12
-    },
-    "best_start_id": "msg-10",
-    "best_end_id": "msg-11",
-    "best_id": "msg-11",
-    "deprecatedSpan": {
-      "startIndex": 0,
-      "endIndex": 0,
-      "startMessageId": "",
-      "endMessageId": ""
-    },
-    "semanticShiftMagnitude": 0.9406419363121324,
-    "keywords": [
-      "Codex",
-      "consultation",
-      "stress",
-      "absorption",
-      "Codex access"
-    ],
-    "quotes": [
-      "Consulting the Codex of Whispering Metals is essential.",
-      "Initiating formal request protocols for Codex access in Noctua Vault, Level 12-Delta."
-    ],
-    "emotionalTone": "anticipation",
-    "detectionLevel": 0,
-    "significance": 0.9240000000000002,
-    "complexityScore": 4.437718851763751
-  },
-  {
-    "id": "tp-1-12-16",
-    "label": "Security Protocol Objection",
-    "category": "Objection",
-    "span": {
-      "startId": "msg-12",
-      "endId": "msg-16",
-      "startIndex": 12,
-      "endIndex": 16
-    },
-    "best_start_id": "msg-12",
-    "best_end_id": "msg-16",
-    "best_id": "msg-14",
-    "deprecatedSpan": {
-      "startIndex": 12,
-      "endIndex": 16,
-      "startMessageId": "msg-12-msg",
-      "endMessageId": "16"
-    },
-    "semanticShiftMagnitude": 0.37675618282307427,
-    "keywords": [
-      "security",
-      "protocol",
-      "breach",
-      "objection",
-      "risk"
-    ],
-    "quotes": [
-      "Unauthorized Vault access breaches critical security protocols. I must formally object.",
-      "Risks understood, but Orrery collapse is worse."
-    ],
-    "emotionalTone": "fear",
-    "detectionLevel": 1,
-    "significance": 1,
-    "complexityScore": 4.418378091411538
-  },
-  {
-    "id": "tp-0-18-19+tp-0-19-20+tp-0-19-20",
-    "label": "identification critical issue Discussion",
+    "id": "tp-0-18-19+tp-0-19-20+tp-0-19-20+tp-0-20-21",
+    "label": "issue negative entropy Discussion and Shift to Internal Stress Concerns",
     "category": "Problem",
     "span": {
       "startId": "msg-18",
-      "endId": "msg-20",
+      "endId": "msg-21",
       "startIndex": 18,
-      "endIndex": 20
+      "endIndex": 21
     },
     "best_start_id": "msg-18",
     "best_end_id": "msg-19",
-    "best_id": "msg-20",
+    "best_id": "msg-19",
     "deprecatedSpan": {
       "startIndex": 0,
       "endIndex": 0,
       "startMessageId": "",
       "endMessageId": ""
     },
-    "semanticShiftMagnitude": 0.8821343047258929,
+    "semanticShiftMagnitude": 0.8276075422000075,
     "keywords": [
       "anomaly",
+      "pulsed",
       "sensors",
-      "issue",
-      "surge",
-      "anomalous"
+      "critical",
+      "negative entropy"
     ],
     "quotes": [
       "Wait—your sensors pulsed oddly. What's happening?",
@@ -176,48 +104,48 @@
     ],
     "emotionalTone": "surprise",
     "detectionLevel": 0,
-    "significance": 0.9790000000000002,
-    "complexityScore": 4.788929424717492
+    "significance": 1,
+    "complexityScore": 4.7974803352993085
   },
   {
-    "id": "tp-0-22-23+tp-0-23-24+tp-0-24-25",
-    "label": "gear's Discussion",
+    "id": "tp-0-21-22+tp-0-22-23+tp-0-23-24+tp-0-24-25+tp-0-25-26",
+    "label": "gear Discussion and Shift to Echo Priority",
     "category": "Insight",
     "span": {
-      "startId": "msg-22",
-      "endId": "msg-25",
-      "startIndex": 22,
-      "endIndex": 25
+      "startId": "msg-21",
+      "endId": "msg-26",
+      "startIndex": 21,
+      "endIndex": 26
     },
-    "best_start_id": "msg-22",
-    "best_end_id": "msg-23",
-    "best_id": "msg-23",
+    "best_start_id": "msg-21",
+    "best_end_id": "msg-22",
+    "best_id": "msg-21",
     "deprecatedSpan": {
       "startIndex": 0,
       "endIndex": 0,
       "startMessageId": "",
       "endMessageId": ""
     },
-    "semanticShiftMagnitude": 0.8981610093379835,
+    "semanticShiftMagnitude": 0.923109271140407,
     "keywords": [
-      "confirmation",
-      "correlation",
-      "echo frequencies",
-      "memory-etching",
-      "gear"
+      "echoes",
+      "resonance",
+      "CRG-007",
+      "stress",
+      "confirmed"
     ],
     "quotes": [
-      "Confirmed—echo frequencies precisely match CRG-007’s memory-etching resonance.",
-      "The gear actively absorbs harmful temporal echoes. It's protecting the Orrery internally!"
+      "Negative entropy? Could these 'echoes' be causing CRG-007's stress internally?",
+      "Confirmed—echo frequencies precisely match CRG-007’s memory-etching resonance."
     ],
-    "emotionalTone": "trust",
+    "emotionalTone": "neutral",
     "detectionLevel": 0,
-    "significance": 0.9240000000000002,
-    "complexityScore": 4.442235369837094
+    "significance": 1,
+    "complexityScore": 4.842235369837094
   },
   {
     "id": "tp-0-29-30+tp-0-30-31+tp-0-31-32",
-    "label": "Ethical Implications of Orrery and Hypothesis on Safeguards and Shift to Restoration Risks",
+    "label": "safeguards Discussion",
     "category": "Insight",
     "span": {
       "startId": "msg-29",
@@ -234,128 +162,201 @@
       "startMessageId": "",
       "endMessageId": ""
     },
-    "semanticShiftMagnitude": 0.9684148939297835,
+    "semanticShiftMagnitude": 0.9683998006349845,
     "keywords": [
-      "Orrery",
-      "curating timelines",
       "ethics",
       "implications",
-      "CRG-007"
-    ],
-    "quotes": [
-      "Could the Orrery itself be curating timelines?",
-      "Implications immense; restoration ethics uncertain."
-    ],
-    "emotionalTone": "surprise",
-    "detectionLevel": 0,
-    "significance": 0.9542500000000003,
-    "complexityScore": 4.8397583607791255
-  },
-  {
-    "id": "tp-0-32-33+tp-0-33-34",
-    "label": "mission revision Discussion",
-    "category": "Decision",
-    "span": {
-      "startId": "msg-32",
-      "endId": "msg-34",
-      "startIndex": 32,
-      "endIndex": 34
-    },
-    "best_start_id": "msg-32",
-    "best_end_id": "msg-33",
-    "best_id": "msg-33",
-    "deprecatedSpan": {
-      "startIndex": 0,
-      "endIndex": 0,
-      "startMessageId": "",
-      "endMessageId": ""
-    },
-    "semanticShiftMagnitude": 0.8825092632650101,
-    "keywords": [
-      "revision",
-      "objective",
       "restoration",
-      "understanding",
-      "mission"
+      "hypothesis",
+      "intentional"
     ],
     "quotes": [
-      "Our objective needs revision—no blind restoration without understanding.",
-      "Revised mission: prioritize comprehensive understanding through the Codex first."
+      "Implications immense; restoration ethics uncertain.",
+      "Maybe CRG-007’s damage and star omissions are intentional safeguards post-Vorlag’s incident."
     ],
     "emotionalTone": "neutral",
     "detectionLevel": 0,
-    "significance": 0.9350000000000002,
-    "complexityScore": 4.779694117890095
+    "significance": 0.9817500000000001,
+    "complexityScore": 4.642045138199675
   },
   {
-    "id": "tp-0-37-38+tp-0-37-38+tp-0-38-39",
-    "label": "action execution Discussion and Vault Access Achieved",
+    "id": "tp-0-35-36+tp-0-36-37+tp-0-37-38",
+    "label": "emotional response Discussion",
+    "category": "Emotion",
+    "span": {
+      "startId": "msg-35",
+      "endId": "msg-38",
+      "startIndex": 35,
+      "endIndex": 38
+    },
+    "best_start_id": "msg-35",
+    "best_end_id": "msg-36",
+    "best_id": "msg-37",
+    "deprecatedSpan": {
+      "startIndex": 0,
+      "endIndex": 0,
+      "startMessageId": "",
+      "endMessageId": ""
+    },
+    "semanticShiftMagnitude": 0.9868674898045837,
+    "keywords": [
+      "fear",
+      "curiosity",
+      "interference",
+      "heart racing",
+      "action"
+    ],
+    "quotes": [
+      "My heart races, Silus. Fear mixed with intense curiosity.",
+      "My heart races, Silus."
+    ],
+    "emotionalTone": "mixed",
+    "detectionLevel": 0,
+    "significance": 0.9817500000000001,
+    "complexityScore": 4.64823387081015
+  },
+  {
+    "id": "tp-1-40-54+tp-1-41-27",
+    "label": "codex discovery Discussion",
+    "category": "Topic",
+    "span": {
+      "startId": "msg-40",
+      "endId": "msg-54",
+      "startIndex": 40,
+      "endIndex": 54
+    },
+    "best_start_id": "msg-40",
+    "best_end_id": "msg-54",
+    "best_id": "msg-41",
+    "deprecatedSpan": {
+      "startIndex": 40,
+      "endIndex": 54,
+      "startMessageId": "msg-40-msg",
+      "endMessageId": "54"
+    },
+    "semanticShiftMagnitude": 0.48246454864124544,
+    "keywords": [
+      "codex",
+      "located",
+      "dais",
+      "specifications",
+      "harmonic"
+    ],
+    "quotes": [
+      "Codex located on central dais.",
+      "Codex specifies a tri-harmonic null field tuned to 3.14, 6.28, and 9.42 petahertz."
+    ],
+    "emotionalTone": "neutral",
+    "detectionLevel": 1,
+    "significance": 1,
+    "complexityScore": 4.408609918853249
+  },
+  {
+    "id": "tp-0-54-55+tp-0-55-56+tp-0-55-56",
+    "label": "technical details Discussion",
+    "category": "Insight",
+    "span": {
+      "startId": "msg-54",
+      "endId": "msg-56",
+      "startIndex": 54,
+      "endIndex": 56
+    },
+    "best_start_id": "msg-54",
+    "best_end_id": "msg-55",
+    "best_id": "msg-55",
+    "deprecatedSpan": {
+      "startIndex": 0,
+      "endIndex": 0,
+      "startMessageId": "",
+      "endMessageId": ""
+    },
+    "semanticShiftMagnitude": 0.7774228487503422,
+    "keywords": [
+      "tri-harmonic",
+      "null field",
+      "entropic echoes",
+      "calculations",
+      "suppression"
+    ],
+    "quotes": [
+      "That matches the dominant frequency of the entropic echoes.",
+      "Codex specifies a tri-harmonic null field tuned to 3.14, 6.28, and 9.42 petahertz."
+    ],
+    "emotionalTone": "neutral",
+    "detectionLevel": 0,
+    "significance": 0.9817500000000001,
+    "complexityScore": 4.564696834276732
+  },
+  {
+    "id": "tp-0-59-60+tp-0-60-61",
+    "label": "Shift to Technical Execution and Shift to Gear Stabilization",
     "category": "Action",
     "span": {
-      "startId": "msg-37",
-      "endId": "msg-39",
-      "startIndex": 37,
-      "endIndex": 39
+      "startId": "msg-59",
+      "endId": "msg-61",
+      "startIndex": 59,
+      "endIndex": 61
     },
-    "best_start_id": "msg-37",
-    "best_end_id": "msg-38",
-    "best_id": "msg-38",
+    "best_start_id": "msg-59",
+    "best_end_id": "msg-60",
+    "best_id": "msg-60",
     "deprecatedSpan": {
       "startIndex": 0,
       "endIndex": 0,
       "startMessageId": "",
       "endMessageId": ""
     },
-    "semanticShiftMagnitude": 0.9302303850887768,
+    "semanticShiftMagnitude": 0.8899564071334163,
     "keywords": [
+      "energized",
+      "null field",
       "insertion",
-      "key",
-      "execution",
-      "action",
-      "timing"
+      "engaging",
+      "ambient vibration"
     ],
     "quotes": [
-      "Optimal insertion timing now. Insert key precisely three centimeters, rotate 90 degrees counter-clockwise.",
-      "Insert key precisely three centimeters, rotate 90 degrees counter-clockwise."
+      "Array energized. Null field will stabilize in 12 seconds.",
+      "There’s a shift in ambient vibration—it’s working!"
     ],
-    "emotionalTone": "anticipation",
+    "emotionalTone": "optimism",
     "detectionLevel": 0,
-    "significance": 0.9790000000000002,
-    "complexityScore": 4.781996514278627
+    "significance": 0.9900000000000001,
+    "complexityScore": 4.833388899322054
   },
   {
-    "id": "tp-0-46-47+tp-0-46-47+tp-0-47-48",
-    "label": "ethical Discussion",
-    "category": "Question",
+    "id": "tp-0-61-62+tp-0-62-63+tp-0-63-64",
+    "label": "Shift to Gear Stabilization and Shift to Synchronization and Shift to Mnemonic Alignment",
+    "category": "Insight",
     "span": {
-      "startId": "msg-46",
-      "endId": "msg-48",
-      "startIndex": 46,
-      "endIndex": 48
+      "startId": "msg-61",
+      "endId": "msg-64",
+      "startIndex": 61,
+      "endIndex": 64
     },
-    "best_start_id": "msg-46",
-    "best_end_id": "msg-47",
-    "best_id": "msg-47",
+    "best_start_id": "msg-61",
+    "best_end_id": "msg-62",
+    "best_id": "msg-62",
     "deprecatedSpan": {
       "startIndex": 0,
       "endIndex": 0,
       "startMessageId": "",
       "endMessageId": ""
     },
-    "semanticShiftMagnitude": 0.9747897735434965,
+    "semanticShiftMagnitude": 0.8530590613689358,
     "keywords": [
-      "sentient system",
-      "ethical dilemma",
-      "self-restriction",
-      "right to alter",
-      "sentience"
+      "stabilizing",
+      "temporal",
+      "gear",
+      "harmonizing",
+      "alignment"
     ],
     "quotes": [
-      "Do we have the right to alter or repair a potentially sentient system that intentionally self-restricts?"
+      "There’s a shift in ambient vibration—it’s working!",
+      "Temporal turbulence decreasing. Gear surface stabilizing."
     ],
-    "emotionalTone": "pessimism",
+    "emotionalTone": "optimism",
     "detectionLevel": 0,
-    "significance": 0.9542500000000003,
-    "complexityScore": 4.838524658869058
+    "significance": 0.9817500000000001,
+    "complexityScore": 4.611372769760041
   }
 ]

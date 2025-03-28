@@ -6,10 +6,17 @@
     "outDir": "./dist",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
+    "declaration": true,
+    "declarationMap": true,
+    "allowJs": true,
+    
+    "sourceMap": true,
+
   },
   "ts-node": {
     "compilerOptions": {
       "target": "ESNext",
+      
       "module": "CommonJS",
       "lib": ["ESNext", "DOM", "ES6", "ES2022", "ES5"],
       "outDir": "./dist",

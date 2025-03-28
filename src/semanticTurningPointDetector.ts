@@ -1709,5 +1709,3 @@ async function runTurningPointDetectorExample() {
   }
 }
 
-// Run the example to demonstrate the ARC/CRA framework
-runTurningPointDetectorExample().catch(console.error);
