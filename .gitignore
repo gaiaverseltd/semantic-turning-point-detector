@@ -1,5 +1,10 @@
 results/*.json
+.DS_Store
 dist
 node_modules
 !results/turningPoints.json
 !results/turningPointsGpt4o.json
+
+*.txt
+
+results/*.log
