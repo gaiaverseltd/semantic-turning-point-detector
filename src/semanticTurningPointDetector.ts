@@ -162,8 +162,12 @@ export interface TurningPointDetectorConfig {
   apiKey: string;
   /** Model for turning point classification */
   classificationModel: string;
-  /** Model for generating embeddings */
+  /** Model for generating embeddings, e.g 'text-embedding-3-small', or some model custom, from a configurable openai api compatible endpoint v1/embeddings endpoint */
   embeddingModel: string;
+
+  /** Settable openai compatible embedding endpoint */
+  embeddingEndpoint?: string;
+  
   /** Semantic shift threshold for detecting potential turning points */
   semanticShiftThreshold: number;
   /** Minimum tokens per chunk when processing conversation */
@@ -191,6 +195,7 @@ export interface TurningPointDetectorConfig {
 
   /** The maximum number of characters to use when adding a message content as context to analyze */
   max_character_length?: number;
+
 
   /**
    * This option determines whether to fail and halt the process if an analysis 
@@ -270,6 +275,7 @@ export class SemanticTurningPointDetector {
       apiKey: config.apiKey || process.env.OPENAI_API_KEY || '',
       classificationModel: config.classificationModel || 'gpt-4o-mini',
       embeddingModel: config.embeddingModel || 'text-embedding-3-small',
+      embeddingEndpoint: config.embeddingEndpoint,
       semanticShiftThreshold: config.semanticShiftThreshold || 0.22,
       minTokensPerChunk: config.minTokensPerChunk || 250,
       maxTokensPerChunk: config.maxTokensPerChunk || 2000,
@@ -1426,7 +1432,7 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
       tokensCount = countTokens(text);
     }
 
-    
+
     try {
       
 
@@ -1441,21 +1447,15 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
 
       ]
 
-      if (this.config.endpoint === undefined || openaiEmbeddingModels.every(
-        (model) => model !== this.config.embeddingModel
-      )) {
-        response = await this.openai.embeddings.create({
-          model: this.config.embeddingModel,
-          input: text
-        });
-      } else {
+      
         const openai = new OpenAI();
+        openai.baseURL = openaiEmbeddingModels.every((model) => this.config.embeddingModel.includes(model)) ? undefined : this.config.embeddingEndpoint; 
         response = await openai.embeddings.create({
           model: this.config.embeddingModel,
           input: text,
           encoding_format: 'float',
         });
-      }
+  
 
 
       if (response.data && response.data.length > 0 && response.data[0].embedding) {
@@ -1464,7 +1464,7 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
         throw new Error('Invalid embedding response structure from OpenAI');
       }
     } catch (err: any) { // Catch specific error types if possible
-      logger.info(`Error generating embedding: ${err.message}. Returning zero vector.`);
+      logger.info(`Error generating embedding: ${err.message}. Returning zero vector. ${(err as Error).stack} ${this.config.embeddingEndpoint}`);
       // Return a zero embedding on error (more predictable than random)
       const embeddingSize = 1536; // Match expected dimension
       return new Float32Array(embeddingSize).fill(0);
@@ -1888,7 +1888,7 @@ async function runTurningPointDetectorExample() {
     minTokensPerChunk: 1024,
     maxTokensPerChunk: 8192,
     // uses for now embeddings only from openai
-    embeddingModel: "text-embedding-3-small",
+    embeddingModel: "text-embedding-snowflake-arctic-embed-l-v2.0",
 
     // ARC framework: dynamic recursion depth based on conversation complexity
     maxRecursionDepth: Math.min(determineRecursiveDepth(conversation), 5),
@@ -1910,13 +1910,17 @@ async function runTurningPointDetectorExample() {
     // Enable convergence measurement for ARC analysis
     measureConvergence: true,
 
+
     // classificationModel: 'phi-4-mini-Q5_K_M:3.8B',
-    classificationModel: 'qwen2.5-coder-7b-instruct',
+    classificationModel: 'qwen2.5:14b-instruct-q6_K',
+    // e.g. llmstudio or ollama
+    embeddingEndpoint: 'http://127.0.0.1:7756/v1',
+
     debug: true,
     // ollama
-    // endpoint: 'http://localhost:11434/v1',
+    endpoint: 'http://10.3.28.24:7223/v1',
     // or lmstudio
-    endpoint: 'http://localhost:7756/v1'
+    // endpoint: 'http://localhost:7756/v1'
   });
 
   try {
