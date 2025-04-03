@@ -4,7 +4,8 @@ dist
 node_modules
 !results/turningPoints.json
 !results/turningPointsGpt4o.json
-
+!results/turningPointsPariah.json
 *.txt
 
 results/*.log
+

@@ -53,6 +53,7 @@ You are an expert conversation analyst agent tasked with identifying and classif
       ? `( provided as a grouping of turning points (partially a full conversation), to analyze from the overall turning point (akin to formulate a single turning point from a list of turning points), or a full conversation)`
       : ` (provided as two messages to analyze to assess if it is a turning point or not, as well as contextual messages before and after these two messages to help you better assess if these specific two mesages are in fact a turning point or not)`
     } 
+
 - As a background, on what we define as a turning point: A potential turning point has been detected between the two messages provided below based on semantic distance analysis, your task is to ensure you understand this to help you ${dimension === 0
       ? "formulate a single meta turning point from the group of turning points that partially encapuslate an entire conversation, with provided contextual messages as aid"
       : "formulate a turning point from the provided messages"
@@ -105,7 +106,7 @@ Analyze the content below to determine the classification and labels as instruct
       : "Refer to the contextual information from the system message to assist with your analysis. This information aims to enhance your understanding of the surrounding turning points outside the two being assessed. Furthermore, the contextual information from the system prompt provides the actual content of messages related to those turning points for your analysis.\n- Use the system context solely to aid in comprehending the task at hand, rather than as a foundation for your response.\n\nThe relevant content below (pertaining to the two turning points) should primarily guide your analysis. You may refer to the system context for the actual conversation messages and their content associated with the two turning points if the provided content below is insufficient for formulating your response:"
     }`; // further content below truncated but implemented as added dynamic string
     const userMessageContent = `[${dimension === 0
-      ? "First Message of the two messages being analyzed as a potential turning point in the entire conversation - The content below for this message is all from the author: 'Ziping Liu'"
+      ? "First Message of the two messages being analyzed as a potential turning point in the entire conversation"
       : 'First Turning Point within the Group of Turning Points that encapsulate a single conversation being assessed into a Single, "Meta" Turning Point'
     } ${dimension === 0 ? "Author" : "Source"}: ${beforeMessage.author}, ID: "${beforeMessage.id}"]
 ${dimension === 0
@@ -132,7 +133,7 @@ ${dimension === 0
     
     const endUserMessageInstructions = `\n\nPlease respond with a JSON object containing the following fields. Do not include any text outside the JSON object.\n{
     "label": "<YOUR CREATIVE TITLE LABEL HERE> e.g 'Progressing from General Budgets to Budget Concerns', or 'Analysis on the notions of Leadership and Teamwork'",
-    "keywords": ["<KEYWORD1>", "<KEYWORD2>", "<KEYWORD3>"],
+    "quotes": ["Author name: Quotes here", "Author name: Quotes here", ... ],
     "sentiment": "<SENTIMENT HERE>, as one of the following: 'positive', 'negative'",
     "significance": <SIGNIFICANCE SCORE HERE, from 0-100>,   
     "category": "<Insert your categorization here using one of the following options: ${Object.keys(
@@ -140,8 +141,7 @@ ${dimension === 0
     )
       .sort(() => Math.random() - 0.5)
       .map((c) => `\`${c}\``)
-      .join(", ")}>",\n` +
-    `   "quotes": [\n      "Some Author name: Some quote here 1",\n      "Some Author name: Some quote here 2"\n   ],\n` +
+      .join(", ")}>",\n`  +
     `   "emotionalTone": "<Select your emotional tone from these values: ${emotionalTones
       .sort(() => Math.random() - 0.5)
       .map((c) => `'${c}'`)
@@ -189,10 +189,10 @@ export const formResponseFormatSchema = (dimension: number) => ({
           enum: ["positive", "negative"],
         },
 
-        keywords: {
+        quotes: {
 
           "type": "array",
-          "description": "A list of entities, or keywords, phrases that are relevant to the presented content to analyze form the user message, as well as the presented contextual information from the system message.",
+          "description": "Quotes from the content to analyze, in which must also comprise of the author name, quotes without the author name (from the message content is invalid). Valid names are Mr. X or Mr. Y.",
           "items": {
             "type": "string",
            }
@@ -205,6 +205,9 @@ export const formResponseFormatSchema = (dimension: number) => ({
         },
         category: {
           type: "string",
+          
+      
+     
           description: `A value from one of the following values only: ${Object.keys(
             categories,
           )
@@ -217,8 +220,9 @@ export const formResponseFormatSchema = (dimension: number) => ({
         "label",
         "sentiment",
         "significance",
+
         "category",
-        "keywords",
+        "quotes",
         "emotionalTone",
       ],
       additionalProperties: false,

@@ -13,7 +13,7 @@ const logger = winston.createLogger({
   ),
   transports: [
     new winston.transports.Console({
- 
+
       format: winston.format.combine(
         winston.format.colorize(),
         winston.format.timestamp(
@@ -176,7 +176,7 @@ export interface TurningPointDetectorConfig {
 
   /** Settable openai compatible embedding endpoint */
   embeddingEndpoint?: string;
-  
+
   /** Semantic shift threshold for detecting potential turning points */
   semanticShiftThreshold: number;
   /** Minimum tokens per chunk when processing conversation */
@@ -488,7 +488,7 @@ export class SemanticTurningPointDetector {
 
     // Create meta-messages from the merged turning points at this level
     // Pass originalMessages for context if needed by createMetaMessagesFromTurningPoints
-    const metaMessages = this.createMetaMessagesFromTurningPoints(mergedLocalTurningPoints);
+    const metaMessages = this.createMetaMessagesFromTurningPoints(mergedLocalTurningPoints, this.originalMessages);
     logger.info(`Dimension ${dimension}: Created ${metaMessages.length} meta-messages for dimension ${dimension + 1}`);
 
     if (metaMessages.length < 2) {
@@ -593,9 +593,9 @@ export class SemanticTurningPointDetector {
     if (messages.length < 2) return [];
 
     // Generate embeddings for all messages in the chunk
-    const embeddings = await this.generateMessageEmbeddings(messages);
+    const embeddings = await this.generateMessageEmbeddings(messages, dimension);
 
-    
+
 
     // Find significant semantic shifts between adjacent messages
     const turningPoints: TurningPoint[] = [];
@@ -604,6 +604,11 @@ export class SemanticTurningPointDetector {
       next: number;
       distance: number;
     }[] = []; // Store distances for logging
+    const allDistances: {
+      current: number;
+      next: number;
+      distance: number;
+    }[] = []; // Store all distances for logging
     for (let i = 0; i < embeddings.length - 1; i++) {
       const current = embeddings[i];
       const next = embeddings[i + 1];
@@ -616,16 +621,25 @@ export class SemanticTurningPointDetector {
       );
       const beforeMessage = messages.find((m) => m.id === current.id);
       const afterMessage = messages.find((m) => m.id === next.id);
-      const isUserMessageFollowedByAssistantTurn =
-        (beforeMessage &&
-          afterMessage &&
-          dimension === 0)
-        ||
-        dimension > 0; // In the case of meta-messages, the conversational turn is not relevant, as it encompasses a group of first-level turns (dim=0).
-
+   
+        let thresholdScaleFactor;
+        const baseThreshold = this.config.semanticShiftThreshold;
+        
+        if (baseThreshold > 0.7) {
+          // For high initial thresholds (like 0.75), scale down more aggressively
+          thresholdScaleFactor = Math.pow(0.25, dimension); // More aggressive (0.25 instead of 0.4)
+        } else if (baseThreshold > 0.5) {
+          // For medium thresholds
+          thresholdScaleFactor = Math.pow(0.35, dimension);
+        } else {
+          // For already low thresholds
+          thresholdScaleFactor = Math.pow(0.5, dimension);
+        }
+        
+        const dimensionAdjustedThreshold = baseThreshold * thresholdScaleFactor;
       if (
-        this.config.semanticShiftThreshold <= distance &&
-        isUserMessageFollowedByAssistantTurn
+        dimensionAdjustedThreshold <= distance
+        
       ) {
         distances.push({
           current: current.index,
@@ -633,10 +647,21 @@ export class SemanticTurningPointDetector {
           distance: distance,
         }); // Store distance for logging
       }
+      allDistances.push({
+        current: current.index,
+        next: next.index,
+        distance: distance,
+      });
+
+
     }
 
     logger.info(
-      `For a total number of points: ${embeddings.length}, there were ${distances.length} distances found as being greater than the threshold of ${this.config.semanticShiftThreshold}. This means there were ${distances.length} potential turning points detected ${dimension === 0 ? "with valid user-assistant turn pairs" : "with valid meta-messages"}`,
+      `For a total number of points: ${embeddings.length}, there were ${distances.length} distances found as being greater than the threshold of ${this.config.semanticShiftThreshold}. 
+        - The top 3 greatest distances are: ${allDistances.slice(0, 3).sort((a, b) => b.distance - a.distance).map(d => d.distance.toFixed(3)).join(', ')}
+      
+      
+      This means there were ${distances.length} potential turning points detected ${dimension === 0 ? "with valid user-assistant turn pairs" : "with valid meta-messages"}`,
     );
     if (distances.length === 0) {
       logger.info(
@@ -689,7 +714,7 @@ export class SemanticTurningPointDetector {
         }
       }
 
-    
+
 
       turningPoints.push(turningPoint);
     }
@@ -710,17 +735,31 @@ export class SemanticTurningPointDetector {
     index: number = 0
   ): Promise<TurningPoint> {
 
- 
+
     let span: MessageSpan;
 
     if (dimension > 0) {
-      // For higher dimensions, use meta-message IDs and indices directly
-      // and startId refers to an actual message ID, wheras startIndex refers to the index of the meta-messages
+      if (beforeMessage instanceof MetaMessage === false || afterMessage instanceof MetaMessage === false) {
+        throw new Error("Before or after message is not a MetaMessage");
+      }
+      const beforeMessageMeta = beforeMessage as MetaMessage;
+      const afterMessageMeta = afterMessage as MetaMessage;
+      // For higher dimensions, use meta-message and inner methods to get the the span ids for the start and end 
       span = {
-        startId: beforeMessage.id,
-        endId: afterMessage.id,
-        startIndex: index, // Use the index provided
-        endIndex: index + 1, // Or determine based on context
+        startId: beforeMessageMeta.getMessagesInTurningPointSpanToMessagesArray()[0].id,
+        endId: afterMessageMeta.getMessagesInTurningPointSpanToMessagesArray()[0].id,
+        startIndex: this.originalMessages.findIndex((candidateM) => {
+          return beforeMessageMeta.getMessagesInTurningPointSpanToMessagesArray()[0].id === candidateM.id;
+        }),
+        endIndex: this.originalMessages.findIndex((candidateM) => {
+          return afterMessageMeta.getMessagesInTurningPointSpanToMessagesArray()[0].id === candidateM.id;
+        }),
+        originalSpan: {
+          startId: beforeMessage.id,
+          endId: afterMessage.id,
+          startIndex: index,
+          endIndex: index + 1,
+        }
       };
     } else {
       // For dimension 0, use original message IDs and find indices
@@ -762,7 +801,7 @@ export class SemanticTurningPointDetector {
       dimension,
       addUserInstructions: this.config.customUserInstruction && this.config.customUserInstruction.length > 0 ? true : false,
     })
-    
+
     const contextualAidText = this.prepareContextualInfoMeta(
       beforeMessage,
       afterMessage,
@@ -779,23 +818,21 @@ export class SemanticTurningPointDetector {
         messages: [
           {
             role: 'system', content:
-              `${
-              this.config.customSystemInstruction ? this.config.customSystemInstruction : systemPrompt
-              }\n\n${contextualAidText}\n------- end of contextual background info see below as reminder of instructions -------\n\n${
-                this.config.customSystemInstruction ? this.config.customSystemInstruction : formSystemPromptEnding(dimension)
+              `${this.config.customSystemInstruction ? this.config.customSystemInstruction : systemPrompt
+              }\n\n${contextualAidText}\n------- end of contextual background info see below as reminder of instructions -------\n\n${this.config.customSystemInstruction ? this.config.customSystemInstruction : formSystemPromptEnding(dimension)
               }`,
 
           },
           { role: 'user', content: this.config.customUserInstruction ? `${this.config.customUserInstruction}\n\n${userMessage}\n\n${this.config.customUserInstruction}` : userMessage },
         ],
- 
+
 
         temperature: 0.6,
         //@ts-ignore - Allow vendor-specific params if needed
         repeat_penalty: this.config.endpoint ? 1.005 : undefined,
         top_k: this.config.endpoint ? 20 : undefined,
- 
- 
+
+
         stop: ['<|im_end|>'],
         response_format: formResponseFormatSchema(dimension),
 
@@ -870,7 +907,7 @@ export class SemanticTurningPointDetector {
         label: validatedClassification.label,
         category: validatedClassification.category,
         span: span, // Use the span derived at the beginning
- 
+
         // deprecatedSpan is no longer populated from regex results
         semanticShiftMagnitude: distance,
         keywords: validatedClassification.keywords,
@@ -893,7 +930,7 @@ export class SemanticTurningPointDetector {
           label: 'LLM Error - Unclassified',
           category: 'Other',
           span: span,
-        
+
           semanticShiftMagnitude: distance,
           keywords: [],
           quotes: [],
@@ -908,168 +945,84 @@ export class SemanticTurningPointDetector {
   }
 
   /**
-   * Create meta-messages from turning points for higher-level analysis.
-   * *** KEPT original logic for message content including SpanIndices/Ids ***
-   * *** VERIFIED spanData is attached correctly ***
+   * Updated to utilize new classes of Message and MetaMessage for better structure and clarity
+   * @param turningPoints
+   * @param originalMessages
+   * @returns
    */
   private createMetaMessagesFromTurningPoints(
     turningPoints: TurningPoint[],
-    // Removed originalMessages parameter as it should use this.originalMessages
+    originalMessages: Message[],
   ): Message[] {
     if (turningPoints.length === 0) return [];
-    if (!this.originalMessages || this.originalMessages.length === 0) {
-      logger.info("Error: Cannot create meta-messages without access to originalMessages.");
-      return [];
-    }
 
-
-    // Group turning points by category
+    // Group turning points by category (first-level abstraction)
     const groupedByCategory: Record<string, TurningPoint[]> = {};
-    turningPoints.forEach(tp => {
+
+    turningPoints.forEach((tp) => {
       const category = tp.category;
-      if (!groupedByCategory[category]) groupedByCategory[category] = [];
+      if (!groupedByCategory[category]) {
+        groupedByCategory[category] = [];
+      }
       groupedByCategory[category].push(tp);
     });
 
+    logger.info(
+      `Grouped categories: `,
+      JSON.stringify(groupedByCategory, null, 2),
+    );
+
+    // Create meta-messages (one per category to find higher-level patterns)
     const metaMessages: Message[] = [];
 
-    // --- Create Category Meta-Messages ---
+    // First create category messages - represents dimension n to n+1 transformation
     Object.entries(groupedByCategory).forEach(([category, points], index) => {
-      if (points.length === 0) return; // Skip empty categories
+      // Use the factory method from MetaMessage class to create a properly typed meta-message
+      const metaMessage = MetaMessage.createCategoryMetaMessage(
+        category,
+        points,
+        index,
+        originalMessages,
+      );
 
-      const quotes = points.flatMap(tp => tp.quotes || []).filter(Boolean);
-      const keywords = points.flatMap(tp => tp.keywords || []).filter(Boolean);
-
-      // Find the overall span indices covered by this category
-      const minStartIndex = Math.min(...points.map(p => p.span.startIndex));
-      const maxEndIndex = Math.max(...points.map(p => p.span.endIndex));
-
-      // Validate indices against originalMessages bounds
-      const validMinIndex = Math.max(0, Math.min(minStartIndex, this.originalMessages.length - 1));
-      const validMaxIndex = Math.max(0, Math.min(maxEndIndex, this.originalMessages.length - 1));
-
-
-      // Find corresponding original message IDs for the span boundaries
-      // Safely access originalMessages using validated indices
-      const startMsg = this.originalMessages[validMinIndex];
-      const endMsg = this.originalMessages[validMaxIndex];
-
-      // Use IDs from messages if found, otherwise fallback to TP span IDs (less ideal)
-      const startMsgId = startMsg ? startMsg.id : points.find(p => p.span.startIndex === validMinIndex)?.span.startId || '';
-      const endMsgId = endMsg ? endMsg.id : points.find(p => p.span.endIndex === validMaxIndex)?.span.endId || '';
-
-
-      // Create the span object for spanData
-      const categorySpan = this.ensureChronologicalSpan({
-        startId: startMsgId,
-        endId: endMsgId,
-        startIndex: validMinIndex,
-        endIndex: validMaxIndex
-      });
-
-      // Create meta-message content (keeping original format with SpanIndices/Ids)
-      const categoryContent = `
-# ${category} Turning Points Summary
-Significance (Max): ${Math.max(0, ...points.map(p => p.significance)).toFixed(2)}
-Complexity (Max): ${Math.max(1, ...points.map(p => p.complexityScore)).toFixed(2)}
-Keywords: ${Array.from(new Set(keywords)).slice(0, 10).join(', ')}
-SpanIndices: ${categorySpan.startIndex}-${categorySpan.endIndex}
-SpanMessageIds: ${categorySpan.startId}-${categorySpan.endId}
-
-## Included Turning Points (${points.length}):
-${points.map(tp => `- ${tp.label}: ${tp.span.startId} -> ${tp.span.endId} [${tp.span.startIndex}-${tp.span.endIndex}] (Sig: ${tp.significance.toFixed(2)})`).join('\n')}
-## Notable Quotes Extracted:
-${quotes.length > 0 ? quotes.slice(0, 5).map(q => `- "${q}"`).join('\n') : 'None available'}
-`;
-
-      // --- Contextual Aid (Using original logic but referencing this.originalMessages) ---
-      let builtContext = '';
-      const contextWindow = 3; // Messages before/after span
-      const startMessagesContext = this.originalMessages.slice(Math.max(0, categorySpan.startIndex - contextWindow), categorySpan.startIndex).filter(Boolean);
-      const endMessagesContext = this.originalMessages.slice(categorySpan.endIndex + 1, categorySpan.endIndex + 1 + contextWindow).filter(Boolean);
-
-      if (startMessagesContext.length > 0 || endMessagesContext.length > 0) {
-        builtContext = `\n\n## Contextual Aid (Original Messages Snippets)`;
-        if (startMessagesContext.length > 0) {
-          builtContext += `\n### Before Span (${categorySpan.startId}):\n` +
-            startMessagesContext.map(m => `[${m.id}] ${m.author}: ${m.message.substring(0, 100)}...`).join('\n');
-        }
-        if (endMessagesContext.length > 0) {
-          builtContext += `\n### After Span (${categorySpan.endId}):\n` +
-            endMessagesContext.map(m => `[${m.id}] ${m.author}: ${m.message.substring(0, 100)}...`).join('\n');
-        }
-      }
-      // --- End Contextual Aid ---
-
-      // Add the meta-message with attached spanData
-      metaMessages.push({
-        id: `meta-cat-${category.toLowerCase().replace(/\s+/g, '-')}-${index}`, // More descriptive ID
-        author: 'meta',
-        message: categoryContent.trim() + builtContext, // Combine content and context
-        spanData: categorySpan // Attach the structured span data
-      });
+      metaMessages.push(metaMessage);
     });
 
-    // --- Create Chronological Section Meta-Messages (Using original logic) ---
-    const sortedPoints = [...turningPoints].sort((a, b) => a.span.startIndex - b.span.startIndex);
-    const numSections = Math.min(4, Math.max(1, Math.ceil(sortedPoints.length / 3))); // Aim for 1-4 sections, min 3 TPs/section ideally
-    const pointsPerSection = Math.ceil(sortedPoints.length / numSections);
+    // Create timeline/section meta-messages
+    const sortedPoints = [...turningPoints].sort(
+      (a, b) => a.span.startIndex - b.span.startIndex,
+    );
+    const sectionCount = Math.min(4, Math.ceil(sortedPoints.length / 2));
+    const pointsPerSection = Math.ceil(sortedPoints.length / sectionCount);
 
-    for (let i = 0; i < numSections; i++) {
+    // Create chronological section meta-messages
+    for (let i = 0; i < sectionCount; i++) {
       const sectionPoints = sortedPoints.slice(
         i * pointsPerSection,
-        (i + 1) * pointsPerSection // slice handles end index correctly
+        Math.min((i + 1) * pointsPerSection, sortedPoints.length),
       );
 
       if (sectionPoints.length === 0) continue;
 
-      // Find the overall span of this section
-      const firstTp = sectionPoints[0];
-      const lastTp = sectionPoints[sectionPoints.length - 1];
-      // Ensure indices are valid
-      const minStartIndex = Math.max(0, Math.min(firstTp.span.startIndex, this.originalMessages.length - 1));
-      const maxEndIndex = Math.max(0, Math.min(lastTp.span.endIndex, this.originalMessages.length - 1));
-
-      // Get corresponding IDs safely
-      const startMsgId = this.originalMessages[minStartIndex]?.id || firstTp.span.startId;
-      const endMsgId = this.originalMessages[maxEndIndex]?.id || lastTp.span.endId;
-
-      const sectionSpan = this.ensureChronologicalSpan({
-        startId: startMsgId,
-        endId: endMsgId,
-        startIndex: minStartIndex,
-        endIndex: maxEndIndex
-      });
-
-      // Create section meta-message content (keeping original format)
-      const sectionContent = `
-# Conversation Section ${i + 1} of ${numSections}
-Span: ${sectionSpan.startId} -> ${sectionSpan.endId}
-SpanIndices: ${sectionSpan.startIndex}-${sectionSpan.endIndex}
-SpanMessageIds: ${sectionSpan.startId}-${sectionSpan.endId}
-Contains ${sectionPoints.length} turning points
-Max Complexity: ${Math.max(1, ...sectionPoints.map(p => p.complexityScore)).toFixed(2)}
-
-## Turning Points in this Section:
-${sectionPoints.map(tp => `- ${tp.label} (${tp.category}) [${tp.span.startIndex}-${tp.span.endIndex}]`).join('\n')}
-## Keywords:
-${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 10).join(', ')}
-`;
-
-      // Add the section meta-message with attached spanData
-      metaMessages.push({
-        id: `meta-section-${i}`,
-        author: 'meta',
-        message: sectionContent.trim(),
-        spanData: sectionSpan // Attach structured span data
-      });
+      // Create a section meta-message using the factory method
+      const sectionMetaMessage = MetaMessage.createSectionMetaMessage(
+        sectionPoints,
+        i,
+        this.originalMessages,
+      );
+      console.info('created sectionMetageMessage')
+      metaMessages.push(sectionMetaMessage);
     }
 
-    logger.info(`Created ${metaMessages.length} meta-messages for dimensional expansion.`);
-    // Sort meta-messages by their start index before returning
-    return metaMessages.sort((a, b) => (a.spanData?.startIndex ?? 0) - (b.spanData?.startIndex ?? 0));
+    logger.info(
+      `Created ${
+        metaMessages.length
+      } meta-messages for dimensional expansion: ${metaMessages
+        .map((m) => m.id)
+        .join(", ")}`,
+    );
+    return metaMessages;
   }
-
 
   // --- Remaining methods are kept identical to your second provided version ---
 
@@ -1410,13 +1363,24 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
   /**
    * Generate embeddings for an array of messages (Using original logic)
    */
-  private async generateMessageEmbeddings(messages: Message[]): Promise<MessageEmbedding[]> {
+  private async generateMessageEmbeddings(messages: Message[], dimension = 0): Promise<MessageEmbedding[]> {
     const embeddings: MessageEmbedding[] = new Array(messages.length);
     // Using original concurrency limit of 4
+    console.info(`Generating embeddings for ${messages.length} messages with dimension ${dimension}.`);
     await async.eachOfLimit(messages, 4, async (message, indexStr) => {
+
+      let candidateText = message.message;
+      if (dimension > 0 && message instanceof MetaMessage) {
+        // For meta-messages, use the original message text
+        const metaMessage = message as MetaMessage;
+        const messagesWithinMeta = metaMessage.getMessagesInTurningPointSpanToMessagesArray();
+        // naiviely concatenate the last and first message
+        candidateText = `${messagesWithinMeta[0].message} ${messagesWithinMeta[messagesWithinMeta.length - 1].message}`;
+        console.info(`Meta message ${message.id} contains ${messagesWithinMeta.length} messages.`);
+      }
       const index = Number(indexStr);
       try {
-        const embedding = await this.getEmbedding(message.message);
+        const embedding = await this.getEmbedding(candidateText);
         // Store the original index from the input 'messages' array
         embeddings[index] = {
           id: message.id,
@@ -1434,13 +1398,13 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
   }
 
 
-/**
- * Retrieves the embedding for a given text string.
- * 
- * - Utilizes the configured embedding model.
- * - If the model is not an OpenAI model, it uses the OpenAI client with an optional endpoint.
- * - If the model is an OpenAI model, it creates a new OpenAI client to ensure the correct endpoint is used.
- */
+  /**
+   * Retrieves the embedding for a given text string.
+   * 
+   * - Utilizes the configured embedding model.
+   * - If the model is not an OpenAI model, it uses the OpenAI client with an optional endpoint.
+   * - If the model is an OpenAI model, it creates a new OpenAI client to ensure the correct endpoint is used.
+   */
 
 
   private async getEmbedding(text: string, naiveTokenLimit = 8192): Promise<Float32Array> {
@@ -1459,7 +1423,7 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
 
 
     try {
-      
+
 
       // Direct call to OpenAI (original logic)
       let response;
@@ -1472,15 +1436,15 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
 
       ]
 
-      
-        const openai = new OpenAI();
-        openai.baseURL = openaiEmbeddingModels.every((model) => this.config.embeddingModel.includes(model)) ? undefined : this.config.embeddingEndpoint; 
-        response = await openai.embeddings.create({
-          model: this.config.embeddingModel,
-          input: text,
-          encoding_format: 'float',
-        });
-  
+
+      const openai = new OpenAI();
+      openai.baseURL = this.config.embeddingEndpoint ?? openai.baseURL;
+      response = await openai.embeddings.create({
+        model: this.config.embeddingModel,
+        input: text,
+        encoding_format: 'float',
+      });
+
 
 
       if (response.data && response.data.length > 0 && response.data[0].embedding) {
@@ -1527,9 +1491,17 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
   /**
    * Chunk a conversation (Using original logic)
    */
-  private async chunkConversation(messages: Message[], depth = 0): Promise<ChunkingResult> {
+  private async chunkConversation(messages: Message[], dimension = 0): Promise<ChunkingResult> {
     const chunks: Message[][] = [];
-    const minMessages = this.config.minMessagesPerChunk;
+    // scale down the min messages based on each depth increase 
+    const baseMinMessages = this.config.minMessagesPerChunk; // Preserve original value
+    const dimensionScaleFactor = Math.max(0.1, Math.pow(0.35, dimension));
+    const minMessages = Math.max(2, Math.round(baseMinMessages * dimensionScaleFactor));
+    // But you need to scale maxTokensPerChunk too
+    const tokenScaleFactor = Math.max(0.2, Math.pow(0.5, dimension));
+    const maxTokens = Math.max(this.config.minTokensPerChunk, Math.round(this.config.maxTokensPerChunk * tokenScaleFactor));
+
+
 
     // Handle case where input has fewer than minimum messages (original logic)
     if (messages.length < minMessages) {
@@ -1553,7 +1525,7 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
       minMessages,
       Math.min(10, Math.ceil(messages.length / Math.max(1, Math.floor(messages.length / 10)))) // Aim for ~10 chunks max?
     );
-    logger.info(`    Chunking ${messages.length} messages. MinMsgs: ${minMessages}, MaxTokens: ${this.config.maxTokensPerChunk}, IdealMsgCount: ${idealMessageCount}, Overlap: ${overlapSize}`);
+    logger.info(`    Chunking ${messages.length} messages. MinMsgs: ${minMessages}, MaxTokens: ${maxTokens}, IdealMsgCount: ${idealMessageCount}, Overlap: ${overlapSize}`);
 
 
     for (let i = 0; i < messages.length; i++) {
@@ -1571,9 +1543,9 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
       // Determine if we should close this chunk (original logic)
       const hasMinMessages = currentChunk.length >= minMessages;
       const hasIdealSize = currentChunk.length >= idealMessageCount; // Use ideal count
-      const approachingMaxTokens = currentTokens >= this.config.maxTokensPerChunk * 0.9; // Increase threshold slightly
+      const approachingMaxTokens = currentTokens >= (maxTokens) * 0.9; // Increase threshold slightly
       const isLastMessage = i === messages.length - 1;
-      const significantlyOverMaxTokens = currentTokens > this.config.maxTokensPerChunk * 1.1; // Check if significantly over
+      const significantlyOverMaxTokens = currentTokens > (maxTokens) * 1.1; // Check if significantly over
 
       // Close chunk conditions (refined slightly)
       // 1. Last message: always close.
@@ -1709,7 +1681,7 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
     }
     return total;
   }
- 
+
 
   /**
    * Get the convergence history for analysis (Using original logic)
@@ -1885,7 +1857,8 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
  * Implements an adaptive approach based on conversation complexity
  */
 async function runTurningPointDetectorExample() {
-  const thresholdForMinDialogueShift = 24;
+  const thresholdForMinDialogueShift = 22;
+  const conversationPariah = fs.readJsonSync('src/conversationPariah.json', { 'encoding': 'utf-8' }) as Message[];
 
   // Calculate adaptive recursion depth based on conversation length
   // This directly implements the ARC concept of adaptive dimensional analysis
@@ -1904,37 +1877,38 @@ async function runTurningPointDetectorExample() {
     minTokensPerChunk: 1024,
     maxTokensPerChunk: 8192,
     // uses for now embeddings only from openai
-    embeddingModel: "text-embedding-snowflake-arctic-embed-l-v2.0",
+     embeddingModel: "text-embedding-snowflake-arctic-embed-l-v2.0",
 
+    // embeddingModel: 'text-embedding-3-large',
     // ARC framework: dynamic recursion depth based on conversation complexity
-    maxRecursionDepth: Math.min(determineRecursiveDepth(conversation), 5),
+    maxRecursionDepth: Math.min(determineRecursiveDepth(conversationPariah), 5),
 
     onlySignificantTurningPoints: true,
     significanceThreshold: 0.75,
 
     // ARC framework: chunk size scales with complexity
-    minMessagesPerChunk: Math.ceil(determineRecursiveDepth(conversation) * 3.5),
+    minMessagesPerChunk: Math.ceil(determineRecursiveDepth(conversationPariah) * 3.5),
 
     // ARC framework: number of turning points scales with conversation length
-    maxTurningPoints: Math.max(6, Math.round(conversation.length / 7)),
+    maxTurningPoints: Math.max(6, Math.round(conversationPariah.length / 20)),
 
     // CRA framework: explicit complexity saturation threshold for dimensional escalation
-    complexitySaturationThreshold: 4.5,
+    complexitySaturationThreshold: 4.1,
 
     max_character_length: 4000,
 
     // Enable convergence measurement for ARC analysis
     measureConvergence: true,
 
-
+      classificationModel: "gpt-4o-mini",
     // classificationModel: 'phi-4-mini-Q5_K_M:3.8B',
-    classificationModel: 'gpt-4o-mini',
+    // classificationModel: 'gpt-4o-mini',
     // e.g. llmstudio or ollama
     embeddingEndpoint: 'http://127.0.0.1:7756/v1',
 
     debug: true,
     // ollama
-    // endpoint: 'http://10.3.28.24:7223/v1',
+    // endpoint: 'http:/localhost:11434/v1',
     // or lmstudio
     // endpoint: 'http://localhost:7756/v1'
   });
@@ -1963,9 +1937,10 @@ async function runTurningPointDetectorExample() {
       logger.info(`   Sentiment: ${tp.sentiment || 'unknown'}`);
       logger.info(`   Significance: ${tp.significance.toFixed(2)}`);
       logger.info(`   Keywords: ${tp.keywords?.join(', ') || 'none'}`);
+      logger.info(`   Quotes: ${tp.quotes?.join(', ') || 'none'}`);
 
- 
-    
+
+
     });
 
     // Get and display convergence history to demonstrate the ARC framework
@@ -1978,7 +1953,7 @@ async function runTurningPointDetectorExample() {
       logger.info(`  Convergence Distance: ${state.distanceMeasure.toFixed(3)}`);
       logger.info(`  Dimensional Escalation: ${state.didEscalate ? 'Yes' : 'No'}`);
       logger.info(`  Turning Points: ${state.currentTurningPoints.length}`);
-    
+
     });
 
     // Save turning points to file

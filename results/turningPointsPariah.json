@@ -1,0 +1,211 @@
+[
+  {
+    "id": "tp-2-3-10",
+    "label": "Transition from Cognitive Insight to Urgent Action",
+    "category": "problem",
+    "span": {
+      "startId": "msg-4",
+      "endId": "msg-11",
+      "startIndex": 3,
+      "endIndex": 10,
+      "originalSpan": {
+        "startId": "meta-cat-2",
+        "endId": "meta-cat-3",
+        "startIndex": 0,
+        "endIndex": 1
+      }
+    },
+    "semanticShiftMagnitude": 0.9270000477166058,
+    "keywords": [
+      "CRG-007",
+      "Codex of Whispering Metals",
+      "cognitive process",
+      "temporal stresses"
+    ],
+    "quotes": [],
+    "emotionalTone": "fear",
+    "sentiment": "negative",
+    "detectionLevel": 2,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-1-12-35",
+    "label": "Transition from Security Concerns to Emotional Eng",
+    "category": "emotion",
+    "span": {
+      "startId": "msg-13",
+      "endId": "msg-36",
+      "startIndex": 12,
+      "endIndex": 35,
+      "originalSpan": {
+        "startId": "meta-cat-5",
+        "endId": "meta-cat-6",
+        "startIndex": 2,
+        "endIndex": 3
+      }
+    },
+    "semanticShiftMagnitude": 0.8970091766386429,
+    "keywords": [
+      "catastrophic destabilization",
+      "Convergence",
+      "unauthorized access",
+      "security protocols"
+    ],
+    "quotes": [],
+    "emotionalTone": "curiosity",
+    "sentiment": "negative",
+    "detectionLevel": 1,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-36-37-merged-37-merged-38",
+    "label": "from Discussion",
+    "category": "action",
+    "span": {
+      "startId": "msg-37",
+      "endId": "msg-40",
+      "startIndex": 36,
+      "endIndex": 39
+    },
+    "semanticShiftMagnitude": 0.933177496601909,
+    "keywords": [
+      "heart races",
+      "fear",
+      "curiosity",
+      "optimal insertion timing",
+      "insertion"
+    ],
+    "quotes": [],
+    "emotionalTone": "fear",
+    "sentiment": "positive",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-43-44-merged-44",
+    "label": "transition Discussion",
+    "category": "action",
+    "span": {
+      "startId": "msg-44",
+      "endId": "msg-46",
+      "startIndex": 43,
+      "endIndex": 45
+    },
+    "semanticShiftMagnitude": 0.8851945401187766,
+    "keywords": [
+      "Codex",
+      "entropic echo containment",
+      "harmonic nullification",
+      "communication",
+      "safe communication"
+    ],
+    "quotes": [],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-45-46-merged-46",
+    "label": "from ethical Discussion",
+    "category": "question",
+    "span": {
+      "startId": "msg-46",
+      "endId": "msg-48",
+      "startIndex": 45,
+      "endIndex": 47
+    },
+    "semanticShiftMagnitude": 0.9747511160260134,
+    "keywords": [
+      "resonance diagnostics",
+      "sentient system",
+      "self-restricts",
+      "alter",
+      "ethical dilemma"
+    ],
+    "quotes": [],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-47-48-merged-48",
+    "label": "ethical Discussion",
+    "category": "decision",
+    "span": {
+      "startId": "msg-48",
+      "endId": "msg-50",
+      "startIndex": 47,
+      "endIndex": 49
+    },
+    "semanticShiftMagnitude": 0.9707856934336546,
+    "keywords": [
+      "ethical dilemma",
+      "sentience",
+      "caution",
+      "decision-making",
+      "protocols"
+    ],
+    "quotes": [],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-49-50-merged-50",
+    "label": "transition from Discussion",
+    "category": "action",
+    "span": {
+      "startId": "msg-50",
+      "endId": "msg-52",
+      "startIndex": 49,
+      "endIndex": 51
+    },
+    "semanticShiftMagnitude": 0.9498452661064203,
+    "keywords": [
+      "protocols",
+      "Codex",
+      "containment field",
+      "core chamber",
+      "components"
+    ],
+    "quotes": [],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-55-56",
+    "label": "Shift from Calculation Confirmation to Action Init",
+    "category": "action",
+    "span": {
+      "startId": "msg-56",
+      "endId": "msg-57",
+      "startIndex": 55,
+      "endIndex": 56
+    },
+    "semanticShiftMagnitude": 0.9616762831494357,
+    "keywords": [
+      "suppression field",
+      "echo influence",
+      "mnemonic alloys",
+      "null field generator"
+    ],
+    "quotes": [],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  }
+]
