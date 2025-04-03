@@ -118,7 +118,7 @@ ${dimension === 0
     }
 
 [${dimension === 0
-      ? "Second Message of the two messages being analyzed as a potential turning point in the entire conversation - The content below is all from the author 'ChatGPT'"
+      ? "Second Message of the two messages being analyzed as a potential turning point in the entire conversation"
       : 'Last Turning Point within the Group of Turning Points that encapsulate a single conversation being assessed into a Single, "Meta" Turning Point'
     } ${dimension === 0 ? "Author" : "Source"}: ${afterMessage.author}, ID: "${afterMessage.id}"]
 ${dimension === 0
@@ -192,7 +192,7 @@ export const formResponseFormatSchema = (dimension: number) => ({
         quotes: {
 
           "type": "array",
-          "description": "Quotes from the content to analyze, in which must also comprise of the author name, quotes without the author name (from the message content is invalid). Valid names are Mr. X or Mr. Y.",
+          "description": "Quotes from the content to analyze, in which must also comprise of the author name, quotes without the author name (from the message content is invalid).",
           "items": {
             "type": "string",
            }

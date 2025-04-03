@@ -1,108 +1,123 @@
 [
   {
-    "id": "tp-2-3-10",
-    "label": "Transition from Cognitive Insight to Urgent Action",
+    "id": "tp-4-0-0",
+    "label": "Transition from Material Integrity Concerns to Tem",
     "category": "problem",
     "span": {
-      "startId": "msg-4",
-      "endId": "msg-11",
-      "startIndex": 3,
-      "endIndex": 10,
+      "startId": "msg-1",
+      "endId": "msg-1",
+      "startIndex": 0,
+      "endIndex": 0,
       "originalSpan": {
-        "startId": "meta-cat-2",
-        "endId": "meta-cat-3",
+        "startId": "meta-cat-0",
+        "endId": "meta-cat-1",
         "startIndex": 0,
         "endIndex": 1
       }
     },
-    "semanticShiftMagnitude": 0.9270000477166058,
-    "keywords": [
-      "CRG-007",
-      "Codex of Whispering Metals",
-      "cognitive process",
-      "temporal stresses"
+    "semanticShiftMagnitude": 0.06061673395377668,
+    "keywords": [],
+    "quotes": [
+      "user: **My heart races, Silus.** Fear mixed with intense curiosity.",
+      "assistant: Security mapped. Ward harmonics shifting—key causing interference already.",
+      "Mr. X: Significant insight. Repair efforts interrupt a cognitive rather than mechanical process."
     ],
-    "quotes": [],
-    "emotionalTone": "fear",
-    "sentiment": "negative",
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 4,
+    "significance": 1,
+    "complexityScore": 4.760616733953777
+  },
+  {
+    "id": "tp-2-1-10",
+    "label": "From Technical Analysis to Ethical Considerations ",
+    "category": "insight",
+    "span": {
+      "startId": "msg-2",
+      "endId": "msg-11",
+      "startIndex": 1,
+      "endIndex": 10,
+      "originalSpan": {
+        "startId": "meta-section-1",
+        "endId": "meta-section-2",
+        "startIndex": 3,
+        "endIndex": 4
+      }
+    },
+    "semanticShiftMagnitude": 0.49080772671860623,
+    "keywords": [],
+    "quotes": [
+      "Mr. Y: Exactly! It appears more like phase shifting than mechanical wear. My attempts at temporal stabilization caused a violent backlash. The gear resists standard chronomantic interventions entirely.",
+      "Mr. X: Significant insight. Repair efforts interrupt a cognitive rather than mechanical process."
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
     "detectionLevel": 2,
     "significance": 1,
     "complexityScore": 5
   },
   {
-    "id": "tp-1-12-35",
-    "label": "Transition from Security Concerns to Emotional Eng",
-    "category": "emotion",
+    "id": "tp-1-10-12-merged-12-merged-15-merged-16",
+    "label": "from Discussion",
+    "category": "decision",
     "span": {
-      "startId": "msg-13",
+      "startId": "msg-11",
       "endId": "msg-36",
-      "startIndex": 12,
-      "endIndex": 35,
-      "originalSpan": {
-        "startId": "meta-cat-5",
-        "endId": "meta-cat-6",
-        "startIndex": 2,
-        "endIndex": 3
-      }
+      "startIndex": 10,
+      "endIndex": 35
     },
-    "semanticShiftMagnitude": 0.8970091766386429,
-    "keywords": [
-      "catastrophic destabilization",
-      "Convergence",
-      "unauthorized access",
-      "security protocols"
+    "semanticShiftMagnitude": 0.763775997399057,
+    "keywords": [],
+    "quotes": [
+      "Assistant: **Unauthorized Vault access breaches critical security protocols.** I must formally object.",
+      "Mr. X: We don't have that kind of time. The slippage could cause catastrophic destabilization before the Convergence.",
+      "Mr. Y: **Unauthorized Vault access breaches critical security protocols.** I must formally object."
     ],
-    "quotes": [],
-    "emotionalTone": "curiosity",
+    "emotionalTone": "fear",
     "sentiment": "negative",
     "detectionLevel": 1,
     "significance": 1,
     "complexityScore": 5
   },
   {
-    "id": "tp-0-36-37-merged-37-merged-38",
+    "id": "tp-0-36-37-merged-37-merged-38-merged-39-merged-40-merged-41",
     "label": "from Discussion",
     "category": "action",
     "span": {
       "startId": "msg-37",
-      "endId": "msg-40",
+      "endId": "msg-43",
       "startIndex": 36,
-      "endIndex": 39
+      "endIndex": 42
     },
-    "semanticShiftMagnitude": 0.933177496601909,
-    "keywords": [
-      "heart races",
-      "fear",
-      "curiosity",
-      "optimal insertion timing",
-      "insertion"
+    "semanticShiftMagnitude": 0.8140566910291571,
+    "keywords": [],
+    "quotes": [
+      "My heart races, Silus. Fear mixed with intense curiosity.",
+      "Optimal insertion timing now. Insert key precisely three centimeters, rotate 90 degrees counter-clockwise.",
+      "assistant: Optimal insertion timing now. Insert key precisely three centimeters, rotate 90 degrees counter-clockwise."
     ],
-    "quotes": [],
     "emotionalTone": "fear",
-    "sentiment": "positive",
+    "sentiment": "negative",
     "detectionLevel": 0,
     "significance": 1,
     "complexityScore": 5
   },
   {
-    "id": "tp-0-43-44-merged-44",
-    "label": "transition Discussion",
-    "category": "action",
+    "id": "tp-0-43-44",
+    "label": "Shift from Technical Containment Methods to Ensuri",
+    "category": "decision",
     "span": {
       "startId": "msg-44",
-      "endId": "msg-46",
+      "endId": "msg-45",
       "startIndex": 43,
-      "endIndex": 45
+      "endIndex": 44
     },
-    "semanticShiftMagnitude": 0.8851945401187766,
-    "keywords": [
-      "Codex",
-      "entropic echo containment",
-      "harmonic nullification",
-      "communication",
-      "safe communication"
+    "semanticShiftMagnitude": 0.9798616288298272,
+    "keywords": [],
+    "quotes": [
+      "**Codex text mentions entropic echo containment methods via harmonic nullification.**",
+      "Perfect. Look for safe communication or diagnostic methods."
     ],
-    "quotes": [],
     "emotionalTone": "curiosity",
     "sentiment": "positive",
     "detectionLevel": 0,
@@ -119,15 +134,13 @@
       "startIndex": 45,
       "endIndex": 47
     },
-    "semanticShiftMagnitude": 0.9747511160260134,
-    "keywords": [
-      "resonance diagnostics",
-      "sentient system",
-      "self-restricts",
-      "alter",
-      "ethical dilemma"
+    "semanticShiftMagnitude": 0.9461592768880819,
+    "keywords": [],
+    "quotes": [
+      "Mr. Y: Methods for safe resonance diagnostics confirmed present.",
+      "Mr. X: Do we have the right to alter or repair a potentially sentient system that intentionally self-restricts?",
+      "Mr. Y: Difficult ethical dilemma—data insufficient for definitive answer."
     ],
-    "quotes": [],
     "emotionalTone": "curiosity",
     "sentiment": "positive",
     "detectionLevel": 0,
@@ -144,15 +157,13 @@
       "startIndex": 47,
       "endIndex": 49
     },
-    "semanticShiftMagnitude": 0.9707856934336546,
-    "keywords": [
-      "ethical dilemma",
-      "sentience",
-      "caution",
-      "decision-making",
-      "protocols"
+    "semanticShiftMagnitude": 0.8927944465139979,
+    "keywords": [],
+    "quotes": [
+      "Assistant: Difficult ethical dilemma—data insufficient for definitive answer.",
+      "User: We proceed carefully, respecting possible sentience.",
+      "Mr. X: **We proceed carefully, respecting possible sentience.**"
     ],
-    "quotes": [],
     "emotionalTone": "curiosity",
     "sentiment": "positive",
     "detectionLevel": 0,
@@ -160,24 +171,22 @@
     "complexityScore": 5
   },
   {
-    "id": "tp-0-49-50-merged-50",
-    "label": "transition from Discussion",
+    "id": "tp-0-49-50-merged-50-merged-51",
+    "label": "from Discussion",
     "category": "action",
     "span": {
       "startId": "msg-50",
-      "endId": "msg-52",
+      "endId": "msg-53",
       "startIndex": 49,
-      "endIndex": 51
+      "endIndex": 52
     },
-    "semanticShiftMagnitude": 0.9498452661064203,
-    "keywords": [
-      "protocols",
-      "Codex",
-      "containment field",
-      "core chamber",
-      "components"
+    "semanticShiftMagnitude": 0.96875935299788,
+    "keywords": [],
+    "quotes": [
+      "Assistant: \"Agreed; adjusting protocols accordingly.\"",
+      "User: \"Exiting Vault now; Codex secured. Prepare containment field components near core chamber.\"",
+      "\"Exiting Vault now; Codex secured. Prepare containment field components near core chamber.\" - user"
     ],
-    "quotes": [],
     "emotionalTone": "curiosity",
     "sentiment": "positive",
     "detectionLevel": 0,
@@ -185,23 +194,135 @@
     "complexityScore": 5
   },
   {
-    "id": "tp-0-55-56",
-    "label": "Shift from Calculation Confirmation to Action Init",
+    "id": "tp-0-53-54",
+    "label": "From Technical Specification to Strategic Applicat",
+    "category": "insight",
+    "span": {
+      "startId": "msg-54",
+      "endId": "msg-55",
+      "startIndex": 53,
+      "endIndex": 54
+    },
+    "semanticShiftMagnitude": 0.9265994223814326,
+    "keywords": [],
+    "quotes": [
+      "assistant: Codex specifies a tri-harmonic null field tuned to 3.14, 6.28, and 9.42 petahertz.",
+      "user: That matches the dominant frequency of the entropic echoes."
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-54-55-merged-55",
+    "label": "from Discussion",
     "category": "action",
     "span": {
-      "startId": "msg-56",
+      "startId": "msg-55",
       "endId": "msg-57",
-      "startIndex": 55,
+      "startIndex": 54,
       "endIndex": 56
     },
-    "semanticShiftMagnitude": 0.9616762831494357,
-    "keywords": [
-      "suppression field",
-      "echo influence",
-      "mnemonic alloys",
-      "null field generator"
+    "semanticShiftMagnitude": 0.91343001514096,
+    "keywords": [],
+    "quotes": [
+      "Mr. X: That matches the dominant frequency of the entropic echoes. If we can cancel out their harmonic signature, we may be able to suppress the instability without damaging CRG-007.",
+      "Mr. Y: Calculations confirm suppression field should reduce echo influence by 87%. Residual echo bleed remains possible, but should no longer overload mnemonic alloys.",
+      "Assistant: Calculations confirm suppression field should reduce echo influence by 87%. Residual echo bleed remains possible, but should no longer overload mnemonic alloys."
     ],
-    "quotes": [],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-57-58-merged-58-merged-59-merged-60",
+    "label": "from Discussion",
+    "category": "action",
+    "span": {
+      "startId": "msg-58",
+      "endId": "msg-62",
+      "startIndex": 57,
+      "endIndex": 61
+    },
+    "semanticShiftMagnitude": 0.915397217838447,
+    "keywords": [],
+    "quotes": [
+      "Mr. X: **Warning: interface will expose you to residual chronomantic flux.** Recommend protective incantation layering.",
+      "Mr. Y: Already weaving defensive runes. This gear’s carried so much stress—if we succeed, maybe we can give it peace, not just function.",
+      "user: Already weaving defensive runes. This gear’s carried so much stress—if we succeed, maybe we can give it peace, not just function."
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-61-62-merged-62",
+    "label": "from Discussion",
+    "category": "insight",
+    "span": {
+      "startId": "msg-62",
+      "endId": "msg-64",
+      "startIndex": 61,
+      "endIndex": 63
+    },
+    "semanticShiftMagnitude": 0.901610400725678,
+    "keywords": [],
+    "quotes": [
+      "Mr. Y: Incredible. It's no longer resisting—it’s... harmonizing. Almost like it recognizes the containment as a form of communication.",
+      "Incredible. It's no longer resisting—it’s... harmonizing. Almost like it recognizes the containment as a form of communication. - user",
+      "Mnemonic alloy response patterns show emergent alignment behavior. - assistant"
+    ],
+    "emotionalTone": "surprise",
+    "sentiment": "positive",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-65-66",
+    "label": "From Technical Status to Existential Inquiry about",
+    "category": "question",
+    "span": {
+      "startId": "msg-66",
+      "endId": "msg-67",
+      "startIndex": 65,
+      "endIndex": 66
+    },
+    "semanticShiftMagnitude": 0.9384860351262102,
+    "keywords": [],
+    "quotes": [
+      "Silus, could Vorlag’s echo still linger in the core? Not just as data, but as an active influence?",
+      "Core chamber energy levels are temporarily suppressed but still rising incrementally. Echo activity persists, albeit dampened."
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-67-68-merged-68",
+    "label": "transition from Discussion",
+    "category": "insight",
+    "span": {
+      "startId": "msg-68",
+      "endId": "msg-70",
+      "startIndex": 67,
+      "endIndex": 69
+    },
+    "semanticShiftMagnitude": 0.9067783375216805,
+    "keywords": [],
+    "quotes": [
+      "**Unconfirmed. But the Codex warns of echo 'persistence loops'—temporal residues that can achieve semi-sentient recurrence.** Vorlag's imprint may still exist.",
+      "**Then containment alone isn't enough.** We need a way to dissolve or resolve the echo construct—something beyond nullification.",
+      "Then containment alone isn't enough."
+    ],
     "emotionalTone": "curiosity",
     "sentiment": "positive",
     "detectionLevel": 0,

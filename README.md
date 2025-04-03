@@ -77,6 +77,8 @@ async function runTurningPointDetectorExample() {
     
     // Enable convergence measurement for ARC analysis
     measureConvergence: true,
+
+    
     
     // classificationModel: 'phi-4-mini-Q5_K_M:3.8B',
     classificationModel:'qwen2.5:7b-instruct-q5_k_m',

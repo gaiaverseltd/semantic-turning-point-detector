@@ -968,7 +968,7 @@ export class SemanticTurningPointDetector {
     });
 
     logger.info(
-      `Grouped categories: `,
+      `Grouped categories:\n` +
       JSON.stringify(groupedByCategory, null, 2),
     );
 
@@ -1875,7 +1875,7 @@ async function runTurningPointDetectorExample() {
     // Dynamic configuration based on conversation complexity
     semanticShiftThreshold: 0.75,
     minTokensPerChunk: 1024,
-    maxTokensPerChunk: 8192,
+    maxTokensPerChunk: 16384,
     // uses for now embeddings only from openai
      embeddingModel: "text-embedding-snowflake-arctic-embed-l-v2.0",
 
@@ -1883,8 +1883,8 @@ async function runTurningPointDetectorExample() {
     // ARC framework: dynamic recursion depth based on conversation complexity
     maxRecursionDepth: Math.min(determineRecursiveDepth(conversationPariah), 5),
 
-    onlySignificantTurningPoints: true,
-    significanceThreshold: 0.75,
+    onlySignificantTurningPoints: false,
+    significanceThreshold: 0.6,
 
     // ARC framework: chunk size scales with complexity
     minMessagesPerChunk: Math.ceil(determineRecursiveDepth(conversationPariah) * 3.5),
