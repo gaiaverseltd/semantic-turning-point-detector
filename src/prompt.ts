@@ -81,6 +81,7 @@ export function formUserMessage({
   afterMessage,
   dimension,
   config,
+  addUserInstructions = true,
 }: {
   /** The dimensionlity of the currentl potential turning point, where if dimension > 0, it means that it contains a group of turning points, recursively. */
   dimension: number;
@@ -90,8 +91,11 @@ export function formUserMessage({
   beforeMessage: Message | MetaMessage;
   /** The second message to be analyzed */
   afterMessage: Message | MetaMessage;
+
+  /** Returns only the content to analyze if set to false, defaults to true */
+  addUserInstructions?: boolean;
 }): string {
-  const userMessage =
+  const userMessageStart =
     `
 Analyze the content below to determine the classification and labels as instructed in the previous message. Carefully scrutinize the information provided, and ${
     // When the dimension is greater than 0, we are analyzing the classification of a grouping of two turning points. This scenario provides more relevant contextual information because it consolidates the message content related to the two assessed turning points into a meta-turning point. In contrast, if the dimension is 0, the system context only includes message content from neighboring messages that are outside the two being evaluated. Therefore, the content below will only reference the two turning points without including their associated message content, which is provided in the user message.
@@ -99,8 +103,8 @@ Analyze the content below to determine the classification and labels as instruct
     dimension === 0
       ? "Refer to the contextual information from the system message to assist with your analysis. This information is designed to enhance your understanding of the surrounding messages, but it should not be used as a basis for formulating your response. The relevant content is included below (within this message), which lists the two messages being assessed as potential turning points within the broader conversation."
       : "Refer to the contextual information from the system message to assist with your analysis. This information aims to enhance your understanding of the surrounding turning points outside the two being assessed. Furthermore, the contextual information from the system prompt provides the actual content of messages related to those turning points for your analysis.\n- Use the system context solely to aid in comprehending the task at hand, rather than as a foundation for your response.\n\nThe relevant content below (pertaining to the two turning points) should primarily guide your analysis. You may refer to the system context for the actual conversation messages and their content associated with the two turning points if the provided content below is insufficient for formulating your response:"
-    }\n\n` + // further content below truncated but implemented as added dynamic string
-    `[${dimension === 0
+    }`; // further content below truncated but implemented as added dynamic string
+    const userMessageContent = `[${dimension === 0
       ? "First Message of the two messages being analyzed as a potential turning point in the entire conversation - The content below for this message is all from the author: 'Ziping Liu'"
       : 'First Turning Point within the Group of Turning Points that encapsulate a single conversation being assessed into a Single, "Meta" Turning Point'
     } ${dimension === 0 ? "Author" : "Source"}: ${beforeMessage.author}, ID: "${beforeMessage.id}"]
@@ -122,9 +126,11 @@ ${dimension === 0
         .split("\n")
         .map((line) => `   ${line}`)
         .join("\n")
-    }` +
-
-    `\n\n------ end of content to analyze, now see below for you response instructions and task as a reminder ------\n\n# Response Format and Task Reminder\n- With the given content above, as well as contextual info and in accordance with the system instructions, please ensure your respond only with the instructed response foramt json stringified ojbect, for example:\n\n{ 
+    }` 
+    + `\n\n------ end of content to analyze, now see below for you response instructions and task as a reminder ------\n\n# Response Format and Task Reminder\n- With the given content above, as well as contextual info and in accordance with the system instructions:`;
+    
+    
+    const endUserMessageInstructions = `\n\nPlease respond with a JSON object containing the following fields. Do not include any text outside the JSON object.\n{
     "label": "<YOUR CREATIVE TITLE LABEL HERE> e.g 'Progressing from General Budgets to Budget Concerns', or 'Analysis on the notions of Leadership and Teamwork'",
     "keywords": ["<KEYWORD1>", "<KEYWORD2>", "<KEYWORD3>"],
     "sentiment": "<SENTIMENT HERE>, as one of the following: 'positive', 'negative'",
@@ -142,7 +148,11 @@ ${dimension === 0
       .join(", ")}>"\n` +
     `}\n`;
 
-  return userMessage;
+   if (addUserInstructions) {
+    return userMessageStart + userMessageContent + endUserMessageInstructions;
+  } else {
+    return userMessageContent;
+  }
 }
 
 export const formResponseFormatSchema = (dimension: number) => ({
@@ -170,6 +180,13 @@ export const formResponseFormatSchema = (dimension: number) => ({
           ).join(", ")}.`
 
 
+        },
+
+        sentiment: {
+          type: "string",
+          description:
+            "A sentiment value from one of the following values: 'positive', 'negative'.",
+          enum: ["positive", "negative"],
         },
 
         keywords: {
@@ -202,7 +219,6 @@ export const formResponseFormatSchema = (dimension: number) => ({
         "significance",
         "category",
         "keywords",
-        
         "emotionalTone",
       ],
       additionalProperties: false,

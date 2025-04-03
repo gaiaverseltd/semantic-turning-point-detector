@@ -1,57 +1,80 @@
 [
   {
-    "id": "tp-0-9-10-merged-10",
-    "label": "from Discussion",
-    "category": "action",
+    "id": "tp-0-1-2",
+    "label": "Transition from Material Analysis to Mechanism Res",
+    "category": "insight",
     "span": {
-      "startId": "msg-10",
-      "endId": "msg-12",
-      "startIndex": 9,
-      "endIndex": 11
+      "startId": "msg-2",
+      "endId": "msg-3",
+      "startIndex": 1,
+      "endIndex": 2
     },
-    "semanticShiftMagnitude": 0.9640177514099099,
+    "semanticShiftMagnitude": 0.973877510023795,
     "keywords": [
-      "stress",
       "CRG-007",
-      "Codex of Whispering Metals",
-      "Codex access",
-      "Warden authorization"
+      "anomalous",
+      "iridium-tungsten alloy",
+      "phase shifting"
     ],
     "quotes": [],
     "emotionalTone": "curiosity",
-    "sentiment": "neutral",
+    "sentiment": "positive",
     "detectionLevel": 0,
     "significance": 1,
     "complexityScore": 5
   },
   {
-    "id": "tp-0-11-12-merged-12",
-    "label": "from Discussion",
+    "id": "tp-0-10-11",
+    "label": "Transitioning to Formal Requests for Codex Access",
+    "category": "action",
+    "span": {
+      "startId": "msg-11",
+      "endId": "msg-12",
+      "startIndex": 10,
+      "endIndex": 11
+    },
+    "semanticShiftMagnitude": 0.9663919029555738,
+    "keywords": [
+      "Codex of Whispering Metals",
+      "CRG-007",
+      "formal request",
+      "Noctua Vault"
+    ],
+    "quotes": [],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-12-13-merged-13",
+    "label": "transition from objection Discussion",
     "category": "objection",
     "span": {
-      "startId": "msg-12",
-      "endId": "msg-14",
-      "startIndex": 11,
-      "endIndex": 13
+      "startId": "msg-13",
+      "endId": "msg-15",
+      "startIndex": 12,
+      "endIndex": 14
     },
-    "semanticShiftMagnitude": 0.9867966272920898,
+    "semanticShiftMagnitude": 0.9641911465036666,
     "keywords": [
-      "formal request",
-      "time constraint",
+      "time",
+      "slippage",
       "catastrophic destabilization",
-      "time pressure",
+      "Unauthorized Vault access",
       "unauthorized access"
     ],
     "quotes": [],
     "emotionalTone": "fear",
-    "sentiment": "neutral",
+    "sentiment": "negative",
     "detectionLevel": 0,
     "significance": 1,
     "complexityScore": 5
   },
   {
     "id": "tp-0-20-21",
-    "label": "Transition to Analyzing Echo-CRG-007 Stress Correl",
+    "label": "Exploring Internal Stressors: From Echoes to Analy",
     "category": "question",
     "span": {
       "startId": "msg-21",
@@ -59,98 +82,122 @@
       "startIndex": 20,
       "endIndex": 21
     },
-    "semanticShiftMagnitude": 0.9844228480533453,
+    "semanticShiftMagnitude": 0.9814244285496675,
     "keywords": [
       "negative entropy",
       "echoes",
-      "stress",
-      "correlation"
+      "CRG-007",
+      "stress"
     ],
     "quotes": [],
     "emotionalTone": "curiosity",
-    "sentiment": "neutral",
+    "sentiment": "negative",
     "detectionLevel": 0,
     "significance": 1,
     "complexityScore": 5
   },
   {
-    "id": "tp-0-28-29-merged-29-merged-30",
-    "label": "from Discussion",
+    "id": "tp-0-21-22-merged-22",
+    "label": "Transition from Analysis to Confirmation of Echo F / Revelation of the",
     "category": "insight",
     "span": {
-      "startId": "msg-29",
-      "endId": "msg-32",
-      "startIndex": 28,
-      "endIndex": 31
+      "startId": "msg-22",
+      "endId": "msg-24",
+      "startIndex": 21,
+      "endIndex": 23
     },
-    "semanticShiftMagnitude": 0.9700595320263968,
+    "semanticShiftMagnitude": 0.9646029154990271,
     "keywords": [
-      "Orrery",
-      "timelines",
-      "restoration ethics",
-      "CRG-007 damage",
-      "star omissions"
+      "echo frequencies",
+      "memory-etching",
+      "correlation",
+      "confirmation",
+      "temporal echoes"
     ],
     "quotes": [],
     "emotionalTone": "curiosity",
-    "sentiment": "neutral",
+    "sentiment": "positive",
     "detectionLevel": 0,
     "significance": 1,
     "complexityScore": 5
   },
   {
-    "id": "tp-0-35-36-merged-36",
-    "label": "instructions Discussion",
-    "category": "emotion",
-    "span": {
-      "startId": "msg-36",
-      "endId": "msg-38",
-      "startIndex": 35,
-      "endIndex": 37
-    },
-    "semanticShiftMagnitude": 0.9947760240419874,
-    "keywords": [
-      "heart races",
-      "Silus",
-      "curiosity",
-      "fear",
-      "intense curiosity"
-    ],
-    "quotes": [],
-    "emotionalTone": "fear",
-    "sentiment": "neutral",
-    "detectionLevel": 0,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-38-39-merged-39",
-    "label": "transition from Discussion",
+    "id": "tp-0-33-34-merged-34",
+    "label": "from Discussion",
     "category": "action",
     "span": {
-      "startId": "msg-39",
-      "endId": "msg-41",
-      "startIndex": 38,
-      "endIndex": 40
+      "startId": "msg-34",
+      "endId": "msg-36",
+      "startIndex": 33,
+      "endIndex": 35
     },
-    "semanticShiftMagnitude": 0.96174973352284,
+    "semanticShiftMagnitude": 0.9567067288138682,
     "keywords": [
-      "access granted",
-      "proceed cautiously",
-      "retracting",
-      "knowledge is paramount",
-      "approaching Codex"
+      "mission",
+      "understanding",
+      "Codex",
+      "Noctua Vault",
+      "bypass key"
     ],
     "quotes": [],
-    "emotionalTone": "delight",
-    "sentiment": "neutral",
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-36-37-merged-37-merged-38-merged-39",
+    "label": "transition from Discussion / Transitioning to the Encounter with the C",
+    "category": "action",
+    "span": {
+      "startId": "msg-37",
+      "endId": "msg-41",
+      "startIndex": 36,
+      "endIndex": 40
+    },
+    "semanticShiftMagnitude": 0.9601652861693948,
+    "keywords": [
+      "fear",
+      "curiosity",
+      "timing",
+      "action",
+      "insertion"
+    ],
+    "quotes": [],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-43-44",
+    "label": "Transition from Containment Methods to Diagnostic ",
+    "category": "decision",
+    "span": {
+      "startId": "msg-44",
+      "endId": "msg-45",
+      "startIndex": 43,
+      "endIndex": 44
+    },
+    "semanticShiftMagnitude": 0.9798616288298272,
+    "keywords": [
+      "Codex",
+      "entropic echo",
+      "containment methods",
+      "harmonic nullification"
+    ],
+    "quotes": [],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
     "detectionLevel": 0,
     "significance": 1,
     "complexityScore": 5
   },
   {
     "id": "tp-0-45-46-merged-46",
-    "label": "from ethical Discussion",
+    "label": "Transition from Technical Assurance to Ethical Con / Navigating the Et",
     "category": "question",
     "span": {
       "startId": "msg-46",
@@ -158,65 +205,17 @@
       "startIndex": 45,
       "endIndex": 47
     },
-    "semanticShiftMagnitude": 0.9657235027421611,
+    "semanticShiftMagnitude": 0.9461592768880819,
     "keywords": [
-      "sentient",
-      "alter",
-      "repair",
-      "self-restrict",
+      "resonance diagnostics",
+      "sentient system",
+      "self-restricts",
+      "ethics",
       "sentience"
     ],
     "quotes": [],
     "emotionalTone": "curiosity",
-    "sentiment": "neutral",
-    "detectionLevel": 0,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-48-49-merged-49",
-    "label": "transition protocol adjustment Discussion",
-    "category": "action",
-    "span": {
-      "startId": "msg-49",
-      "endId": "msg-51",
-      "startIndex": 48,
-      "endIndex": 50
-    },
-    "semanticShiftMagnitude": 0.9722062069598121,
-    "keywords": [
-      "sentience",
-      "protocols",
-      "Codex secured",
-      "Prepare containment field components",
-      "Exiting Vault"
-    ],
-    "quotes": [],
-    "emotionalTone": "respect",
-    "sentiment": "neutral",
-    "detectionLevel": 0,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-55-56",
-    "label": "Transition from Technical Analysis to Action Plan",
-    "category": "action",
-    "span": {
-      "startId": "msg-56",
-      "endId": "msg-57",
-      "startIndex": 55,
-      "endIndex": 56
-    },
-    "semanticShiftMagnitude": 0.979249305756846,
-    "keywords": [
-      "null field generator",
-      "CRG-007",
-      "initialize"
-    ],
-    "quotes": [],
-    "emotionalTone": "confidence",
-    "sentiment": "neutral",
+    "sentiment": "negative",
     "detectionLevel": 0,
     "significance": 1,
     "complexityScore": 5
@@ -231,16 +230,17 @@
       "startIndex": 63,
       "endIndex": 64
     },
-    "semanticShiftMagnitude": 0.9687356917795422,
+    "semanticShiftMagnitude": 0.9731447740831884,
     "keywords": [
-      "calm",
+      "mnemonic alloy",
+      "emergent alignment",
       "entropic echoes",
-      "root cause",
-      "core chamber"
+      "core chamber",
+      "root cause"
     ],
     "quotes": [],
     "emotionalTone": "curiosity",
-    "sentiment": "neutral",
+    "sentiment": "negative",
     "detectionLevel": 0,
     "significance": 1,
     "complexityScore": 5

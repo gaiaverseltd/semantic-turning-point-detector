@@ -13,7 +13,16 @@ const logger = winston.createLogger({
   ),
   transports: [
     new winston.transports.Console({
-      format: winston.format.simple()
+ 
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.timestamp(
+          { format: 'YYYY-MM-DD HH:mm:ss' }
+        ),
+        winston.format.printf(({ timestamp, level, message }) => {
+          return `${timestamp} ${level}: ${message}`;
+        })
+      )
     }),
     new winston.transports.File({
       filename: 'results/semanticTurningPointDetector.log',
@@ -193,6 +202,21 @@ export interface TurningPointDetectorConfig {
   /** Enable convergence measurement across iterations */
   measureConvergence: boolean;
 
+  customResponseFormatJsonSchema?: ResponseFormatJSONSchema;
+
+  /** Inject a custom system instruction into the LLM prompt, not recommended unless you know what you are doing 
+   * - Will repeat your system instruction after the contextual aid text, and before the system prompt ending.
+   * - This enforces and reminds the llm of the task, which may become blured from the contextual aid text.
+  */
+  customSystemInstruction?: string;
+
+  /**
+   * Inject a custom user message into the LLM prompt, in which the analysis content is added as context.
+   * - Not recommended unless you know what you are doing.
+   * - Repeats your custom user message after the system prompt ending.
+   */
+  customUserInstruction?: string;
+
   /** The maximum number of characters to use when adding a message content as context to analyze */
   max_character_length?: number;
 
@@ -297,7 +321,7 @@ export class SemanticTurningPointDetector {
     });
 
     if (this.config.debug) {
-      console.log('[TurningPointDetector] Initialized with config:', {
+      logger.info('[TurningPointDetector] Initialized with config:', {
         ...this.config,
         apiKey: '[REDACTED]'
       });
@@ -686,12 +710,7 @@ export class SemanticTurningPointDetector {
     index: number = 0
   ): Promise<TurningPoint> {
 
-    let originalSpan = {
-      startIndex: 0,
-      endIndex: 0,
-      startMessageId: "",
-      endMessageId: "",
-    };
+ 
     let span: MessageSpan;
 
     if (dimension > 0) {
@@ -740,8 +759,10 @@ export class SemanticTurningPointDetector {
       config: this.config,
       afterMessage,
       beforeMessage,
-      dimension
+      dimension,
+      addUserInstructions: this.config.customUserInstruction && this.config.customUserInstruction.length > 0 ? true : false,
     })
+    
     const contextualAidText = this.prepareContextualInfoMeta(
       beforeMessage,
       afterMessage,
@@ -758,10 +779,14 @@ export class SemanticTurningPointDetector {
         messages: [
           {
             role: 'system', content:
-              `${systemPrompt}\n\n${contextualAidText}\n------- end of contextual background info see below as reminder of instructions -------\n\n${formSystemPromptEnding(dimension)}`,
+              `${
+              this.config.customSystemInstruction ? this.config.customSystemInstruction : systemPrompt
+              }\n\n${contextualAidText}\n------- end of contextual background info see below as reminder of instructions -------\n\n${
+                this.config.customSystemInstruction ? this.config.customSystemInstruction : formSystemPromptEnding(dimension)
+              }`,
 
           },
-          { role: 'user', content: userMessage }
+          { role: 'user', content: this.config.customUserInstruction ? `${this.config.customUserInstruction}\n\n${userMessage}\n\n${this.config.customUserInstruction}` : userMessage },
         ],
  
 
@@ -1684,16 +1709,7 @@ ${Array.from(new Set(sectionPoints.flatMap(tp => tp.keywords || []))).slice(0, 1
     }
     return total;
   }
-
-  /**
-   * Log debug messages if debug mode is enabled (Using original logic)
-   */
-  private log(...args: any[]): void {
-    if (this.config.debug) {
-      const timestamp = new Date().toLocaleTimeString(); // Add timestamp for clarity
-      console.log(`[TPDetector ${timestamp}]`, ...args);
-    }
-  }
+ 
 
   /**
    * Get the convergence history for analysis (Using original logic)
@@ -1884,7 +1900,7 @@ async function runTurningPointDetectorExample() {
     apiKey: process.env.OPENAI_API_KEY || '',
 
     // Dynamic configuration based on conversation complexity
-    semanticShiftThreshold: 0.9,
+    semanticShiftThreshold: 0.75,
     minTokensPerChunk: 1024,
     maxTokensPerChunk: 8192,
     // uses for now embeddings only from openai
@@ -1912,13 +1928,13 @@ async function runTurningPointDetectorExample() {
 
 
     // classificationModel: 'phi-4-mini-Q5_K_M:3.8B',
-    classificationModel: 'qwen2.5:14b-instruct-q6_K',
+    classificationModel: 'gpt-4o-mini',
     // e.g. llmstudio or ollama
     embeddingEndpoint: 'http://127.0.0.1:7756/v1',
 
     debug: true,
     // ollama
-    endpoint: 'http://10.3.28.24:7223/v1',
+    // endpoint: 'http://10.3.28.24:7223/v1',
     // or lmstudio
     // endpoint: 'http://localhost:7756/v1'
   });
@@ -1932,39 +1948,37 @@ async function runTurningPointDetectorExample() {
     const difference = endTime - startTime;
     const formattedTimeDateDiff = new Date(difference).toISOString().slice(11, 19);
 
-    console.log(`\nTurning point detection took as MM:SS: ${formattedTimeDateDiff} for ${tokensInConvoFile} tokens in the conversation`);
+    logger.info(`\nTurning point detection took as MM:SS: ${formattedTimeDateDiff} for ${tokensInConvoFile} tokens in the conversation`);
 
     // Display results with complexity scores from the ARC framework
-    console.log('\n=== DETECTED TURNING POINTS (ARC/CRA Framework) ===\n');
+    logger.info('\n=== DETECTED TURNING POINTS (ARC/CRA Framework) ===\n');
 
     turningPoints.forEach((tp, i) => {
-      console.log(`${i + 1}. ${tp.label} (${tp.category})`);
-      console.log(`   Messages: "${tp.span.startId}" → "${tp.span.endId}"`);
-      console.log(`   Dimension: n=${tp.detectionLevel}`);
-      console.log(`   Complexity Score: ${tp.complexityScore.toFixed(2)} of 5`);
-      console.log(`   Emotion: ${tp.emotionalTone || 'unknown'}`);
-      console.log(`   Semantic Shift Magnitude: ${tp.semanticShiftMagnitude.toFixed(2)}`);
-    
-      console.log(`   Significance: ${tp.significance.toFixed(2)}`);
-      console.log(`   Keywords: ${tp.keywords?.join(', ') || 'none'}`);
+      logger.info(`${i + 1}. ${tp.label} (${tp.category})`);
+      logger.info(`   Messages: "${tp.span.startId}" → "${tp.span.endId}"`);
+      logger.info(`   Dimension: n=${tp.detectionLevel}`);
+      logger.info(`   Complexity Score: ${tp.complexityScore.toFixed(2)} of 5`);
+      logger.info(`   Emotional Tone: ${tp.emotionalTone || 'unknown'}`);
+      logger.info(`   Semantic Shift Magnitude: ${tp.semanticShiftMagnitude.toFixed(2)}`);
+      logger.info(`   Sentiment: ${tp.sentiment || 'unknown'}`);
+      logger.info(`   Significance: ${tp.significance.toFixed(2)}`);
+      logger.info(`   Keywords: ${tp.keywords?.join(', ') || 'none'}`);
 
-      if (tp.quotes?.length) {
-        console.log(`   Notable quotes:\n${tp.quotes.flatMap(q => `- "${q}"`).join('\n')}`);
-      }
-      console.log();
+ 
+    
     });
 
     // Get and display convergence history to demonstrate the ARC framework
     const convergenceHistory = detector.getConvergenceHistory();
 
-    console.log('\n=== ARC/CRA FRAMEWORK CONVERGENCE ANALYSIS ===\n');
+    logger.info('\n=== ARC/CRA FRAMEWORK CONVERGENCE ANALYSIS ===\n');
     convergenceHistory.forEach((state, i) => {
-      console.log(`Iteration ${i + 1}:`);
-      console.log(`  Dimension: n=${state.dimension}`);
-      console.log(`  Convergence Distance: ${state.distanceMeasure.toFixed(3)}`);
-      console.log(`  Dimensional Escalation: ${state.didEscalate ? 'Yes' : 'No'}`);
-      console.log(`  Turning Points: ${state.currentTurningPoints.length}`);
-      console.log();
+      logger.info(`Iteration ${i + 1}:`);
+      logger.info(`  Dimension: n=${state.dimension}`);
+      logger.info(`  Convergence Distance: ${state.distanceMeasure.toFixed(3)}`);
+      logger.info(`  Dimensional Escalation: ${state.didEscalate ? 'Yes' : 'No'}`);
+      logger.info(`  Turning Points: ${state.currentTurningPoints.length}`);
+    
     });
 
     // Save turning points to file
@@ -1973,7 +1987,7 @@ async function runTurningPointDetectorExample() {
     // Also save convergence analysis
     fs.writeJSONSync('results/convergence_analysis.json', convergenceHistory, { spaces: 2, encoding: 'utf-8' });
 
-    console.log('Results saved to files.');
+    logger.info('Results saved to files.');
   } catch (err) {
     console.error('Error detecting turning points:', err);
   }
