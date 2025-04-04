@@ -1,11 +1,11 @@
 [
   {
     "id": "tp-4-0-0",
-    "label": "Transition from Material Integrity Concerns to Tem",
-    "category": "problem",
+    "label": "From Heat Discussion to Philosophical Reflection o",
+    "category": "meta-reflection",
     "span": {
-      "startId": "msg-1",
-      "endId": "msg-1",
+      "startId": 0,
+      "endId": 0,
       "startIndex": 0,
       "endIndex": 0,
       "originalSpan": {
@@ -15,86 +15,213 @@
         "endIndex": 1
       }
     },
-    "semanticShiftMagnitude": 0.06061673395377668,
+    "semanticShiftMagnitude": 0.3718695392207094,
     "keywords": [],
     "quotes": [
-      "user: **My heart races, Silus.** Fear mixed with intense curiosity.",
-      "assistant: Security mapped. Ward harmonics shifting—key causing interference already.",
-      "Mr. X: Significant insight. Repair efforts interrupt a cognitive rather than mechanical process."
+      "MR. X: Humph, I should of course have the whole thing smelted, and then I should have it cast into ducats--full weight, of course--",
+      "MR. Y: Of course!",
+      "MR. X: That goes without saying. If I wanted to make counterfeit money--well, it wouldn't be necessary to dig the gold first. [Pause.] It's remarkable, nevertheless, that if some one were to do what I can't bring myself to do, I should acquit him. But I should not be able to acquit myself. I should be able to put up a brilliant defense for the thief; prove that this gold was res nullius, or no one's, and that it got into the earth before there were any land rights; that even now it belongs to no one but the first comer, as the owner had never accounted it part of his property, and so on."
     ],
     "emotionalTone": "curiosity",
-    "sentiment": "positive",
+    "sentiment": "negative",
     "detectionLevel": 4,
-    "significance": 1,
-    "complexityScore": 4.760616733953777
-  },
-  {
-    "id": "tp-2-1-10",
-    "label": "From Technical Analysis to Ethical Considerations ",
-    "category": "insight",
-    "span": {
-      "startId": "msg-2",
-      "endId": "msg-11",
-      "startIndex": 1,
-      "endIndex": 10,
-      "originalSpan": {
-        "startId": "meta-section-1",
-        "endId": "meta-section-2",
-        "startIndex": 3,
-        "endIndex": 4
-      }
-    },
-    "semanticShiftMagnitude": 0.49080772671860623,
-    "keywords": [],
-    "quotes": [
-      "Mr. Y: Exactly! It appears more like phase shifting than mechanical wear. My attempts at temporal stabilization caused a violent backlash. The gear resists standard chronomantic interventions entirely.",
-      "Mr. X: Significant insight. Repair efforts interrupt a cognitive rather than mechanical process."
-    ],
-    "emotionalTone": "curiosity",
-    "sentiment": "positive",
-    "detectionLevel": 2,
     "significance": 1,
     "complexityScore": 5
   },
   {
-    "id": "tp-1-10-12-merged-12-merged-15-merged-16",
-    "label": "from Discussion",
-    "category": "decision",
+    "id": "tp-4-0-42",
+    "label": "From Curiosity to Revelation: Exploring Trust and ",
+    "category": "insight",
     "span": {
-      "startId": "msg-11",
-      "endId": "msg-36",
-      "startIndex": 10,
-      "endIndex": 35
+      "startId": 0,
+      "endId": 42,
+      "startIndex": 0,
+      "endIndex": 42,
+      "originalSpan": {
+        "startId": "meta-cat-2",
+        "endId": "meta-cat-3",
+        "startIndex": 0,
+        "endIndex": 1
+      }
     },
-    "semanticShiftMagnitude": 0.763775997399057,
+    "semanticShiftMagnitude": 0.8779681328389027,
     "keywords": [],
     "quotes": [
-      "Assistant: **Unauthorized Vault access breaches critical security protocols.** I must formally object.",
-      "Mr. X: We don't have that kind of time. The slippage could cause catastrophic destabilization before the Convergence.",
-      "Mr. Y: **Unauthorized Vault access breaches critical security protocols.** I must formally object."
+      "MR. X: It's plain to be seen.",
+      "MR. Y: How--do--you--know--that?",
+      "MR. Y: Yes? What makes you think so?"
     ],
-    "emotionalTone": "fear",
+    "emotionalTone": "surprise",
+    "sentiment": "negative",
+    "detectionLevel": 4,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-3-42-46",
+    "label": "From Silent Tension to Revelation and Accusation",
+    "category": "revelation",
+    "span": {
+      "startId": 42,
+      "endId": 46,
+      "startIndex": 42,
+      "endIndex": 46,
+      "originalSpan": {
+        "startId": "meta-cat-4",
+        "endId": "meta-cat-5",
+        "startIndex": 0,
+        "endIndex": 1
+      }
+    },
+    "semanticShiftMagnitude": 0.530125653821182,
+    "keywords": [],
+    "quotes": [
+      "MR. X: Yes, indeed.",
+      "MR. X: Sit still. Why can't you sit quietly.",
+      "MR. Y: [Stops as if transfixed. Regards Mr. X. at first with wild hatred, them with surprise and wonderment.] How--do--you--know--that?"
+    ],
+    "emotionalTone": "surprise",
+    "sentiment": "negative",
+    "detectionLevel": 3,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-2-46-49",
+    "label": "From Accusation to Revelation of Past Crimes",
+    "category": "revelation",
+    "span": {
+      "startId": 46,
+      "endId": 49,
+      "startIndex": 46,
+      "endIndex": 49,
+      "originalSpan": {
+        "startId": "meta-cat-7",
+        "endId": "meta-cat-8",
+        "startIndex": 2,
+        "endIndex": 3
+      }
+    },
+    "semanticShiftMagnitude": 0.048649045739486016,
+    "keywords": [],
+    "quotes": [
+      "MR. X: It's plain to be seen.",
+      "MR. Y: How--do--you--know--that?",
+      "MR. Y: You were too cowardly, just as you were too cowardly to tell your wife that she is married to a murderer."
+    ],
+    "emotionalTone": "surprise",
+    "sentiment": "negative",
+    "detectionLevel": 2,
+    "significance": 1,
+    "complexityScore": 4.748649045739486
+  },
+  {
+    "id": "tp-1-49-69-merged-49",
+    "label": "from Discussion",
+    "category": "revelation",
+    "span": {
+      "startId": 49,
+      "endId": 69,
+      "startIndex": 49,
+      "endIndex": 69
+    },
+    "semanticShiftMagnitude": 0.9354805627566507,
+    "keywords": [],
+    "quotes": [
+      "MR. Y: Can I go?",
+      "MR. X: Now you shall go--immediately. Your things will follow you.",
+      "MR. X: Well, you see, that's what bothers me, that's what bothers me. Don't you suppose that each one of us has a skeleton in his closet? Yes, indeed! Well, there are people who continue to be children all their lives, so that they cannot control their lawless desires. Whenever the opportunity comes, the criminal is ready. But I cannot understand why you do not feel innocent. As the child is considered irresponsible, the criminal should be considered so too. It's strange--well, it doesn't matter; I'll regret it later. [Pause.] I killed a man once, and I never had any scruples."
+    ],
+    "emotionalTone": "surprise",
     "sentiment": "negative",
     "detectionLevel": 1,
     "significance": 1,
     "complexityScore": 5
   },
   {
-    "id": "tp-0-36-37-merged-37-merged-38-merged-39-merged-40-merged-41",
-    "label": "from Discussion",
-    "category": "action",
+    "id": "tp-1-69-110-merged-110",
+    "label": "from from Discussion",
+    "category": "problem",
     "span": {
-      "startId": "msg-37",
-      "endId": "msg-43",
-      "startIndex": 36,
-      "endIndex": 42
+      "startId": 69,
+      "endId": 110,
+      "startIndex": 69,
+      "endIndex": 110
     },
-    "semanticShiftMagnitude": 0.8140566910291571,
+    "semanticShiftMagnitude": 0.9653423394325767,
     "keywords": [],
     "quotes": [
-      "My heart races, Silus. Fear mixed with intense curiosity.",
-      "Optimal insertion timing now. Insert key precisely three centimeters, rotate 90 degrees counter-clockwise.",
-      "assistant: Optimal insertion timing now. Insert key precisely three centimeters, rotate 90 degrees counter-clockwise."
+      "MR. Y: No, I haven't.",
+      "MR. X: Well, you see, that's what bothers me, that's what bothers me. Don't you suppose that each one of us has a skeleton in his closet? Yes, indeed! Well, there are people who continue to be children all their lives, so that they cannot control their lawless desires. Whenever the opportunity comes, the criminal is ready. But I cannot understand why you do not feel innocent. As the child is considered irresponsible, the criminal should be considered so too. It's strange--well, it doesn't matter; I'll regret it later. [Pause.] I killed a man once, and I never had any scruples.",
+      "MR. Y: Six thousand crowns."
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "negative",
+    "detectionLevel": 1,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-110-111-merged-111",
+    "label": "Shift from Legal Justification to Personal Demand / Revelation of Blac",
+    "category": "problem",
+    "span": {
+      "startId": 110,
+      "endId": 112,
+      "startIndex": 110,
+      "endIndex": 112
+    },
+    "semanticShiftMagnitude": 0.9674585696528036,
+    "keywords": [],
+    "quotes": [
+      "MR. X: Legitimate? The law decrees that a man's life is worth at the minimum fifty crowns. But as the deceased had no relatives, there's nothing to be said on that score.",
+      "MR. Y: Humph, you will not understand? Then I must speak more plainly. It is to me that you are to pay the fine.",
+      "MR. X: I've never heard that a homicide should pay a fine to a forger, and there is also no accuser."
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-112-113-merged-113",
+    "label": "Acknowledgment of Blackmail / Transition from Admission to Accusation ",
+    "category": "insight",
+    "span": {
+      "startId": 112,
+      "endId": 114,
+      "startIndex": 112,
+      "endIndex": 114
+    },
+    "semanticShiftMagnitude": 0.9846115981741844,
+    "keywords": [],
+    "quotes": [
+      "MR. X: I've never heard that a homicide should pay a fine to a forger, and there is also no accuser.",
+      "MR. Y: No? Yes, you have me.",
+      "MR. X: Ah, now things are beginning to clear up. How much do you ask to become accomplice to the homicide?"
+    ],
+    "emotionalTone": "surprise",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-115-116",
+    "label": "Demand for Money Escalates to Moral Dilemma",
+    "category": "problem",
+    "span": {
+      "startId": 115,
+      "endId": 116,
+      "startIndex": 115,
+      "endIndex": 116
+    },
+    "semanticShiftMagnitude": 0.9718415687191428,
+    "keywords": [],
+    "quotes": [
+      "MR. Y: Six thousand crowns.",
+      "MR. X: That's too much. Where am I to get it? [Mr. Y. points to the case.] I don't want to do that, I don't want to become a thief."
     ],
     "emotionalTone": "fear",
     "sentiment": "negative",
@@ -103,202 +230,20 @@
     "complexityScore": 5
   },
   {
-    "id": "tp-0-43-44",
-    "label": "Shift from Technical Containment Methods to Ensuri",
-    "category": "decision",
-    "span": {
-      "startId": "msg-44",
-      "endId": "msg-45",
-      "startIndex": 43,
-      "endIndex": 44
-    },
-    "semanticShiftMagnitude": 0.9798616288298272,
-    "keywords": [],
-    "quotes": [
-      "**Codex text mentions entropic echo containment methods via harmonic nullification.**",
-      "Perfect. Look for safe communication or diagnostic methods."
-    ],
-    "emotionalTone": "curiosity",
-    "sentiment": "positive",
-    "detectionLevel": 0,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-45-46-merged-46",
-    "label": "from ethical Discussion",
-    "category": "question",
-    "span": {
-      "startId": "msg-46",
-      "endId": "msg-48",
-      "startIndex": 45,
-      "endIndex": 47
-    },
-    "semanticShiftMagnitude": 0.9461592768880819,
-    "keywords": [],
-    "quotes": [
-      "Mr. Y: Methods for safe resonance diagnostics confirmed present.",
-      "Mr. X: Do we have the right to alter or repair a potentially sentient system that intentionally self-restricts?",
-      "Mr. Y: Difficult ethical dilemma—data insufficient for definitive answer."
-    ],
-    "emotionalTone": "curiosity",
-    "sentiment": "positive",
-    "detectionLevel": 0,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-47-48-merged-48",
-    "label": "ethical Discussion",
-    "category": "decision",
-    "span": {
-      "startId": "msg-48",
-      "endId": "msg-50",
-      "startIndex": 47,
-      "endIndex": 49
-    },
-    "semanticShiftMagnitude": 0.8927944465139979,
-    "keywords": [],
-    "quotes": [
-      "Assistant: Difficult ethical dilemma—data insufficient for definitive answer.",
-      "User: We proceed carefully, respecting possible sentience.",
-      "Mr. X: **We proceed carefully, respecting possible sentience.**"
-    ],
-    "emotionalTone": "curiosity",
-    "sentiment": "positive",
-    "detectionLevel": 0,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-49-50-merged-50-merged-51",
-    "label": "from Discussion",
-    "category": "action",
-    "span": {
-      "startId": "msg-50",
-      "endId": "msg-53",
-      "startIndex": 49,
-      "endIndex": 52
-    },
-    "semanticShiftMagnitude": 0.96875935299788,
-    "keywords": [],
-    "quotes": [
-      "Assistant: \"Agreed; adjusting protocols accordingly.\"",
-      "User: \"Exiting Vault now; Codex secured. Prepare containment field components near core chamber.\"",
-      "\"Exiting Vault now; Codex secured. Prepare containment field components near core chamber.\" - user"
-    ],
-    "emotionalTone": "curiosity",
-    "sentiment": "positive",
-    "detectionLevel": 0,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-53-54",
-    "label": "From Technical Specification to Strategic Applicat",
+    "id": "tp-0-117-118",
+    "label": "Accusation to Self-Reflection on Trust",
     "category": "insight",
     "span": {
-      "startId": "msg-54",
-      "endId": "msg-55",
-      "startIndex": 53,
-      "endIndex": 54
+      "startId": 117,
+      "endId": 118,
+      "startIndex": 117,
+      "endIndex": 118
     },
-    "semanticShiftMagnitude": 0.9265994223814326,
+    "semanticShiftMagnitude": 0.8008774322236216,
     "keywords": [],
     "quotes": [
-      "assistant: Codex specifies a tri-harmonic null field tuned to 3.14, 6.28, and 9.42 petahertz.",
-      "user: That matches the dominant frequency of the entropic echoes."
-    ],
-    "emotionalTone": "curiosity",
-    "sentiment": "positive",
-    "detectionLevel": 0,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-54-55-merged-55",
-    "label": "from Discussion",
-    "category": "action",
-    "span": {
-      "startId": "msg-55",
-      "endId": "msg-57",
-      "startIndex": 54,
-      "endIndex": 56
-    },
-    "semanticShiftMagnitude": 0.91343001514096,
-    "keywords": [],
-    "quotes": [
-      "Mr. X: That matches the dominant frequency of the entropic echoes. If we can cancel out their harmonic signature, we may be able to suppress the instability without damaging CRG-007.",
-      "Mr. Y: Calculations confirm suppression field should reduce echo influence by 87%. Residual echo bleed remains possible, but should no longer overload mnemonic alloys.",
-      "Assistant: Calculations confirm suppression field should reduce echo influence by 87%. Residual echo bleed remains possible, but should no longer overload mnemonic alloys."
-    ],
-    "emotionalTone": "curiosity",
-    "sentiment": "positive",
-    "detectionLevel": 0,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-57-58-merged-58-merged-59-merged-60",
-    "label": "from Discussion",
-    "category": "action",
-    "span": {
-      "startId": "msg-58",
-      "endId": "msg-62",
-      "startIndex": 57,
-      "endIndex": 61
-    },
-    "semanticShiftMagnitude": 0.915397217838447,
-    "keywords": [],
-    "quotes": [
-      "Mr. X: **Warning: interface will expose you to residual chronomantic flux.** Recommend protective incantation layering.",
-      "Mr. Y: Already weaving defensive runes. This gear’s carried so much stress—if we succeed, maybe we can give it peace, not just function.",
-      "user: Already weaving defensive runes. This gear’s carried so much stress—if we succeed, maybe we can give it peace, not just function."
-    ],
-    "emotionalTone": "curiosity",
-    "sentiment": "positive",
-    "detectionLevel": 0,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-61-62-merged-62",
-    "label": "from Discussion",
-    "category": "insight",
-    "span": {
-      "startId": "msg-62",
-      "endId": "msg-64",
-      "startIndex": 61,
-      "endIndex": 63
-    },
-    "semanticShiftMagnitude": 0.901610400725678,
-    "keywords": [],
-    "quotes": [
-      "Mr. Y: Incredible. It's no longer resisting—it’s... harmonizing. Almost like it recognizes the containment as a form of communication.",
-      "Incredible. It's no longer resisting—it’s... harmonizing. Almost like it recognizes the containment as a form of communication. - user",
-      "Mnemonic alloy response patterns show emergent alignment behavior. - assistant"
-    ],
-    "emotionalTone": "surprise",
-    "sentiment": "positive",
-    "detectionLevel": 0,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-65-66",
-    "label": "From Technical Status to Existential Inquiry about",
-    "category": "question",
-    "span": {
-      "startId": "msg-66",
-      "endId": "msg-67",
-      "startIndex": 65,
-      "endIndex": 66
-    },
-    "semanticShiftMagnitude": 0.9384860351262102,
-    "keywords": [],
-    "quotes": [
-      "Silus, could Vorlag’s echo still linger in the core? Not just as data, but as an active influence?",
-      "Core chamber energy levels are temporarily suppressed but still rising incrementally. Echo activity persists, albeit dampened."
+      "MR. Y: Don't pretend. Do you want me to believe that you haven't dipped into that case before now?",
+      "MR. X: To think that I could make such a big mistake! But that's the way it always is with bland people."
     ],
     "emotionalTone": "curiosity",
     "sentiment": "negative",
@@ -307,24 +252,250 @@
     "complexityScore": 5
   },
   {
-    "id": "tp-0-67-68-merged-68",
-    "label": "transition from Discussion",
-    "category": "insight",
+    "id": "tp-0-118-119-merged-119",
+    "label": "accusation Discussion",
+    "category": "problem",
     "span": {
-      "startId": "msg-68",
-      "endId": "msg-70",
-      "startIndex": 67,
-      "endIndex": 69
+      "startId": 118,
+      "endId": 120,
+      "startIndex": 118,
+      "endIndex": 120
     },
-    "semanticShiftMagnitude": 0.9067783375216805,
+    "semanticShiftMagnitude": 0.936901669574376,
     "keywords": [],
     "quotes": [
-      "**Unconfirmed. But the Codex warns of echo 'persistence loops'—temporal residues that can achieve semi-sentient recurrence.** Vorlag's imprint may still exist.",
-      "**Then containment alone isn't enough.** We need a way to dissolve or resolve the echo construct—something beyond nullification.",
-      "Then containment alone isn't enough."
+      "MR. X: To think that I could make such a big mistake!",
+      "MR. Y: Yes, I'm sure of it.",
+      "author:MR. Y: Yes, I'm sure of it."
     ],
     "emotionalTone": "curiosity",
-    "sentiment": "positive",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-120-121-merged-121",
+    "label": "Confrontation Over Financial Obligation / From Resignation to Self-Sac",
+    "category": "decision",
+    "span": {
+      "startId": 120,
+      "endId": 122,
+      "startIndex": 120,
+      "endIndex": 122
+    },
+    "semanticShiftMagnitude": 0.9649802410920821,
+    "keywords": [],
+    "quotes": [
+      "MR. X: And you will accuse me if you do not receive the six thousand crowns?",
+      "MR. Y: Absolutely. You can't get out of it, so it's not worth while trying to do so.",
+      "MR. X: Do you think I would give my father a thief for son, my wife a thief for husband, my children a thief for father, and my confrères a thief for comrade? That shall never happen. Now I'll go to the sheriff and give myself up."
+    ],
+    "emotionalTone": "anger",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-123-124",
+    "label": "Sudden Interruption and Inquiry",
+    "category": "question",
+    "span": {
+      "startId": 123,
+      "endId": 124,
+      "startIndex": 123,
+      "endIndex": 124
+    },
+    "semanticShiftMagnitude": 0.9520299244683991,
+    "keywords": [],
+    "quotes": [
+      "MR. Y: [Springs up and gets his things together] Wait a moment.",
+      "MR. X: What for?"
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-124-125-merged-125",
+    "label": "MR. Y's Attempt to Exit / From Attempted Departure to Forced Confronta",
+    "category": "decision",
+    "span": {
+      "startId": 124,
+      "endId": 126,
+      "startIndex": 124,
+      "endIndex": 126
+    },
+    "semanticShiftMagnitude": 0.9322936817662706,
+    "keywords": [],
+    "quotes": [
+      "MR. X: What for?",
+      "MR. Y: [Stammering] I only thought--that as I'm not needed--I wouldn't need to be present--and could go.",
+      "MR. X: You cannot. Sit down at your place at the table, where you've been sitting, and we will talk a little."
+    ],
+    "emotionalTone": "fear",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-129-130-merged-130-merged-131",
+    "label": "accusation theft Discussion / Revelation of Imprisonment and Unfinishe",
+    "category": "insight",
+    "span": {
+      "startId": 129,
+      "endId": 132,
+      "startIndex": 129,
+      "endIndex": 132
+    },
+    "semanticShiftMagnitude": 0.8677076787866347,
+    "keywords": [],
+    "quotes": [
+      "[Worried] What do you see now that's so remarkable? - MR. Y",
+      "I see in the mirror that you are a thief, a simple, common thief. - MR. X",
+      "MR. X: I see in the mirror that you are a thief, a simple, common thief."
+    ],
+    "emotionalTone": "anger",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-133-134",
+    "label": "Revelation of Past Imprisonment and Impending Cons",
+    "category": "insight",
+    "span": {
+      "startId": 133,
+      "endId": 134,
+      "startIndex": 133,
+      "endIndex": 134
+    },
+    "semanticShiftMagnitude": 0.9705896634021904,
+    "keywords": [],
+    "quotes": [
+      "How can you say that? - MR. Y",
+      "Wait until the sheriff comes and you will know. - MR. X"
+    ],
+    "emotionalTone": "fear",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-134-135-merged-136",
+    "label": "from Discussion",
+    "category": "emotion",
+    "span": {
+      "startId": 134,
+      "endId": 137,
+      "startIndex": 134,
+      "endIndex": 137
+    },
+    "semanticShiftMagnitude": 0.9520188297738528,
+    "keywords": [],
+    "quotes": [
+      "MR. X: Wait until the sheriff comes and you will know.",
+      "MR. Y: [Completely defeated] May I go now?",
+      "MR. X: Yes, you may go now."
+    ],
+    "emotionalTone": "defeat",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-140-141",
+    "label": "Intellectual Superiority to Strategic Challenge",
+    "category": "objection",
+    "span": {
+      "startId": 140,
+      "endId": 141,
+      "startIndex": 140,
+      "endIndex": 141
+    },
+    "semanticShiftMagnitude": 0.8528741239358175,
+    "keywords": [],
+    "quotes": [
+      "MR. X: Of course I do, as I am better. I am more intelligent than you are, and of more worth to the common weal.",
+      "MR. Y: You are pretty crafty, but not so crafty as I am. I stand in check myself, but, nevertheless, the next move you can be checkmated."
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-141-142-merged-142",
+    "label": "Tension Escalation: From Strategic Positioning to  / Confrontation and",
+    "category": "emotion",
+    "span": {
+      "startId": 141,
+      "endId": 143,
+      "startIndex": 141,
+      "endIndex": 143
+    },
+    "semanticShiftMagnitude": 0.9294474481507752,
+    "keywords": [],
+    "quotes": [
+      "author:MR. Y: You are pretty crafty, but not so crafty as I am. I stand in check myself, but, nevertheless, the next move you can be checkmated.",
+      "author:MR. X: [Fixing Mr. Y. with his eye] Shall we have another bout? What evil do you intend to do now?",
+      "MR. X: Shall we have another bout? What evil do you intend to do now?"
+    ],
+    "emotionalTone": "anger",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-144-145-merged-147-merged-150",
+    "label": "accusation Discussion",
+    "category": "objection",
+    "span": {
+      "startId": 144,
+      "endId": 151,
+      "startIndex": 144,
+      "endIndex": 151
+    },
+    "semanticShiftMagnitude": 0.8233548292156447,
+    "keywords": [],
+    "quotes": [
+      "May I look at you?--You think of writing an anonymous letter to my wife, disclosing my secret.",
+      "Yes, and you cannot prevent it. You dare not have me imprisoned, so you must let me go; and when I have gone I can do what I please.",
+      "MR. Y: You couldn't become one! You timid creature!"
+    ],
+    "emotionalTone": "anger",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-152-153",
+    "label": "Accusation to Submission",
+    "category": "emotion",
+    "span": {
+      "startId": 152,
+      "endId": 153,
+      "startIndex": 152,
+      "endIndex": 153
+    },
+    "semanticShiftMagnitude": 0.9927286932261093,
+    "keywords": [],
+    "quotes": [
+      "You are a different kind of being from me--whether stronger or weaker I do not know--more criminal or not--that doesn't concern me. But you are the stupider, that's proven. Because you were stupid when you forged a man's name instead of begging as I have had to do; you were stupid when you stole out of my book--didn't you realize that I read my books? You were stupid when you thought that you were more intelligent than I am and that you could fool me into becoming a thief; you were stupid when you thought, that the restoration of balance would be accomplished by the world's having two thieves instead of one, and you were most stupid when you believed that I have built my life's happiness without having laid the cornerstone securely. Go and write your anonymous letter to my wife about her husband being a homicide--that she knew as my fiancée. Do you give up now?",
+      "Can I go?"
+    ],
+    "emotionalTone": "fear",
+    "sentiment": "negative",
     "detectionLevel": 0,
     "significance": 1,
     "complexityScore": 5

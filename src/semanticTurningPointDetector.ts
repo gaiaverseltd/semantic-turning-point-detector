@@ -6,7 +6,7 @@ import winston from 'winston';
 
 
 
- 
+
 
 
 /*****************************************************************************************
@@ -294,9 +294,9 @@ export class SemanticTurningPointDetector {
       measureConvergence: config.measureConvergence ?? true
     };
 
-    if(this.config.logger === undefined) {
+    if (this.config.logger === undefined) {
       fs.ensureDirSync('results');
-      this.logger =  winston.createLogger({
+      this.logger = winston.createLogger({
         level: 'info',
         format: winston.format.combine(
           winston.format.timestamp(),
@@ -304,7 +304,7 @@ export class SemanticTurningPointDetector {
         ),
         transports: [
           new winston.transports.Console({
-      
+
             format: winston.format.combine(
               winston.format.colorize(),
               winston.format.timestamp(
@@ -841,11 +841,7 @@ export class SemanticTurningPointDetector {
         //@ts-ignore - Allow vendor-specific params if needed
         repeat_penalty: this.config.endpoint ? 1.005 : undefined,
         top_k: this.config.endpoint ? 20 : undefined,
-
-
-        stop: ['<|im_end|>'],
         response_format: formResponseFormatSchema(dimension),
-
         top_p: 0.9,
       });
 
@@ -854,7 +850,6 @@ export class SemanticTurningPointDetector {
 
       try {
         classification = JSON.parse(content);
-        console.info(` got classification: ${JSON.stringify(classification, null, 2)}`);
       } catch (err: any) {
         this.logger.info('Error parsing LLM response as JSON:', err.message);
         // Attempt to extract JSON from markdown code block if necessary
@@ -1869,6 +1864,8 @@ async function runTurningPointDetectorExample() {
   const thresholdForMinDialogueShift = 22;
   const conversationPariah = fs.readJsonSync('src/conversationPariah.json', { 'encoding': 'utf-8' }) as Message[];
 
+
+  // Load conversation data from a JSON file
   // Calculate adaptive recursion depth based on conversation length
   // This directly implements the ARC concept of adaptive dimensional analysis
   const determineRecursiveDepth = (messages: Message[]) => {
@@ -1909,7 +1906,7 @@ async function runTurningPointDetectorExample() {
     // Enable convergence measurement for ARC analysis
     measureConvergence: true,
 
-    classificationModel: "gpt-4o-mini",
+    classificationModel: "gpt-4o",
     // classificationModel: 'phi-4-mini-Q5_K_M:3.8B',
     // classificationModel: 'gpt-4o-mini',
     // e.g. llmstudio or ollama
@@ -1924,29 +1921,29 @@ async function runTurningPointDetectorExample() {
 
   try {
     // Detect turning points using the ARC/CRA framework
-    const tokensInConvoFile = await detector.getMessageArrayTokenCount(conversation);
-    const turningPoints = await detector.detectTurningPoints(conversation);
+    const tokensInConvoFile = await detector.getMessageArrayTokenCount(conversationPariah);
+    const turningPoints = await detector.detectTurningPoints(conversationPariah);
 
     const endTime = new Date().getTime();
     const difference = endTime - startTime;
     const formattedTimeDateDiff = new Date(difference).toISOString().slice(11, 19);
 
-    this.logger.info(`\nTurning point detection took as MM:SS: ${formattedTimeDateDiff} for ${tokensInConvoFile} tokens in the conversation`);
+    console.info(`\nTurning point detection took as MM:SS: ${formattedTimeDateDiff} for ${tokensInConvoFile} tokens in the conversation`);
 
     // Display results with complexity scores from the ARC framework
-    this.logger.info('\n=== DETECTED TURNING POINTS (ARC/CRA Framework) ===\n');
+    console.info('\n=== DETECTED TURNING POINTS (ARC/CRA Framework) ===\n');
 
     turningPoints.forEach((tp, i) => {
-      this.logger.info(`${i + 1}. ${tp.label} (${tp.category})`);
-      this.logger.info(`   Messages: "${tp.span.startId}" → "${tp.span.endId}"`);
-      this.logger.info(`   Dimension: n=${tp.detectionLevel}`);
-      this.logger.info(`   Complexity Score: ${tp.complexityScore.toFixed(2)} of 5`);
-      this.logger.info(`   Emotional Tone: ${tp.emotionalTone || 'unknown'}`);
-      this.logger.info(`   Semantic Shift Magnitude: ${tp.semanticShiftMagnitude.toFixed(2)}`);
-      this.logger.info(`   Sentiment: ${tp.sentiment || 'unknown'}`);
-      this.logger.info(`   Significance: ${tp.significance.toFixed(2)}`);
-      this.logger.info(`   Keywords: ${tp.keywords?.join(', ') || 'none'}`);
-      this.logger.info(`   Quotes: ${tp.quotes?.join(', ') || 'none'}`);
+      detector.logger.info(`${i + 1}. ${tp.label} (${tp.category})`);
+      detector.logger.info(`   Messages: "${tp.span.startId}" → "${tp.span.endId}"`);
+      detector.logger.info(`   Dimension: n=${tp.detectionLevel}`);
+      detector.logger.info(`   Complexity Score: ${tp.complexityScore.toFixed(2)} of 5`);
+      detector.logger.info(`   Emotional Tone: ${tp.emotionalTone || 'unknown'}`);
+      detector.logger.info(`   Semantic Shift Magnitude: ${tp.semanticShiftMagnitude.toFixed(2)}`);
+      detector.logger.info(`   Sentiment: ${tp.sentiment || 'unknown'}`);
+      detector.logger.info(`   Significance: ${tp.significance.toFixed(2)}`);
+      detector.logger.info(`   Keywords: ${tp.keywords?.join(', ') || 'none'}`);
+      detector.logger.info(`   Quotes: ${tp.quotes?.join(', ') || 'none'}`);
 
 
 
@@ -1955,13 +1952,13 @@ async function runTurningPointDetectorExample() {
     // Get and display convergence history to demonstrate the ARC framework
     const convergenceHistory = detector.getConvergenceHistory();
 
-    this.logger.info('\n=== ARC/CRA FRAMEWORK CONVERGENCE ANALYSIS ===\n');
+    detector.logger.info('\n=== ARC/CRA FRAMEWORK CONVERGENCE ANALYSIS ===\n');
     convergenceHistory.forEach((state, i) => {
-      this.logger.info(`Iteration ${i + 1}:`);
-      this.logger.info(`  Dimension: n=${state.dimension}`);
-      this.logger.info(`  Convergence Distance: ${state.distanceMeasure.toFixed(3)}`);
-      this.logger.info(`  Dimensional Escalation: ${state.didEscalate ? 'Yes' : 'No'}`);
-      this.logger.info(`  Turning Points: ${state.currentTurningPoints.length}`);
+      detector.logger.info(`Iteration ${i + 1}:`);
+      detector.logger.info(`  Dimension: n=${state.dimension}`);
+      detector.logger.info(`  Convergence Distance: ${state.distanceMeasure.toFixed(3)}`);
+      detector.logger.info(`  Dimensional Escalation: ${state.didEscalate ? 'Yes' : 'No'}`);
+      detector.logger.info(`  Turning Points: ${state.currentTurningPoints.length}`);
 
     });
 
@@ -1971,9 +1968,9 @@ async function runTurningPointDetectorExample() {
     // Also save convergence analysis
     fs.writeJSONSync('results/convergence_analysis.json', convergenceHistory, { spaces: 2, encoding: 'utf-8' });
 
-    this.logger.info('Results saved to files.');
+    detector.logger.info('Results saved to files.');
   } catch (err) {
-    console.error('Error detecting turning points:', err);
+    detector.logger.error('Error detecting turning points:', err);
   }
 
 
@@ -1982,9 +1979,7 @@ async function runTurningPointDetectorExample() {
 
 if (require.main === module) {
 
-  runTurningPointDetectorExample().catch(err => {
-    console.error('Error in example run:', err);
-  }).finally(() => {
+  runTurningPointDetectorExample().finally(() => {
     process.exit(0);
   });
 }

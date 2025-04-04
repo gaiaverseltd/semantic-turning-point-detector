@@ -87,7 +87,7 @@ export function selectivelyStripMarkdown(
 }
 
 
- 
+
 /**
  * A helper function that formats a given message in a form that ensures the content is not long and easily distinguishable as part of contextual information when requesting a llm or nlp model to process it.
  * @param semanticSettings 
@@ -97,22 +97,23 @@ export function selectivelyStripMarkdown(
  * @param sliceId 
  * @returns 
  */
-export function returnFormattedMessageContent(semanticSettings: Partial<TurningPointDetectorConfig>, m: Message, dimension: number = 0, addHeader = false, sliceId = true): string {
+export function returnFormattedMessageContent(semanticSettings: Partial<TurningPointDetectorConfig>, m: Message, dimension: number = 0, addHeader = false, sliceId = false): string {
 
   const messageContent = selectivelyStripMarkdown(
     m.message)
-  const header = addHeader ? `##### Message - (${dimension === 0 ? 'Author\'s name' : 'Source of Turning Point (this is a turning point comprising of messages (2-or-more) that are part of a larger single conversation)'
-    }): ${m.author}\nID: "${m.id.slice(
-      sliceId ? 37 :  0
+  const header = addHeader ? `${dimension === 0 ? `"${m.author}"` : `Turning Point: "${m.author}"`}
 
-    )}"` : '';
+  [${dimension === 0 ? 'Author\'s name' : 'Source of Turning Point (this is a turning point comprising of messages (2-or-more) that are part of a larger single conversation)'
+    }): "${m.author}" \nID: "${m.id}"` : ']';
   return `${header}\n` +
-    `--- start of message content for id="${m.id.slice(sliceId ? 37 : 0)}" author="${m.author}" ---\n` +
-    `\n  <content id="${m.id.slice(
-      
-      sliceId ? 37 : 0
-    )}"  author="${m.author}" dimension="${dimension}">
-                ${messageContent
+    `------ start of message content from ${dimension === 0 ? 'author' : 'meta'}:"${m.author.replace(
+      // replace all non-word characters and whitespace with an empty string
+      /[^\w\s]/g,
+      '-'
+    )}"` +
+    
+    ` author="${m.author}" id="${m.id}" dimension="${dimension}"------\n\n` +
+                `${messageContent
       ?.slice(
         0,
         dimension === 0 ? Math.min(
@@ -124,8 +125,8 @@ export function returnFormattedMessageContent(semanticSettings: Partial<TurningP
       )
       .split("\n")
       .map((line) => `    ${line}`)
-      .join("\n")}\n[content may be truncated, original length: ${m.message.length}]\n  </content>\n--- end of message content for id="${m.id.slice(sliceId ? 37 : 0)
-    }" author="${m.author}" ---\n`;
+      .join("\n")}\n[content may be truncated, original length: ${m.message.length}]\n\n---------- end of message content for id="${m.id}"
+    }" author="${m.author}" ----------\n`;
 
 
 

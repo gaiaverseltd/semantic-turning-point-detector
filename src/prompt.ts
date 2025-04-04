@@ -96,6 +96,11 @@ export function formUserMessage({
   /** Returns only the content to analyze if set to false, defaults to true */
   addUserInstructions?: boolean;
 }): string {
+
+
+  const authorsContext = dimension === 0 ? 
+    [beforeMessage.author, afterMessage.author] :[];
+ 
   const userMessageStart =
     `
 Analyze the content below to determine the classification and labels as instructed in the previous message. Carefully scrutinize the information provided, and ${
@@ -131,9 +136,13 @@ ${dimension === 0
     + `\n\n------ end of content to analyze, now see below for you response instructions and task as a reminder ------\n\n# Response Format and Task Reminder\n- With the given content above, as well as contextual info and in accordance with the system instructions:`;
     
     
-    const endUserMessageInstructions = `\n\nPlease respond with a JSON object containing the following fields. Do not include any text outside the JSON object.\n{
+    const endUserMessageInstructions = `\n\nPlease respond with a JSON object containing the following fields. Do not include any text outside the JSON object
+    \n{
     "label": "<YOUR CREATIVE TITLE LABEL HERE> e.g 'Progressing from General Budgets to Budget Concerns', or 'Analysis on the notions of Leadership and Teamwork'",
-    "quotes": ["Author name: Quotes here", "Author name: Quotes here", ... ],
+    "quotes": ["Author: Some quote here from the content", ... ],${
+      authorsContext.length > 0 ? `The provided quotes must always begin first the author or speaker's name, and are either ${
+        authorsContext.join(' or ')}` : ''}
+    }
     "sentiment": "<SENTIMENT HERE>, as one of the following: 'positive', 'negative'",
     "significance": <SIGNIFICANCE SCORE HERE, from 0-100>,   
     "category": "<Insert your categorization here using one of the following options: ${Object.keys(
