@@ -4,32 +4,9 @@ import winston from 'winston';
 
 // setup winston 
 
-fs.ensureDirSync('results'); // Ensure the results directory exists
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
-  ),
-  transports: [
-    new winston.transports.Console({
 
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.timestamp(
-          { format: 'YYYY-MM-DD HH:mm:ss' }
-        ),
-        winston.format.printf(({ timestamp, level, message }) => {
-          return `${timestamp} ${level}: ${message}`;
-        })
-      )
-    }),
-    new winston.transports.File({
-      filename: 'results/semanticTurningPointDetector.log',
-      format: winston.format.json()
-    })
-  ]
-});
+
+ 
 
 
 /*****************************************************************************************
@@ -220,6 +197,8 @@ export interface TurningPointDetectorConfig {
   /** The maximum number of characters to use when adding a message content as context to analyze */
   max_character_length?: number;
 
+  logger?: winston.Logger | Console;
+
 
   /**
    * This option determines whether to fail and halt the process if an analysis 
@@ -290,6 +269,7 @@ export class SemanticTurningPointDetector {
   private originalMessages: Message[] = [];
   private convergenceHistory: ConvergenceState[] = [];
 
+  readonly logger: winston.Logger | Console;
   /**
    * Creates a new instance of the semantic turning point detector
    */
@@ -314,6 +294,36 @@ export class SemanticTurningPointDetector {
       measureConvergence: config.measureConvergence ?? true
     };
 
+    if(this.config.logger === undefined) {
+      fs.ensureDirSync('results');
+      this.logger =  winston.createLogger({
+        level: 'info',
+        format: winston.format.combine(
+          winston.format.timestamp(),
+          winston.format.json()
+        ),
+        transports: [
+          new winston.transports.Console({
+      
+            format: winston.format.combine(
+              winston.format.colorize(),
+              winston.format.timestamp(
+                { format: 'YYYY-MM-DD HH:mm:ss' }
+              ),
+              winston.format.printf(({ timestamp, level, message }) => {
+                return `${timestamp} ${level}: ${message}`;
+              })
+            )
+          }),
+          new winston.transports.File({
+            filename: 'results/semanticTurningPointDetector.log',
+            format: winston.format.json()
+          })
+        ]
+      });
+    }
+
+
     // Initialize OpenAI client
     this.openai = new OpenAI({
       apiKey: this.config.apiKey,
@@ -321,7 +331,7 @@ export class SemanticTurningPointDetector {
     });
 
     if (this.config.debug) {
-      logger.info('[TurningPointDetector] Initialized with config:', {
+      this.logger.info('[TurningPointDetector] Initialized with config:', {
         ...this.config,
         apiKey: '[REDACTED]'
       });
@@ -333,12 +343,12 @@ export class SemanticTurningPointDetector {
    * Implements the full ARC/CRA framework
    */
   public async detectTurningPoints(messages: Message[]): Promise<TurningPoint[]> {
-    logger.info('Starting turning point detection using ARC/CRA framework for conversation with', messages.length, 'messages');
+    this.logger.info('Starting turning point detection using ARC/CRA framework for conversation with', messages.length, 'messages');
     this.convergenceHistory = [];
 
     // Store original messages for reference
     const totalTokens = await this.getMessageArrayTokenCount(messages);
-    logger.info(`Total conversation tokens: ${totalTokens}`);
+    this.logger.info(`Total conversation tokens: ${totalTokens}`);
     // Ensure originalMessages is a fresh copy if messages might be mutated elsewhere
     this.originalMessages = messages.map(m => ({ ...m }));
 
@@ -354,11 +364,11 @@ export class SemanticTurningPointDetector {
     messages: Message[],
     dimension: number
   ): Promise<TurningPoint[]> {
-    logger.info(`Starting dimensional analysis at n=${dimension}`);
+    this.logger.info(`Starting dimensional analysis at n=${dimension}`);
 
     // Check recursion depth - hard limit on dimensional expansion
     if (dimension >= this.config.maxRecursionDepth) {
-      logger.info(`Maximum dimension (n=${dimension}) reached, processing directly without further expansion`);
+      this.logger.info(`Maximum dimension (n=${dimension}) reached, processing directly without further expansion`);
       // Pass originalMessages context only at dimension 0 if needed by detectTurningPointsInChunk->classifyTurningPoint
       return await this.detectTurningPointsInChunk(messages, dimension, 0, this.originalMessages);
     }
@@ -368,7 +378,7 @@ export class SemanticTurningPointDetector {
 
     // Adjusted condition to handle small message counts more directly
     if (messages.length < this.config.minMessagesPerChunk * 2 && dimension === 0) {
-      logger.info(`Dimension ${dimension}: Small conversation (${messages.length} msgs), processing directly`);
+      this.logger.info(`Dimension ${dimension}: Small conversation (${messages.length} msgs), processing directly`);
       // Optionally adjust threshold for small conversations
       const originalThreshold = this.config.semanticShiftThreshold;
       this.config.semanticShiftThreshold = Math.max(0.3, originalThreshold * 1.1); // Slightly higher threshold
@@ -380,10 +390,10 @@ export class SemanticTurningPointDetector {
     } else {
       // Chunk the conversation
       const { chunks } = await this.chunkConversation(messages, dimension);
-      logger.info(`Dimension ${dimension}: Split into ${chunks.length} chunks`);
+      this.logger.info(`Dimension ${dimension}: Split into ${chunks.length} chunks`);
 
       if (chunks.length === 0) {
-        logger.info(`Dimension ${dimension}: No valid chunks created, returning empty.`);
+        this.logger.info(`Dimension ${dimension}: No valid chunks created, returning empty.`);
         return [];
       }
 
@@ -400,7 +410,7 @@ export class SemanticTurningPointDetector {
           const startTime = Date.now();
 
           if (index % 10 === 0 || limit === 1 || this.config.debug) {
-            logger.info(` - Dimension ${dimension}: Processing chunk ${index + 1}/${chunks.length} (${chunk.length} messages)`);
+            this.logger.info(` - Dimension ${dimension}: Processing chunk ${index + 1}/${chunks.length} (${chunk.length} messages)`);
           }
 
           // Pass originalMessages context only at dimension 0
@@ -415,9 +425,9 @@ export class SemanticTurningPointDetector {
               const remainingChunks = durationsSeconds.length - processedCount;
               const remainingTime = (averageDuration * remainingChunks).toFixed(1);
               const percentageComplete = (processedCount / durationsSeconds.length * 100);
-              logger.info(`    - Chunk ${index + 1} processed in ${durationSecs.toFixed(1)}s. Est. remaining: ${remainingTime}s (${percentageComplete.toFixed(1)}% complete)`);
+              this.logger.info(`    - Chunk ${index + 1} processed in ${durationSecs.toFixed(1)}s. Est. remaining: ${remainingTime}s (${percentageComplete.toFixed(1)}% complete)`);
             } else {
-              logger.info(`    - Chunk ${index + 1} processed in ${durationSecs.toFixed(1)}s.`);
+              this.logger.info(`    - Chunk ${index + 1} processed in ${durationSecs.toFixed(1)}s.`);
             }
           }
         }
@@ -427,7 +437,7 @@ export class SemanticTurningPointDetector {
       localTurningPoints = chunkTurningPoints.flat();
     }
 
-    logger.info(`Dimension ${dimension}: Found ${localTurningPoints.length} raw turning points`);
+    this.logger.info(`Dimension ${dimension}: Found ${localTurningPoints.length} raw turning points`);
 
     // If we found zero or one turning point at this level, return it directly (after potential filtering if needed)
     if (localTurningPoints.length <= 1) {
@@ -439,7 +449,7 @@ export class SemanticTurningPointDetector {
 
     // First merge any similar turning points at this level
     const mergedLocalTurningPoints = this.mergeSimilarTurningPoints(localTurningPoints);
-    logger.info(`Dimension ${dimension}: Merged similar TPs to ${mergedLocalTurningPoints.length}`);
+    this.logger.info(`Dimension ${dimension}: Merged similar TPs to ${mergedLocalTurningPoints.length}`);
 
     // If merging resulted in 0 or 1 TP, return it (after filtering)
     if (mergedLocalTurningPoints.length <= 1) {
@@ -457,8 +467,8 @@ export class SemanticTurningPointDetector {
     // Implement Transition Operator Ψ
     const needsDimensionalEscalation = maxComplexity >= this.config.complexitySaturationThreshold;
 
-    logger.info(`Dimension ${dimension}: Max complexity = ${maxComplexity.toFixed(2)}, Saturation threshold = ${this.config.complexitySaturationThreshold}`);
-    logger.info(`Dimension ${dimension}: Needs Escalation (Ψ)? ${needsDimensionalEscalation}`);
+    this.logger.info(`Dimension ${dimension}: Max complexity = ${maxComplexity.toFixed(2)}, Saturation threshold = ${this.config.complexitySaturationThreshold}`);
+    this.logger.info(`Dimension ${dimension}: Needs Escalation (Ψ)? ${needsDimensionalEscalation}`);
 
     // Conditions to STOP escalation and finalize at this dimension:
     // 1. Max recursion depth reached
@@ -467,7 +477,7 @@ export class SemanticTurningPointDetector {
     if (dimension >= this.config.maxRecursionDepth - 1 ||
       mergedLocalTurningPoints.length <= 2 || // Adjusted slightly, maybe 2 TPs isn't enough to find meta-patterns
       !needsDimensionalEscalation) {
-      logger.info(`Dimension ${dimension}: Finalizing at this level. Applying final filtering.`);
+      this.logger.info(`Dimension ${dimension}: Finalizing at this level. Applying final filtering.`);
       // Track convergence for this dimension
       if (this.config.measureConvergence) {
         this.convergenceHistory.push({
@@ -484,15 +494,15 @@ export class SemanticTurningPointDetector {
     }
 
     // ----- DIMENSIONAL ESCALATION (n → n+1) -----
-    logger.info(`Dimension ${dimension}: Escalating to dimension ${dimension + 1}`);
+    this.logger.info(`Dimension ${dimension}: Escalating to dimension ${dimension + 1}`);
 
     // Create meta-messages from the merged turning points at this level
     // Pass originalMessages for context if needed by createMetaMessagesFromTurningPoints
     const metaMessages = this.createMetaMessagesFromTurningPoints(mergedLocalTurningPoints, this.originalMessages);
-    logger.info(`Dimension ${dimension}: Created ${metaMessages.length} meta-messages for dimension ${dimension + 1}`);
+    this.logger.info(`Dimension ${dimension}: Created ${metaMessages.length} meta-messages for dimension ${dimension + 1}`);
 
     if (metaMessages.length < 2) {
-      logger.info(`Dimension ${dimension}: Not enough meta-messages (${metaMessages.length}) to perform higher-level analysis. Finalizing with current TPs.`);
+      this.logger.info(`Dimension ${dimension}: Not enough meta-messages (${metaMessages.length}) to perform higher-level analysis. Finalizing with current TPs.`);
       if (this.config.measureConvergence) {
         this.convergenceHistory.push({
           previousTurningPoints: mergedLocalTurningPoints, // State before attempted escalation
@@ -508,7 +518,7 @@ export class SemanticTurningPointDetector {
 
     // Recursively process the meta-messages to find higher-dimensional turning points
     const higherDimensionTurningPoints = await this.multiLayerDetection(metaMessages, dimension + 1);
-    logger.info(`Dimension ${dimension + 1}: Found ${higherDimensionTurningPoints.length} higher-dimension TPs.`);
+    this.logger.info(`Dimension ${dimension + 1}: Found ${higherDimensionTurningPoints.length} higher-dimension TPs.`);
 
 
     // Track convergence and dimension escalation
@@ -522,7 +532,7 @@ export class SemanticTurningPointDetector {
         didEscalate: true
       };
       this.convergenceHistory.push(convergenceState);
-      logger.info(`Dimension ${dimension} → ${dimension + 1}: Convergence distance: ${convergenceState.distanceMeasure.toFixed(3)}. Converged: ${convergenceState.hasConverged}`);
+      this.logger.info(`Dimension ${dimension} → ${dimension + 1}: Convergence distance: ${convergenceState.distanceMeasure.toFixed(3)}. Converged: ${convergenceState.hasConverged}`);
     }
 
     // Combine turning points from local (n) and higher (n+1) dimensions
@@ -621,25 +631,25 @@ export class SemanticTurningPointDetector {
       );
       const beforeMessage = messages.find((m) => m.id === current.id);
       const afterMessage = messages.find((m) => m.id === next.id);
-   
-        let thresholdScaleFactor;
-        const baseThreshold = this.config.semanticShiftThreshold;
-        
-        if (baseThreshold > 0.7) {
-          // For high initial thresholds (like 0.75), scale down more aggressively
-          thresholdScaleFactor = Math.pow(0.25, dimension); // More aggressive (0.25 instead of 0.4)
-        } else if (baseThreshold > 0.5) {
-          // For medium thresholds
-          thresholdScaleFactor = Math.pow(0.35, dimension);
-        } else {
-          // For already low thresholds
-          thresholdScaleFactor = Math.pow(0.5, dimension);
-        }
-        
-        const dimensionAdjustedThreshold = baseThreshold * thresholdScaleFactor;
+
+      let thresholdScaleFactor;
+      const baseThreshold = this.config.semanticShiftThreshold;
+
+      if (baseThreshold > 0.7) {
+        // For high initial thresholds (like 0.75), scale down more aggressively
+        thresholdScaleFactor = Math.pow(0.25, dimension); // More aggressive (0.25 instead of 0.4)
+      } else if (baseThreshold > 0.5) {
+        // For medium thresholds
+        thresholdScaleFactor = Math.pow(0.35, dimension);
+      } else {
+        // For already low thresholds
+        thresholdScaleFactor = Math.pow(0.5, dimension);
+      }
+
+      const dimensionAdjustedThreshold = baseThreshold * thresholdScaleFactor;
       if (
         dimensionAdjustedThreshold <= distance
-        
+
       ) {
         distances.push({
           current: current.index,
@@ -656,7 +666,7 @@ export class SemanticTurningPointDetector {
 
     }
 
-    logger.info(
+    this.logger.info(
       `For a total number of points: ${embeddings.length}, there were ${distances.length} distances found as being greater than the threshold of ${this.config.semanticShiftThreshold}. 
         - The top 3 greatest distances are: ${allDistances.slice(0, 3).sort((a, b) => b.distance - a.distance).map(d => d.distance.toFixed(3)).join(', ')}
       
@@ -664,7 +674,7 @@ export class SemanticTurningPointDetector {
       This means there were ${distances.length} potential turning points detected ${dimension === 0 ? "with valid user-assistant turn pairs" : "with valid meta-messages"}`,
     );
     if (distances.length === 0) {
-      logger.info(
+      this.logger.info(
         `No significant semantic shifts detected in chunk ${chunkIndex}`,
       );
       return [];
@@ -680,7 +690,7 @@ export class SemanticTurningPointDetector {
       const beforeMessage = messages[i];
       const afterMessage = messages[i + 1];
       if (beforeMessage == undefined || afterMessage == undefined) {
-        logger.info(
+        this.logger.info(
           `detectTurningPointsInChunk: warning beforeMessage or afterMessage is undefined, beforeMessage: ${beforeMessage}, afterMessage: ${afterMessage}`,
         );
         continue;
@@ -696,7 +706,7 @@ export class SemanticTurningPointDetector {
         d,
       );
 
-      logger.info(
+      this.logger.info(
         `    ...${chunkIndex ? `[Chunk ${chunkIndex}] ` : ""
         }Potential turning point detected between messages ${current.id
         } and ${next.id} (distance: ${distance.toFixed(
@@ -846,15 +856,15 @@ export class SemanticTurningPointDetector {
         classification = JSON.parse(content);
         console.info(` got classification: ${JSON.stringify(classification, null, 2)}`);
       } catch (err: any) {
-        logger.info('Error parsing LLM response as JSON:', err.message);
+        this.logger.info('Error parsing LLM response as JSON:', err.message);
         // Attempt to extract JSON from markdown code block if necessary
         const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/);
         if (jsonMatch && jsonMatch[1]) {
           try {
             classification = JSON.parse(jsonMatch[1]);
-            logger.info('Successfully extracted JSON from markdown block.');
+            this.logger.info('Successfully extracted JSON from markdown block.');
           } catch (parseErr: any) {
-            logger.info('Failed to parse extracted JSON:', parseErr.message);
+            this.logger.info('Failed to parse extracted JSON:', parseErr.message);
             classification = {}; // Reset on secondary failure
           }
         } else {
@@ -862,13 +872,13 @@ export class SemanticTurningPointDetector {
           if (plainJsonMatch) {
             try {
               classification = JSON.parse(plainJsonMatch[0]);
-              logger.info('Successfully extracted JSON using simple match.');
+              this.logger.info('Successfully extracted JSON using simple match.');
             } catch (parseErr: any) {
-              logger.info('Failed to parse simple JSON match:', parseErr.message);
+              this.logger.info('Failed to parse simple JSON match:', parseErr.message);
               classification = {};
             }
           } else {
-            logger.info('Could not extract JSON from response:', content);
+            this.logger.info('Could not extract JSON from response:', content);
             classification = {};
           }
         }
@@ -920,7 +930,7 @@ export class SemanticTurningPointDetector {
       };
 
     } catch (err: any) {
-      logger.info(`Error during LLM call for turning point classification: ${err.message}`);
+      this.logger.info(`Error during LLM call for turning point classification: ${err.message}`);
       // Fallback classification on API error
       if (this.config.throwOnError) {
 
@@ -967,7 +977,7 @@ export class SemanticTurningPointDetector {
       groupedByCategory[category].push(tp);
     });
 
-    logger.info(
+    this.logger.info(
       `Grouped categories:\n` +
       JSON.stringify(groupedByCategory, null, 2),
     );
@@ -1014,9 +1024,8 @@ export class SemanticTurningPointDetector {
       metaMessages.push(sectionMetaMessage);
     }
 
-    logger.info(
-      `Created ${
-        metaMessages.length
+    this.logger.info(
+      `Created ${metaMessages.length
       } meta-messages for dimensional expansion: ${metaMessages
         .map((m) => m.id)
         .join(", ")}`,
@@ -1036,7 +1045,7 @@ export class SemanticTurningPointDetector {
       return turningPoints.sort((a, b) => a.span.startIndex - b.span.startIndex);
     }
 
-    logger.info(`Filtering ${turningPoints.length} TPs based on significance >= ${this.config.significanceThreshold} and maxPoints = ${this.config.maxTurningPoints}`);
+    this.logger.info(`Filtering ${turningPoints.length} TPs based on significance >= ${this.config.significanceThreshold} and maxPoints = ${this.config.maxTurningPoints}`);
 
     // Sort by significance, complexity, magnitude
     const sorted = [...turningPoints].sort((a, b) => {
@@ -1084,15 +1093,15 @@ export class SemanticTurningPointDetector {
           coveredIndices.add(i);
         }
       } else if (isOverlapping) {
-        logger.info(`    TP ${tp.id} (Sig: ${tp.significance.toFixed(2)}) overlaps significantly (${(overlapRatio * 100).toFixed(0)}%) with existing TPs. Skipping.`);
+        this.logger.info(`    TP ${tp.id} (Sig: ${tp.significance.toFixed(2)}) overlaps significantly (${(overlapRatio * 100).toFixed(0)}%) with existing TPs. Skipping.`);
       } else if (result.length >= maxPoints) {
-        logger.info(`    Reached max turning points (${maxPoints}). Skipping TP ${tp.id}.`);
+        this.logger.info(`    Reached max turning points (${maxPoints}). Skipping TP ${tp.id}.`);
       }
     }
 
     // Ensure at least one TP is returned if any were found initially
     if (result.length === 0 && sorted.length > 0) {
-      logger.info("No TPs met significance/overlap criteria, returning the single most significant one.");
+      this.logger.info("No TPs met significance/overlap criteria, returning the single most significant one.");
       result.push(sorted[0]);
     }
     // Add a second diverse TP if only one was kept and more exist (original logic)
@@ -1110,7 +1119,7 @@ export class SemanticTurningPointDetector {
             }
           }
           if (!overlapsFirst) {
-            logger.info("Adding a second, non-overlapping TP for diversity.");
+            this.logger.info("Adding a second, non-overlapping TP for diversity.");
             result.push(nextTp);
             break;
           }
@@ -1119,7 +1128,7 @@ export class SemanticTurningPointDetector {
     }
 
 
-    logger.info(`Filtered down to ${result.length} significant turning points.`);
+    this.logger.info(`Filtered down to ${result.length} significant turning points.`);
     // Final sort by position in conversation
     return result.sort((a, b) => a.span.startIndex - b.span.startIndex);
   }
@@ -1132,7 +1141,7 @@ export class SemanticTurningPointDetector {
     localTurningPoints: TurningPoint[],
     higherDimensionTurningPoints: TurningPoint[]
   ): TurningPoint[] {
-    logger.info(`Combining ${localTurningPoints.length} local (dim ${localTurningPoints[0]?.detectionLevel ?? 'N/A'}) and ${higherDimensionTurningPoints.length} higher (dim ${higherDimensionTurningPoints[0]?.detectionLevel ?? 'N/A'}) TPs.`);
+    this.logger.info(`Combining ${localTurningPoints.length} local (dim ${localTurningPoints[0]?.detectionLevel ?? 'N/A'}) and ${higherDimensionTurningPoints.length} higher (dim ${higherDimensionTurningPoints[0]?.detectionLevel ?? 'N/A'}) TPs.`);
 
     // Prioritize higher-dimensional turning points by boosting their significance (original logic)
     const boostedHigher = higherDimensionTurningPoints.map(tp => ({
@@ -1144,17 +1153,17 @@ export class SemanticTurningPointDetector {
 
     // Combine all turning points
     const allTurningPoints = [...localTurningPoints, ...boostedHigher];
-    logger.info(`Total TPs before cross-level merge: ${allTurningPoints.length}`);
+    this.logger.info(`Total TPs before cross-level merge: ${allTurningPoints.length}`);
 
 
     // Merge overlapping turning points across dimensions, prioritizing higher dimensions/significance
     const mergedTurningPoints = this.mergeAcrossLevels(allTurningPoints);
-    logger.info(`Merged across levels to ${mergedTurningPoints.length} TPs.`);
+    this.logger.info(`Merged across levels to ${mergedTurningPoints.length} TPs.`);
 
     // Filter the combined & merged list to keep the most significant ones overall
     const filteredTurningPoints = this.filterSignificantTurningPoints(mergedTurningPoints);
 
-    logger.info(`Final combined and filtered TPs: ${filteredTurningPoints.length}`);
+    this.logger.info(`Final combined and filtered TPs: ${filteredTurningPoints.length}`);
     // Sort by position in conversation before returning
     return filteredTurningPoints.sort((a, b) => a.span.startIndex - b.span.startIndex);
   }
@@ -1182,7 +1191,7 @@ export class SemanticTurningPointDetector {
 
       // Merge if overlapping OR close, AND same category
       if ((isOverlapping || hasCloseIndices) && isSimilarCategory) {
-        logger.info(`    Merging similar TPs (Dim ${currentTp.detectionLevel}): ${currentTp.id} and ${nextTp.id}`);
+        this.logger.info(`    Merging similar TPs (Dim ${currentTp.detectionLevel}): ${currentTp.id} and ${nextTp.id}`);
         // Merge the turning points
         const newLabel = this.createMergedLabel(currentTp.label, nextTp.label);
 
@@ -1260,7 +1269,7 @@ export class SemanticTurningPointDetector {
     // Use a Set of covered *indices* for more granular overlap checking
     const coveredIndices: Set<number> = new Set();
 
-    logger.info(`    Merging across levels. Input count: ${sorted.length}. Prioritizing higher dimension/significance.`);
+    this.logger.info(`    Merging across levels. Input count: ${sorted.length}. Prioritizing higher dimension/significance.`);
 
     for (const tp of sorted) {
       // Check how much of this TP's span is already covered
@@ -1285,14 +1294,14 @@ export class SemanticTurningPointDetector {
         for (let i = tp.span.startIndex; i <= tp.span.endIndex; i++) {
           coveredIndices.add(i);
         }
-        logger.info(`      Keeping TP ${tp.id} (Dim ${tp.detectionLevel}, Sig ${tp.significance.toFixed(2)}). Overlap: ${(overlapRatio * 100).toFixed(0)}%`);
+        this.logger.info(`      Keeping TP ${tp.id} (Dim ${tp.detectionLevel}, Sig ${tp.significance.toFixed(2)}). Overlap: ${(overlapRatio * 100).toFixed(0)}%`);
       } else {
-        logger.info(`      Skipping TP ${tp.id} (Dim ${tp.detectionLevel}, Sig ${tp.significance.toFixed(2)}) due to significant overlap (${(overlapRatio * 100).toFixed(0)}%).`);
+        this.logger.info(`      Skipping TP ${tp.id} (Dim ${tp.detectionLevel}, Sig ${tp.significance.toFixed(2)}) due to significant overlap (${(overlapRatio * 100).toFixed(0)}%).`);
       }
     }
 
 
-    logger.info(`    Finished merging across levels. Output count: ${merged.length}.`);
+    this.logger.info(`    Finished merging across levels. Output count: ${merged.length}.`);
     // Sort the final result by position in conversation
     return merged.sort((a, b) => a.span.startIndex - b.span.startIndex);
   }
@@ -1388,7 +1397,7 @@ export class SemanticTurningPointDetector {
           embedding
         };
       } catch (error: any) {
-        logger.info(`Error generating embedding for msg ${message.id} at index ${index}: ${error.message}. Creating zero vector.`);
+        this.logger.info(`Error generating embedding for msg ${message.id} at index ${index}: ${error.message}. Creating zero vector.`);
         const embeddingSize = 1536; // Assuming text-embedding-3-small
         embeddings[index] = { id: message.id, index: index, embedding: new Float32Array(embeddingSize).fill(0) };
       }
@@ -1453,7 +1462,7 @@ export class SemanticTurningPointDetector {
         throw new Error('Invalid embedding response structure from OpenAI');
       }
     } catch (err: any) { // Catch specific error types if possible
-      logger.info(`Error generating embedding: ${err.message}. Returning zero vector. ${(err as Error).stack} ${this.config.embeddingEndpoint}`);
+      this.logger.info(`Error generating embedding: ${err.message}. Returning zero vector. ${(err as Error).stack} ${this.config.embeddingEndpoint}`);
       // Return a zero embedding on error (more predictable than random)
       const embeddingSize = 1536; // Match expected dimension
       return new Float32Array(embeddingSize).fill(0);
@@ -1505,7 +1514,7 @@ export class SemanticTurningPointDetector {
 
     // Handle case where input has fewer than minimum messages (original logic)
     if (messages.length < minMessages) {
-      logger.info(`Input messages (${messages.length}) less than minMessagesPerChunk (${minMessages}). Returning as single chunk.`);
+      this.logger.info(`Input messages (${messages.length}) less than minMessagesPerChunk (${minMessages}). Returning as single chunk.`);
       // Return single chunk only if it's not empty
       return {
         chunks: messages.length > 0 ? [[...messages]] : [],
@@ -1525,7 +1534,7 @@ export class SemanticTurningPointDetector {
       minMessages,
       Math.min(10, Math.ceil(messages.length / Math.max(1, Math.floor(messages.length / 10)))) // Aim for ~10 chunks max?
     );
-    logger.info(`    Chunking ${messages.length} messages. MinMsgs: ${minMessages}, MaxTokens: ${maxTokens}, IdealMsgCount: ${idealMessageCount}, Overlap: ${overlapSize}`);
+    this.logger.info(`    Chunking ${messages.length} messages. MinMsgs: ${minMessages}, MaxTokens: ${maxTokens}, IdealMsgCount: ${idealMessageCount}, Overlap: ${overlapSize}`);
 
 
     for (let i = 0; i < messages.length; i++) {
@@ -1553,14 +1562,14 @@ export class SemanticTurningPointDetector {
       if (isLastMessage || (hasMinMessages && (approachingMaxTokens || hasIdealSize || significantlyOverMaxTokens))) {
         // Add the chunk
         chunks.push([...currentChunk]);
-        logger.info(`      Created chunk ${chunks.length} with ${currentChunk.length} messages, ${currentTokens} tokens. Ends at index ${i}.`);
+        this.logger.info(`      Created chunk ${chunks.length} with ${currentChunk.length} messages, ${currentTokens} tokens. Ends at index ${i}.`);
 
         // If not the last message, start next chunk with overlap
         if (!isLastMessage) {
           const startIndexForNextChunk = Math.max(0, currentChunk.length - overlapSize);
           currentChunk = currentChunk.slice(startIndexForNextChunk);
           currentTokens = await this.getMessageArrayTokenCount(currentChunk);
-          logger.info(`      Starting next chunk with ${currentChunk.length} overlapping messages, ${currentTokens} tokens.`);
+          this.logger.info(`      Starting next chunk with ${currentChunk.length} overlapping messages, ${currentTokens} tokens.`);
         } else {
           currentChunk = []; // Clear chunk if it was the last message
           currentTokens = 0;
@@ -1576,14 +1585,14 @@ export class SemanticTurningPointDetector {
 
       // Ensure split results in chunks meeting min size requirement
       if (midPointIndex >= minMessages && singleChunk.length - midPointIndex >= minMessages) {
-        logger.info("    Single chunk detected for large conversation, attempting to split.");
+        this.logger.info("    Single chunk detected for large conversation, attempting to split.");
         const firstChunk = singleChunk.slice(0, midPointIndex);
         // Apply overlap when splitting
         const secondChunkStartIndex = Math.max(0, midPointIndex - overlapSize);
         const secondChunk = singleChunk.slice(secondChunkStartIndex);
 
         chunks.splice(0, 1, firstChunk, secondChunk); // Replace single chunk with two
-        logger.info(`    Successfully split into two chunks: ${firstChunk.length} msgs and ${secondChunk.length} msgs.`);
+        this.logger.info(`    Successfully split into two chunks: ${firstChunk.length} msgs and ${secondChunk.length} msgs.`);
       }
     }
 
@@ -1591,7 +1600,7 @@ export class SemanticTurningPointDetector {
     if (chunks.length > 1) {
       const lastChunk = chunks[chunks.length - 1];
       if (lastChunk.length < minMessages) {
-        logger.info(`    Last chunk (${lastChunk.length} msgs) is smaller than min size (${minMessages}). Merging with previous.`);
+        this.logger.info(`    Last chunk (${lastChunk.length} msgs) is smaller than min size (${minMessages}). Merging with previous.`);
         const secondLastChunk = chunks[chunks.length - 2];
         // Combine, avoiding duplicates from overlap if possible
         const combinedChunk = [...secondLastChunk];
@@ -1604,7 +1613,7 @@ export class SemanticTurningPointDetector {
 
         // Replace the last two chunks with the merged one
         chunks.splice(chunks.length - 2, 2, combinedChunk);
-        logger.info(`    Merged last two chunks. New chunk count: ${chunks.length}.`);
+        this.logger.info(`    Merged last two chunks. New chunk count: ${chunks.length}.`);
       }
     }
     // --- End Post-processing ---
@@ -1614,7 +1623,7 @@ export class SemanticTurningPointDetector {
     const avgTokens = numChunks > 0 ? totalTokens / numChunks : 0; // Avoid division by zero
     const avgMessagesPerChunk = numChunks > 0 ? messages.length / numChunks : 0;
 
-    logger.info(`    Finished chunking. Created ${numChunks} chunks. Avg Tokens: ${avgTokens.toFixed(0)}, Avg Msgs: ${avgMessagesPerChunk.toFixed(1)}`);
+    this.logger.info(`    Finished chunking. Created ${numChunks} chunks. Avg Tokens: ${avgTokens.toFixed(0)}, Avg Msgs: ${avgMessagesPerChunk.toFixed(1)}`);
 
     return {
       chunks,
@@ -1630,7 +1639,7 @@ export class SemanticTurningPointDetector {
    */
   private ensureChronologicalSpan(span: MessageSpan): MessageSpan {
     if (span.startIndex > span.endIndex) {
-      logger.info(`Warning: Correcting reversed span indices (${span.startIndex} > ${span.endIndex}) for IDs ${span.startId}/${span.endId}.`);
+      this.logger.info(`Warning: Correcting reversed span indices (${span.startIndex} > ${span.endIndex}) for IDs ${span.startId}/${span.endId}.`);
       // Create a new span with swapped values to maintain immutability
       return {
         startId: span.endId, // Swap IDs
@@ -1657,7 +1666,7 @@ export class SemanticTurningPointDetector {
       // Use external countTokens function (original logic)
       count = countTokens(text);
     } catch (err: any) {
-      logger.info(`Error counting tokens: ${err.message}. Falling back to length/4.`);
+      this.logger.info(`Error counting tokens: ${err.message}. Falling back to length/4.`);
       count = Math.ceil(text.length / 4);// Fallback (original logic) based on a naive approach that uses a ratio of four characters per token. This method is inaccurate because the token count is also influenced by certain special strings or characters. The ratio can vary significantly depending on the type of text content; for example, JSON data may yield a slightly different ratio. However, this four-character ratio is generally reasonable for semantic text.
 
     }
@@ -1877,7 +1886,7 @@ async function runTurningPointDetectorExample() {
     minTokensPerChunk: 1024,
     maxTokensPerChunk: 16384,
     // uses for now embeddings only from openai
-     embeddingModel: "text-embedding-snowflake-arctic-embed-l-v2.0",
+    embeddingModel: "text-embedding-snowflake-arctic-embed-l-v2.0",
 
     // embeddingModel: 'text-embedding-3-large',
     // ARC framework: dynamic recursion depth based on conversation complexity
@@ -1900,7 +1909,7 @@ async function runTurningPointDetectorExample() {
     // Enable convergence measurement for ARC analysis
     measureConvergence: true,
 
-      classificationModel: "gpt-4o-mini",
+    classificationModel: "gpt-4o-mini",
     // classificationModel: 'phi-4-mini-Q5_K_M:3.8B',
     // classificationModel: 'gpt-4o-mini',
     // e.g. llmstudio or ollama
@@ -1922,22 +1931,22 @@ async function runTurningPointDetectorExample() {
     const difference = endTime - startTime;
     const formattedTimeDateDiff = new Date(difference).toISOString().slice(11, 19);
 
-    logger.info(`\nTurning point detection took as MM:SS: ${formattedTimeDateDiff} for ${tokensInConvoFile} tokens in the conversation`);
+    this.logger.info(`\nTurning point detection took as MM:SS: ${formattedTimeDateDiff} for ${tokensInConvoFile} tokens in the conversation`);
 
     // Display results with complexity scores from the ARC framework
-    logger.info('\n=== DETECTED TURNING POINTS (ARC/CRA Framework) ===\n');
+    this.logger.info('\n=== DETECTED TURNING POINTS (ARC/CRA Framework) ===\n');
 
     turningPoints.forEach((tp, i) => {
-      logger.info(`${i + 1}. ${tp.label} (${tp.category})`);
-      logger.info(`   Messages: "${tp.span.startId}" → "${tp.span.endId}"`);
-      logger.info(`   Dimension: n=${tp.detectionLevel}`);
-      logger.info(`   Complexity Score: ${tp.complexityScore.toFixed(2)} of 5`);
-      logger.info(`   Emotional Tone: ${tp.emotionalTone || 'unknown'}`);
-      logger.info(`   Semantic Shift Magnitude: ${tp.semanticShiftMagnitude.toFixed(2)}`);
-      logger.info(`   Sentiment: ${tp.sentiment || 'unknown'}`);
-      logger.info(`   Significance: ${tp.significance.toFixed(2)}`);
-      logger.info(`   Keywords: ${tp.keywords?.join(', ') || 'none'}`);
-      logger.info(`   Quotes: ${tp.quotes?.join(', ') || 'none'}`);
+      this.logger.info(`${i + 1}. ${tp.label} (${tp.category})`);
+      this.logger.info(`   Messages: "${tp.span.startId}" → "${tp.span.endId}"`);
+      this.logger.info(`   Dimension: n=${tp.detectionLevel}`);
+      this.logger.info(`   Complexity Score: ${tp.complexityScore.toFixed(2)} of 5`);
+      this.logger.info(`   Emotional Tone: ${tp.emotionalTone || 'unknown'}`);
+      this.logger.info(`   Semantic Shift Magnitude: ${tp.semanticShiftMagnitude.toFixed(2)}`);
+      this.logger.info(`   Sentiment: ${tp.sentiment || 'unknown'}`);
+      this.logger.info(`   Significance: ${tp.significance.toFixed(2)}`);
+      this.logger.info(`   Keywords: ${tp.keywords?.join(', ') || 'none'}`);
+      this.logger.info(`   Quotes: ${tp.quotes?.join(', ') || 'none'}`);
 
 
 
@@ -1946,13 +1955,13 @@ async function runTurningPointDetectorExample() {
     // Get and display convergence history to demonstrate the ARC framework
     const convergenceHistory = detector.getConvergenceHistory();
 
-    logger.info('\n=== ARC/CRA FRAMEWORK CONVERGENCE ANALYSIS ===\n');
+    this.logger.info('\n=== ARC/CRA FRAMEWORK CONVERGENCE ANALYSIS ===\n');
     convergenceHistory.forEach((state, i) => {
-      logger.info(`Iteration ${i + 1}:`);
-      logger.info(`  Dimension: n=${state.dimension}`);
-      logger.info(`  Convergence Distance: ${state.distanceMeasure.toFixed(3)}`);
-      logger.info(`  Dimensional Escalation: ${state.didEscalate ? 'Yes' : 'No'}`);
-      logger.info(`  Turning Points: ${state.currentTurningPoints.length}`);
+      this.logger.info(`Iteration ${i + 1}:`);
+      this.logger.info(`  Dimension: n=${state.dimension}`);
+      this.logger.info(`  Convergence Distance: ${state.distanceMeasure.toFixed(3)}`);
+      this.logger.info(`  Dimensional Escalation: ${state.didEscalate ? 'Yes' : 'No'}`);
+      this.logger.info(`  Turning Points: ${state.currentTurningPoints.length}`);
 
     });
 
@@ -1962,7 +1971,7 @@ async function runTurningPointDetectorExample() {
     // Also save convergence analysis
     fs.writeJSONSync('results/convergence_analysis.json', convergenceHistory, { spaces: 2, encoding: 'utf-8' });
 
-    logger.info('Results saved to files.');
+    this.logger.info('Results saved to files.');
   } catch (err) {
     console.error('Error detecting turning points:', err);
   }
@@ -1971,9 +1980,11 @@ async function runTurningPointDetectorExample() {
 
 }
 
+if (require.main === module) {
 
-runTurningPointDetectorExample().catch(err => {
-  console.error('Error in example run:', err);
-}).finally(() => {
-  process.exit(0);
-});
+  runTurningPointDetectorExample().catch(err => {
+    console.error('Error in example run:', err);
+  }).finally(() => {
+    process.exit(0);
+  });
+}
