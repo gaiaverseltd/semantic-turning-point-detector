@@ -221,8 +221,8 @@ Silus, could Vorlag’s echo still linger in the core? Not just as data, but as 
 ## Results
 ### With Qwen 2.5:7b-instruct-q5_k_m
 
-    ```bash
-    ts-node src/semanticTurningPointDetector.ts
+ ```bash
+ ts-node src/semanticTurningPointDetector.ts
     [TurningPointDetector] Initialized with config: {
     apiKey: '[REDACTED]',
     classificationModel: 'qwen2.5:7b-instruct-q5_k_m',
@@ -492,7 +492,9 @@ Silus, could Vorlag’s echo still linger in the core? Not just as data, but as 
     Turning Points: 1
 
   Results saved to files.
-  ```
+ ```
+
+
 ### With phi-4-mini-Q5_K_M
 
   ```bash
@@ -771,7 +773,7 @@ Silus, could Vorlag’s echo still linger in the core? Not just as data, but as 
 
 ### With Gpt-4o
 
-    ```sh
+ ```sh
   [TurningPointDetector] Initialized with config: {
     apiKey: '[REDACTED]',
     classificationModel: 'gpt-4o',
@@ -1025,4 +1027,7 @@ Silus, could Vorlag’s echo still linger in the core? Not just as data, but as 
     Turning Points: 1
 
   Results saved to files.
-  ```
+```
+
+
+Note: Be sure to review the results in the `results` directory, as it contains an output from the renowned `Pariah` script.
