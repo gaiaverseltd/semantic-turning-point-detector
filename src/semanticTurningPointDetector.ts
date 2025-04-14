@@ -736,6 +736,15 @@ export class SemanticTurningPointDetector {
    * Use LLM to classify a turning point and generate metadata.
    * *** MODIFIED to prioritize message.spanData over regex ***
    */
+  /**
+   * Use LLM to classify a turning point and generate metadata.
+   * This implementation uses a highly modular prompt architecture with
+   * multiple distinct user messages to ensure clarity. The payload consists of:
+   * - A system message that sets the core identity and universal constraints.
+   * - A static context user message containing framework and evaluation criteria.
+   * - A dynamic data user message that provides conversation context and the specific messages to analyze.
+   * - A final user instruction message that tells the model what to do with all this information.
+   */
   private async classifyTurningPoint(
     beforeMessage: Message,
     afterMessage: Message,
@@ -744,26 +753,22 @@ export class SemanticTurningPointDetector {
     originalMessages: Message[],
     index: number = 0
   ): Promise<TurningPoint> {
-
-
     let span: MessageSpan;
 
     if (dimension > 0) {
-      if (beforeMessage instanceof MetaMessage === false || afterMessage instanceof MetaMessage === false) {
-        throw new Error("Before or after message is not a MetaMessage");
+      if (!(beforeMessage instanceof MetaMessage) || !(afterMessage instanceof MetaMessage)) {
+        throw new Error("Before or after message is not a MetaMessage at higher dimension");
       }
       const beforeMessageMeta = beforeMessage as MetaMessage;
       const afterMessageMeta = afterMessage as MetaMessage;
-      // For higher dimensions, use meta-message and inner methods to get the the span ids for the start and end 
+      // For higher dimensions, extract the starting and ending message from within the meta-message's inner list
       span = {
         startId: beforeMessageMeta.getMessagesInTurningPointSpanToMessagesArray()[0].id,
         endId: afterMessageMeta.getMessagesInTurningPointSpanToMessagesArray()[0].id,
-        startIndex: this.originalMessages.findIndex((candidateM) => {
-          return beforeMessageMeta.getMessagesInTurningPointSpanToMessagesArray()[0].id === candidateM.id;
-        }),
-        endIndex: this.originalMessages.findIndex((candidateM) => {
-          return afterMessageMeta.getMessagesInTurningPointSpanToMessagesArray()[0].id === candidateM.id;
-        }),
+        startIndex: this.originalMessages.findIndex((candidateM) =>
+          candidateM.id === beforeMessageMeta.getMessagesInTurningPointSpanToMessagesArray()[0].id),
+        endIndex: this.originalMessages.findIndex((candidateM) =>
+          candidateM.id === afterMessageMeta.getMessagesInTurningPointSpanToMessagesArray()[0].id),
         originalSpan: {
           startId: beforeMessage.id,
           endId: afterMessage.id,
@@ -772,7 +777,7 @@ export class SemanticTurningPointDetector {
         }
       };
     } else {
-      // For dimension 0, use original message IDs and find indices
+      // For base-level conversations, use the original message IDs and find their indices.
       span = {
         startId: beforeMessage.id,
         endId: afterMessage.id,
@@ -791,54 +796,86 @@ export class SemanticTurningPointDetector {
       };
     }
 
-    // --- REMOVED Regex block for extracting originalSpan from meta-message content ---
-    // const originalSpan = { startIndex: 0, endIndex: 0, startMessageId: '', endMessageId: '' };
-    // if (beforeMessage.author === 'meta' || afterMessage.author === 'meta') {
-    //   ... regex matching logic ...
-    // }
-    // --- End Removal ---
+    // --- Constructing the Modular Prompt ---
 
-    // --- LLM Prompt Setup (using original prompt structure) ---
+    // 1. System Message: Core identity and immutable instructions.
+    const systemMessage = this.config.customSystemInstruction && this.config.customSystemInstruction.length > 0
+      ? this.config.customSystemInstruction
+      : `You are an expert conversation analyzer specializing in semantic turning point detection.
+Your primary goal is to identify significant shifts in conversation flow and meaning.
+Analyze semantic differences in the provided conversation context and provide a structured JSON output as described.`;
 
-    const systemPrompt = formSystemMessage({
-      dimension,
-      distance
-    })
-    const userMessage = formUserMessage({
-      config: this.config,
-      afterMessage,
-      beforeMessage,
-      dimension,
-      addUserInstructions: this.config.customUserInstruction && this.config.customUserInstruction.length > 0 ? true : false,
-    })
+    // 2. Static Context User Message: Framework and evaluation criteria.
+    const frameworkContextMessage = `<analysis_framework>
+Turning points are significant shifts in conversation that indicate changes in subject, emotion, or decision-making.
+A semantic distance of ${distance.toFixed(3)} has been detected between the messages.
+You are analyzing dimension ${dimension} where ${dimension > 0 ? "each message represents a group of related turning points" : "messages are direct conversation exchanges"}.
+Classification categories include:
+ - Topic, Insight, Emotion, Meta-Reflection, Decision,
+ - Question, Problem, Action, Clarification, Objection, Other.
+Significance (0.0 to 1.0) reflects the impact of the turning point on the overall conversation.
+</analysis_framework>
 
-    const contextualAidText = this.prepareContextualInfoMeta(
+<output_format>
+Your JSON response must include:
+- label: (string, max 50 chars) a brief description,
+- category: (string) one of the categories mentioned,
+- keywords: (array of strings, max 4),
+- quotes: (array of strings, max 3),
+- emotionalTone: (string),
+- sentiment: (one of "positive", "negative", "neutral"),
+- significance: (number, 0.0 to 1.0),
+- best_id: (string) the representative message ID.
+</output_format>`;
+
+    // 3. Dynamic Data User Message: Conversation context and messages to analyze.
+    const contextualInfo = this.prepareContextualInfoMeta(
       beforeMessage,
       afterMessage,
       span,
       originalMessages,
       dimension,
       2,
-      dimension > 0);
+      dimension > 0
+    );
+
+    const dynamicDataMessage = `<conversation_context>
+${contextualInfo}
+</conversation_context>
+
+<messages_to_analyze>
+BEFORE MESSAGE:
+  - Role: ${beforeMessage.author}
+  - Content: ${returnFormattedMessageContent(this.config, beforeMessage, dimension)}
+AFTER MESSAGE:
+  - Role: ${afterMessage.author}
+  - Content: ${returnFormattedMessageContent(this.config, afterMessage, dimension)}
+</messages_to_analyze>`;
+
+    // 4. Final Task Instruction User Message: Direct instruction to the LLM.
+    const finalInstructionMessage = this.config.customUserInstruction && this.config.customUserInstruction.length > 0
+      ? this.config.customUserInstruction
+      : `Using the criteria provided in <analysis_framework> and the detailed context in <conversation_context> along with the specific messages in <messages_to_analyze>, 
+analyze whether the provided messages represent a turning point in the conversation.
+Determine the category, significance, and other attributes as specified in <output_format>.
+Return your answer as valid JSON.`;
+
+    // Assemble all messages as a multi-message payload
+    const messagesPayload: OpenAI.ChatCompletionMessageParam[] = [
+      { role: 'system', content: systemMessage },
+      { role: 'user', content: frameworkContextMessage },
+      { role: 'user', content: dynamicDataMessage },
+      { role: 'user', content: finalInstructionMessage },
+    ];
 
     try {
-      // --- Call LLM (using original parameters and schema) ---
+      // Call the LLM using the assembled messages
       const response = await this.openai.chat.completions.create({
         model: this.config.classificationModel,
-        messages: [
-          {
-            role: 'system', content:
-              `${this.config.customSystemInstruction ? this.config.customSystemInstruction : systemPrompt
-              }\n\n${contextualAidText}\n------- end of contextual background info see below as reminder of instructions -------\n\n${this.config.customSystemInstruction ? this.config.customSystemInstruction : formSystemPromptEnding(dimension)
-              }`,
-
-          },
-          { role: 'user', content: this.config.customUserInstruction ? `${this.config.customUserInstruction}\n\n${userMessage}\n\n${this.config.customUserInstruction}` : userMessage },
-        ],
-
-
+        messages: messagesPayload,
         temperature: 0.6,
-        //@ts-ignore - Allow vendor-specific params if needed
+        // Additional vendor-specific parameters if provided
+        //@ts-ignore
         repeat_penalty: this.config.endpoint ? 1.005 : undefined,
         top_k: this.config.endpoint ? 20 : undefined,
         response_format: formResponseFormatSchema(dimension),
@@ -852,7 +889,7 @@ export class SemanticTurningPointDetector {
         classification = JSON.parse(content);
       } catch (err: any) {
         this.logger.info('Error parsing LLM response as JSON:', err.message);
-        // Attempt to extract JSON from markdown code block if necessary
+        // Try extracting JSON from markdown-style code block.
         const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/);
         if (jsonMatch && jsonMatch[1]) {
           try {
@@ -860,16 +897,16 @@ export class SemanticTurningPointDetector {
             this.logger.info('Successfully extracted JSON from markdown block.');
           } catch (parseErr: any) {
             this.logger.info('Failed to parse extracted JSON:', parseErr.message);
-            classification = {}; // Reset on secondary failure
+            classification = {};
           }
         } else {
-          const plainJsonMatch = content.match(/\{[\s\S]*\}/); // Fallback to find any JSON structure
+          const plainJsonMatch = content.match(/\{[\s\S]*\}/);
           if (plainJsonMatch) {
             try {
               classification = JSON.parse(plainJsonMatch[0]);
               this.logger.info('Successfully extracted JSON using simple match.');
             } catch (parseErr: any) {
-              this.logger.info('Failed to parse simple JSON match:', parseErr.message);
+              this.logger.info('Failed to parse JSON using simple match:', parseErr.message);
               classification = {};
             }
           } else {
@@ -877,43 +914,60 @@ export class SemanticTurningPointDetector {
             classification = {};
           }
         }
-        // Provide default values if parsing failed completely
         if (Object.keys(classification).length === 0) {
           classification = {
-            label: 'Parsing Error - Unclassified', category: 'Other', keywords: [],
-            emotionalTone: 'neutral', sentiment: 'neutral', significance: 0.1,
-            quotes: [], best_id: span.startId
+            label: 'Parsing Error - Unclassified',
+            category: 'Other',
+            keywords: [],
+            emotionalTone: 'neutral',
+            sentiment: 'neutral',
+            significance: 0.1,
+            quotes: [],
+            best_id: span.startId
           };
         }
       }
 
-      // --- Validate and Sanitize LLM Output ---
+      // Validate and sanitize the LLM output.
       const validatedClassification = {
-        label: typeof classification.label === 'string' ? classification.label.substring(0, 50) : 'Unknown Turning Point',
-        category: typeof classification.category === 'string' ? classification.category as TurningPointCategory : 'Other',
-        keywords: Array.isArray(classification.keywords) ? classification.keywords.map(String).slice(0, 4) : [], // Limit count
-        emotionalTone: typeof classification.emotionalTone === 'string' ? classification.emotionalTone : 'neutral',
-        sentiment: ['positive', 'negative', 'neutral'].includes(classification.sentiment) ? classification.sentiment : 'neutral',
-        significance: typeof classification.significance === 'number' ? Math.max(0, Math.min(1, classification.significance)) : 0.5,
-        quotes: Array.isArray(classification.quotes) ? classification.quotes.map(String).slice(0, 3) : [], // Limit count
-        best_id: typeof classification.best_id === 'string' ? classification.best_id : span.startId, // Default to start of span
+        label: typeof classification.label === 'string'
+          ? classification.label.substring(0, 50)
+          : 'Unknown Turning Point',
+        category: typeof classification.category === 'string'
+          ? classification.category as TurningPointCategory
+          : 'Other',
+        keywords: Array.isArray(classification.keywords)
+          ? classification.keywords.map(String).slice(0, 4)
+          : [],
+        emotionalTone: typeof classification.emotionalTone === 'string'
+          ? classification.emotionalTone
+          : 'neutral',
+        sentiment: ['positive', 'negative', 'neutral'].includes(classification.sentiment)
+          ? classification.sentiment
+          : 'neutral',
+        significance: typeof classification.significance === 'number'
+          ? Math.max(0, Math.min(1, classification.significance))
+          : 0.5,
+        quotes: Array.isArray(classification.quotes)
+          ? classification.quotes.map(String).slice(0, 3)
+          : [],
+        best_id: typeof classification.best_id === 'string'
+          ? classification.best_id
+          : span.startId,
       };
 
-
-      // Calculate complexity score
+      // Calculate complexity score using the significance and the raw distance.
       const complexityScore = this.calculateComplexityScore(
         validatedClassification.significance,
-        distance // Use the raw distance (0-1)
+        distance
       );
 
-      // --- Construct TurningPoint Object ---
+      // Construct and return the final TurningPoint object.
       return {
         id: `tp-${dimension}-${span.startIndex}-${span.endIndex}`,
         label: validatedClassification.label,
         category: validatedClassification.category,
-        span: span, // Use the span derived at the beginning
-
-        // deprecatedSpan is no longer populated from regex results
+        span: span,
         semanticShiftMagnitude: distance,
         keywords: validatedClassification.keywords,
         quotes: validatedClassification.quotes,
@@ -926,16 +980,14 @@ export class SemanticTurningPointDetector {
 
     } catch (err: any) {
       this.logger.info(`Error during LLM call for turning point classification: ${err.message}`);
-      // Fallback classification on API error
       if (this.config.throwOnError) {
-
+        throw err;
       } else {
         return {
           id: `tp-err-${dimension}-${span.startId}`,
           label: 'LLM Error - Unclassified',
           category: 'Other',
           span: span,
-
           semanticShiftMagnitude: distance,
           keywords: [],
           quotes: [],
@@ -943,11 +995,12 @@ export class SemanticTurningPointDetector {
           sentiment: 'neutral',
           detectionLevel: dimension,
           significance: 0.1,
-          complexityScore: 1.0 // Minimum complexity
+          complexityScore: 1.0
         };
       }
     }
   }
+
 
   /**
    * Updated to utilize new classes of Message and MetaMessage for better structure and clarity

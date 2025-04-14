@@ -1,8 +1,8 @@
 [
   {
     "id": "tp-4-0-0",
-    "label": "From Heat Discussion to Philosophical Reflection o",
-    "category": "meta-reflection",
+    "label": "Forecasting a Thunderstorm",
+    "category": "question",
     "span": {
       "startId": 0,
       "endId": 0,
@@ -15,28 +15,28 @@
         "endIndex": 1
       }
     },
-    "semanticShiftMagnitude": 0.3718695392207094,
+    "semanticShiftMagnitude": 0.05836562101301253,
     "keywords": [],
     "quotes": [
-      "MR. X: Humph, I should of course have the whole thing smelted, and then I should have it cast into ducats--full weight, of course--",
-      "MR. Y: Of course!",
-      "MR. X: That goes without saying. If I wanted to make counterfeit money--well, it wouldn't be necessary to dig the gold first. [Pause.] It's remarkable, nevertheless, that if some one were to do what I can't bring myself to do, I should acquit him. But I should not be able to acquit myself. I should be able to put up a brilliant defense for the thief; prove that this gold was res nullius, or no one's, and that it got into the earth before there were any land rights; that even now it belongs to no one but the first comer, as the owner had never accounted it part of his property, and so on."
+      "MR. X: What oppressive heat! We'll surely have a thunder-shower.",
+      "MR. Y: Yes? What makes you think so?",
+      "MR. X: But you always look as if you expected a thunder-shower."
     ],
     "emotionalTone": "curiosity",
     "sentiment": "negative",
     "detectionLevel": 4,
     "significance": 1,
-    "complexityScore": 5
+    "complexityScore": 4.758365621013013
   },
   {
-    "id": "tp-4-0-42",
-    "label": "From Curiosity to Revelation: Exploring Trust and ",
-    "category": "insight",
+    "id": "tp-4-0-5",
+    "label": "Weather to Debts",
+    "category": "topic",
     "span": {
       "startId": 0,
-      "endId": 42,
+      "endId": 5,
       "startIndex": 0,
-      "endIndex": 42,
+      "endIndex": 5,
       "originalSpan": {
         "startId": "meta-cat-2",
         "endId": "meta-cat-3",
@@ -44,296 +44,292 @@
         "endIndex": 1
       }
     },
-    "semanticShiftMagnitude": 0.8779681328389027,
+    "semanticShiftMagnitude": 0.9353630368644178,
     "keywords": [],
     "quotes": [
-      "MR. X: It's plain to be seen.",
-      "MR. Y: How--do--you--know--that?",
-      "MR. Y: Yes? What makes you think so?"
+      "MR. X: 'What oppressive heat! We'll surely have a thunder-shower.'",
+      "MR. X: 'Nothing but debts, debts!'",
+      "MR. Y: 'Do I?'"
     ],
-    "emotionalTone": "surprise",
+    "emotionalTone": "curiosity",
     "sentiment": "negative",
     "detectionLevel": 4,
     "significance": 1,
     "complexityScore": 5
   },
   {
-    "id": "tp-3-42-46",
-    "label": "From Silent Tension to Revelation and Accusation",
-    "category": "revelation",
+    "id": "tp-2-5-20",
+    "label": "Debts and Dilemmas",
+    "category": "problem",
     "span": {
-      "startId": 42,
-      "endId": 46,
-      "startIndex": 42,
-      "endIndex": 46,
+      "startId": 5,
+      "endId": 20,
+      "startIndex": 5,
+      "endIndex": 20,
       "originalSpan": {
-        "startId": "meta-cat-4",
-        "endId": "meta-cat-5",
-        "startIndex": 0,
-        "endIndex": 1
-      }
-    },
-    "semanticShiftMagnitude": 0.530125653821182,
-    "keywords": [],
-    "quotes": [
-      "MR. X: Yes, indeed.",
-      "MR. X: Sit still. Why can't you sit quietly.",
-      "MR. Y: [Stops as if transfixed. Regards Mr. X. at first with wild hatred, them with surprise and wonderment.] How--do--you--know--that?"
-    ],
-    "emotionalTone": "surprise",
-    "sentiment": "negative",
-    "detectionLevel": 3,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-2-46-49",
-    "label": "From Accusation to Revelation of Past Crimes",
-    "category": "revelation",
-    "span": {
-      "startId": 46,
-      "endId": 49,
-      "startIndex": 46,
-      "endIndex": 49,
-      "originalSpan": {
-        "startId": "meta-cat-7",
-        "endId": "meta-cat-8",
+        "startId": "meta-cat-2",
+        "endId": "meta-cat-3",
         "startIndex": 2,
         "endIndex": 3
       }
     },
-    "semanticShiftMagnitude": 0.048649045739486016,
+    "semanticShiftMagnitude": 0.9402544181876001,
     "keywords": [],
     "quotes": [
-      "MR. X: It's plain to be seen.",
-      "MR. Y: How--do--you--know--that?",
-      "MR. Y: You were too cowardly, just as you were too cowardly to tell your wife that she is married to a murderer."
-    ],
-    "emotionalTone": "surprise",
-    "sentiment": "negative",
-    "detectionLevel": 2,
-    "significance": 1,
-    "complexityScore": 4.748649045739486
-  },
-  {
-    "id": "tp-1-49-69-merged-49",
-    "label": "from Discussion",
-    "category": "revelation",
-    "span": {
-      "startId": 49,
-      "endId": 69,
-      "startIndex": 49,
-      "endIndex": 69
-    },
-    "semanticShiftMagnitude": 0.9354805627566507,
-    "keywords": [],
-    "quotes": [
-      "MR. Y: Can I go?",
-      "MR. X: Now you shall go--immediately. Your things will follow you.",
-      "MR. X: Well, you see, that's what bothers me, that's what bothers me. Don't you suppose that each one of us has a skeleton in his closet? Yes, indeed! Well, there are people who continue to be children all their lives, so that they cannot control their lawless desires. Whenever the opportunity comes, the criminal is ready. But I cannot understand why you do not feel innocent. As the child is considered irresponsible, the criminal should be considered so too. It's strange--well, it doesn't matter; I'll regret it later. [Pause.] I killed a man once, and I never had any scruples."
-    ],
-    "emotionalTone": "surprise",
-    "sentiment": "negative",
-    "detectionLevel": 1,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-1-69-110-merged-110",
-    "label": "from from Discussion",
-    "category": "problem",
-    "span": {
-      "startId": 69,
-      "endId": 110,
-      "startIndex": 69,
-      "endIndex": 110
-    },
-    "semanticShiftMagnitude": 0.9653423394325767,
-    "keywords": [],
-    "quotes": [
-      "MR. Y: No, I haven't.",
-      "MR. X: Well, you see, that's what bothers me, that's what bothers me. Don't you suppose that each one of us has a skeleton in his closet? Yes, indeed! Well, there are people who continue to be children all their lives, so that they cannot control their lawless desires. Whenever the opportunity comes, the criminal is ready. But I cannot understand why you do not feel innocent. As the child is considered irresponsible, the criminal should be considered so too. It's strange--well, it doesn't matter; I'll regret it later. [Pause.] I killed a man once, and I never had any scruples.",
-      "MR. Y: Six thousand crowns."
-    ],
-    "emotionalTone": "curiosity",
-    "sentiment": "negative",
-    "detectionLevel": 1,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-110-111-merged-111",
-    "label": "Shift from Legal Justification to Personal Demand / Revelation of Blac",
-    "category": "problem",
-    "span": {
-      "startId": 110,
-      "endId": 112,
-      "startIndex": 110,
-      "endIndex": 112
-    },
-    "semanticShiftMagnitude": 0.9674585696528036,
-    "keywords": [],
-    "quotes": [
-      "MR. X: Legitimate? The law decrees that a man's life is worth at the minimum fifty crowns. But as the deceased had no relatives, there's nothing to be said on that score.",
-      "MR. Y: Humph, you will not understand? Then I must speak more plainly. It is to me that you are to pay the fine.",
-      "MR. X: I've never heard that a homicide should pay a fine to a forger, and there is also no accuser."
-    ],
-    "emotionalTone": "curiosity",
-    "sentiment": "negative",
-    "detectionLevel": 0,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-112-113-merged-113",
-    "label": "Acknowledgment of Blackmail / Transition from Admission to Accusation ",
-    "category": "insight",
-    "span": {
-      "startId": 112,
-      "endId": 114,
-      "startIndex": 112,
-      "endIndex": 114
-    },
-    "semanticShiftMagnitude": 0.9846115981741844,
-    "keywords": [],
-    "quotes": [
-      "MR. X: I've never heard that a homicide should pay a fine to a forger, and there is also no accuser.",
-      "MR. Y: No? Yes, you have me.",
-      "MR. X: Ah, now things are beginning to clear up. How much do you ask to become accomplice to the homicide?"
-    ],
-    "emotionalTone": "surprise",
-    "sentiment": "negative",
-    "detectionLevel": 0,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-115-116",
-    "label": "Demand for Money Escalates to Moral Dilemma",
-    "category": "problem",
-    "span": {
-      "startId": 115,
-      "endId": 116,
-      "startIndex": 115,
-      "endIndex": 116
-    },
-    "semanticShiftMagnitude": 0.9718415687191428,
-    "keywords": [],
-    "quotes": [
-      "MR. Y: Six thousand crowns.",
-      "MR. X: That's too much. Where am I to get it? [Mr. Y. points to the case.] I don't want to do that, I don't want to become a thief."
+      "MR. X: 'Nothing but debts, debts!'",
+      "MR. Y: 'It must be because you are afraid of being found out.'"
     ],
     "emotionalTone": "fear",
     "sentiment": "negative",
-    "detectionLevel": 0,
+    "detectionLevel": 2,
     "significance": 1,
     "complexityScore": 5
   },
   {
-    "id": "tp-0-117-118",
-    "label": "Accusation to Self-Reflection on Trust",
+    "id": "tp-2-5-44",
+    "label": "Moral Dissonance and Identity",
+    "category": "topic",
+    "span": {
+      "startId": 5,
+      "endId": 44,
+      "startIndex": 5,
+      "endIndex": 44,
+      "originalSpan": {
+        "startId": "meta-section-1",
+        "endId": "meta-section-2",
+        "startIndex": 2,
+        "endIndex": 3
+      }
+    },
+    "semanticShiftMagnitude": 0.5669871805816289,
+    "keywords": [],
+    "quotes": [
+      "MR. Y: How did you get such a liberal attitude towards people's conduct? Are you a Christian?"
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 2,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-1-44-48",
+    "label": "Moral Dilemma Unveiled",
     "category": "insight",
     "span": {
-      "startId": 117,
-      "endId": 118,
-      "startIndex": 117,
-      "endIndex": 118
+      "startId": 44,
+      "endId": 48,
+      "startIndex": 44,
+      "endIndex": 48,
+      "originalSpan": {
+        "startId": "meta-cat-5",
+        "endId": "meta-cat-6",
+        "startIndex": 5,
+        "endIndex": 6
+      }
     },
-    "semanticShiftMagnitude": 0.8008774322236216,
+    "semanticShiftMagnitude": 0.9794911264378154,
     "keywords": [],
     "quotes": [
-      "MR. Y: Don't pretend. Do you want me to believe that you haven't dipped into that case before now?",
-      "MR. X: To think that I could make such a big mistake! But that's the way it always is with bland people."
+      "MR. Y: How did you get such a liberal attitude towards people's conduct? Are you a Christian?",
+      "MR. X: No--of course I couldn't be--as you've just heard. The Christians demand forgiveness, but I demand punishment for the restoration of balance, or whatever you like to call it, and you, who have served time, ought to understand that."
     ],
     "emotionalTone": "curiosity",
     "sentiment": "negative",
-    "detectionLevel": 0,
+    "detectionLevel": 1,
     "significance": 1,
     "complexityScore": 5
   },
   {
-    "id": "tp-0-118-119-merged-119",
-    "label": "accusation Discussion",
-    "category": "problem",
-    "span": {
-      "startId": 118,
-      "endId": 120,
-      "startIndex": 118,
-      "endIndex": 120
-    },
-    "semanticShiftMagnitude": 0.936901669574376,
-    "keywords": [],
-    "quotes": [
-      "MR. X: To think that I could make such a big mistake!",
-      "MR. Y: Yes, I'm sure of it.",
-      "author:MR. Y: Yes, I'm sure of it."
-    ],
-    "emotionalTone": "curiosity",
-    "sentiment": "negative",
-    "detectionLevel": 0,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-120-121-merged-121",
-    "label": "Confrontation Over Financial Obligation / From Resignation to Self-Sac",
+    "id": "tp-0-48-49-merged-49-merged-50-merged-52",
+    "label": "reluctant witness Discussion",
     "category": "decision",
     "span": {
-      "startId": 120,
-      "endId": 122,
-      "startIndex": 120,
-      "endIndex": 122
+      "startId": 48,
+      "endId": 53,
+      "startIndex": 48,
+      "endIndex": 53
     },
-    "semanticShiftMagnitude": 0.9649802410920821,
+    "semanticShiftMagnitude": 0.8768998865078504,
     "keywords": [],
     "quotes": [
-      "MR. X: And you will accuse me if you do not receive the six thousand crowns?",
-      "MR. Y: Absolutely. You can't get out of it, so it's not worth while trying to do so.",
-      "MR. X: Do you think I would give my father a thief for son, my wife a thief for husband, my children a thief for father, and my confrères a thief for comrade? That shall never happen. Now I'll go to the sheriff and give myself up."
+      "MR. X: I must think about my muddled affairs. Now be so kind as to witness my signature on this note, which I must leave at the bank at Malmö when I go there with you tomorrow morning.",
+      "MR. X: Now be so kind as to witness my signature on this note, which I must leave at the bank at Malmö when I go there with you tomorrow morning.",
+      "MR. Y: I don't intend to go by way of Malmö."
     ],
-    "emotionalTone": "anger",
+    "emotionalTone": "surprise",
     "sentiment": "negative",
     "detectionLevel": 0,
     "significance": 1,
     "complexityScore": 5
   },
   {
-    "id": "tp-0-123-124",
-    "label": "Sudden Interruption and Inquiry",
-    "category": "question",
+    "id": "tp-0-54-55-merged-55",
+    "label": "The Unveiling of Past Secrets / Misstep Revelation",
+    "category": "insight",
     "span": {
-      "startId": 123,
+      "startId": 54,
+      "endId": 56,
+      "startIndex": 54,
+      "endIndex": 56
+    },
+    "semanticShiftMagnitude": 0.8916795102372128,
+    "keywords": [],
+    "quotes": [
+      "\"No-o. I never sign my name to papers--\" - MR. Y",
+      "\"Any more! That's the fifth time that you have refused to write your name.\" - MR. X",
+      "'Any more! That's the fifth time that you have refused to write your name.' - MR. X"
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-56-57-merged-60-merged-61",
+    "label": "Reassurance Amidst Doubt / Gesture of Acceptance / The Unequal Footing",
+    "category": "emotion",
+    "span": {
+      "startId": 56,
+      "endId": 62,
+      "startIndex": 56,
+      "endIndex": 62
+    },
+    "semanticShiftMagnitude": 0.8528118518520674,
+    "keywords": [],
+    "quotes": [
+      "MR. Y: Now you hate me.",
+      "MR. X: No.",
+      "But thou art the first to offer me his hand after knowing-- MR. Y"
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-63-64",
+    "label": "Confession of Unintentional Crime",
+    "category": "emotion",
+    "span": {
+      "startId": 63,
+      "endId": 64,
+      "startIndex": 63,
+      "endIndex": 64
+    },
+    "semanticShiftMagnitude": 0.8868314073189378,
+    "keywords": [],
+    "quotes": [
+      "MR. Y: 'I'm going to tell you, though, and you shall see that I was not a common criminal.'"
+    ],
+    "emotionalTone": "disgust",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-1-65-90",
+    "label": "Revelation of Deceit",
+    "category": "objection",
+    "span": {
+      "startId": 65,
+      "endId": 90,
+      "startIndex": 65,
+      "endIndex": 90,
+      "originalSpan": {
+        "startId": "meta-cat-8",
+        "endId": "meta-cat-9",
+        "startIndex": 0,
+        "endIndex": 1
+      }
+    },
+    "semanticShiftMagnitude": 0.9724214813598344,
+    "keywords": [],
+    "quotes": [
+      "'I see in the mirror that you are a thief, a simple, common thief.' - MR. X",
+      "'So you stole that story too!' - MR. X",
+      "'What do you see now that's so remarkable?' - MR. Y"
+    ],
+    "emotionalTone": "disgust",
+    "sentiment": "negative",
+    "detectionLevel": 1,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-1-90-110",
+    "label": "Clash Over Accusations and Intent",
+    "category": "clarification",
+    "span": {
+      "startId": 90,
+      "endId": 110,
+      "startIndex": 90,
+      "endIndex": 110,
+      "originalSpan": {
+        "startId": "meta-cat-9",
+        "endId": "meta-cat-10",
+        "startIndex": 1,
+        "endIndex": 2
+      }
+    },
+    "semanticShiftMagnitude": 0.9513400091844662,
+    "keywords": [],
+    "quotes": [
+      "MR. X: 'What do you mean by that last expression--the gold age?'",
+      "MR. Y: 'Nothing at all.'",
+      "MR. Y: 'No? Haven't you?'"
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "negative",
+    "detectionLevel": 1,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-1-110-124",
+    "label": "Fine Imposition and Fear of Consequence",
+    "category": "emotion",
+    "span": {
+      "startId": 110,
       "endId": 124,
-      "startIndex": 123,
-      "endIndex": 124
+      "startIndex": 110,
+      "endIndex": 124,
+      "originalSpan": {
+        "startId": "meta-cat-10",
+        "endId": "meta-cat-11",
+        "startIndex": 2,
+        "endIndex": 3
+      }
     },
-    "semanticShiftMagnitude": 0.9520299244683991,
+    "semanticShiftMagnitude": 0.9780841845226143,
     "keywords": [],
     "quotes": [
-      "MR. Y: [Springs up and gets his things together] Wait a moment.",
-      "MR. X: What for?"
+      "MR. Y: 'It is to me that you are to pay the fine.'",
+      "MR. Y: I wouldn't need to be present--and could go."
     ],
-    "emotionalTone": "curiosity",
+    "emotionalTone": "surprise",
     "sentiment": "negative",
-    "detectionLevel": 0,
+    "detectionLevel": 1,
     "significance": 1,
     "complexityScore": 5
   },
   {
-    "id": "tp-0-124-125-merged-125",
-    "label": "MR. Y's Attempt to Exit / From Attempted Departure to Forced Confronta",
+    "id": "tp-0-125-126",
+    "label": "Power Shift at the Table",
     "category": "decision",
     "span": {
-      "startId": 124,
+      "startId": 125,
       "endId": 126,
-      "startIndex": 124,
+      "startIndex": 125,
       "endIndex": 126
     },
-    "semanticShiftMagnitude": 0.9322936817662706,
+    "semanticShiftMagnitude": 0.8850737234404872,
     "keywords": [],
     "quotes": [
-      "MR. X: What for?",
-      "MR. Y: [Stammering] I only thought--that as I'm not needed--I wouldn't need to be present--and could go.",
+      "MR. Y: I only thought--that as I'm not needed--I wouldn't need to be present--and could go.",
       "MR. X: You cannot. Sit down at your place at the table, where you've been sitting, and we will talk a little."
     ],
     "emotionalTone": "fear",
@@ -343,45 +339,44 @@
     "complexityScore": 5
   },
   {
-    "id": "tp-0-129-130-merged-130-merged-131",
-    "label": "accusation theft Discussion / Revelation of Imprisonment and Unfinishe",
-    "category": "insight",
+    "id": "tp-0-129-130",
+    "label": "Accusation of Theft",
+    "category": "objection",
     "span": {
       "startId": 129,
-      "endId": 132,
+      "endId": 130,
       "startIndex": 129,
-      "endIndex": 132
+      "endIndex": 130
     },
-    "semanticShiftMagnitude": 0.8677076787866347,
+    "semanticShiftMagnitude": 0.9420220505641238,
     "keywords": [],
     "quotes": [
-      "[Worried] What do you see now that's so remarkable? - MR. Y",
-      "I see in the mirror that you are a thief, a simple, common thief. - MR. X",
       "MR. X: I see in the mirror that you are a thief, a simple, common thief."
     ],
-    "emotionalTone": "anger",
+    "emotionalTone": "disgust",
     "sentiment": "negative",
     "detectionLevel": 0,
     "significance": 1,
     "complexityScore": 5
   },
   {
-    "id": "tp-0-133-134",
-    "label": "Revelation of Past Imprisonment and Impending Cons",
+    "id": "tp-0-131-132-merged-132-merged-133",
+    "label": "unveiling Discussion / Sheriff's Impending Arrival",
     "category": "insight",
     "span": {
-      "startId": 133,
+      "startId": 131,
       "endId": 134,
-      "startIndex": 133,
+      "startIndex": 131,
       "endIndex": 134
     },
-    "semanticShiftMagnitude": 0.9705896634021904,
+    "semanticShiftMagnitude": 0.920140817401863,
     "keywords": [],
     "quotes": [
-      "How can you say that? - MR. Y",
-      "Wait until the sheriff comes and you will know. - MR. X"
+      "MR. X: 'If you knew in what need I have lived, and lived, and still live!'",
+      "MR. X: 'To continue, that you have served time is almost certain, but that was in America...'",
+      "'If you knew in what need I have lived, and lived, and still live! But this is no time for that.' - MR. X"
     ],
-    "emotionalTone": "fear",
+    "emotionalTone": "curiosity",
     "sentiment": "negative",
     "detectionLevel": 0,
     "significance": 1,
@@ -389,7 +384,7 @@
   },
   {
     "id": "tp-0-134-135-merged-136",
-    "label": "from Discussion",
+    "label": "Confrontation and Defeat / Shift from Dismissal to Concern",
     "category": "emotion",
     "span": {
       "startId": 134,
@@ -397,11 +392,11 @@
       "startIndex": 134,
       "endIndex": 137
     },
-    "semanticShiftMagnitude": 0.9520188297738528,
+    "semanticShiftMagnitude": 0.9520181561352429,
     "keywords": [],
     "quotes": [
       "MR. X: Wait until the sheriff comes and you will know.",
-      "MR. Y: [Completely defeated] May I go now?",
+      "MR. Y: May I go now?",
       "MR. X: Yes, you may go now."
     ],
     "emotionalTone": "defeat",
@@ -412,19 +407,41 @@
   },
   {
     "id": "tp-0-140-141",
-    "label": "Intellectual Superiority to Strategic Challenge",
-    "category": "objection",
+    "label": "Intellectual Standoff",
+    "category": "insight",
     "span": {
       "startId": 140,
       "endId": 141,
       "startIndex": 140,
       "endIndex": 141
     },
-    "semanticShiftMagnitude": 0.8528741239358175,
+    "semanticShiftMagnitude": 0.8529158796656315,
     "keywords": [],
     "quotes": [
       "MR. X: Of course I do, as I am better. I am more intelligent than you are, and of more worth to the common weal.",
       "MR. Y: You are pretty crafty, but not so crafty as I am. I stand in check myself, but, nevertheless, the next move you can be checkmated."
+    ],
+    "emotionalTone": "pride",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-142-143",
+    "label": "Revelation of Hidden Intentions",
+    "category": "question",
+    "span": {
+      "startId": 142,
+      "endId": 143,
+      "startIndex": 142,
+      "endIndex": 143
+    },
+    "semanticShiftMagnitude": 0.913877890713408,
+    "keywords": [],
+    "quotes": [
+      "MR. X: Shall we have another bout? What evil do you intend to do now?",
+      "MR. Y: That is my secret."
     ],
     "emotionalTone": "curiosity",
     "sentiment": "negative",
@@ -433,44 +450,20 @@
     "complexityScore": 5
   },
   {
-    "id": "tp-0-141-142-merged-142",
-    "label": "Tension Escalation: From Strategic Positioning to  / Confrontation and",
-    "category": "emotion",
-    "span": {
-      "startId": 141,
-      "endId": 143,
-      "startIndex": 141,
-      "endIndex": 143
-    },
-    "semanticShiftMagnitude": 0.9294474481507752,
-    "keywords": [],
-    "quotes": [
-      "author:MR. Y: You are pretty crafty, but not so crafty as I am. I stand in check myself, but, nevertheless, the next move you can be checkmated.",
-      "author:MR. X: [Fixing Mr. Y. with his eye] Shall we have another bout? What evil do you intend to do now?",
-      "MR. X: Shall we have another bout? What evil do you intend to do now?"
-    ],
-    "emotionalTone": "anger",
-    "sentiment": "negative",
-    "detectionLevel": 0,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-144-145-merged-147-merged-150",
-    "label": "accusation Discussion",
-    "category": "objection",
+    "id": "tp-0-144-145",
+    "label": "The Threat of Exposure",
+    "category": "decision",
     "span": {
       "startId": 144,
-      "endId": 151,
+      "endId": 145,
       "startIndex": 144,
-      "endIndex": 151
+      "endIndex": 145
     },
-    "semanticShiftMagnitude": 0.8233548292156447,
+    "semanticShiftMagnitude": 0.8095495328343505,
     "keywords": [],
     "quotes": [
-      "May I look at you?--You think of writing an anonymous letter to my wife, disclosing my secret.",
-      "Yes, and you cannot prevent it. You dare not have me imprisoned, so you must let me go; and when I have gone I can do what I please.",
-      "MR. Y: You couldn't become one! You timid creature!"
+      "MR. X: May I look at you?--You think of writing an anonymous letter to my wife, disclosing my secret.",
+      "MR. Y: Yes, and you cannot prevent it. You dare not have me imprisoned, so you must let me go; and when I have gone I can do what I please."
     ],
     "emotionalTone": "anger",
     "sentiment": "negative",
@@ -479,22 +472,64 @@
     "complexityScore": 5
   },
   {
-    "id": "tp-0-152-153",
-    "label": "Accusation to Submission",
-    "category": "emotion",
+    "id": "tp-0-147-148",
+    "label": "Confrontational Insight",
+    "category": "insight",
     "span": {
-      "startId": 152,
-      "endId": 153,
-      "startIndex": 152,
-      "endIndex": 153
+      "startId": 147,
+      "endId": 148,
+      "startIndex": 147,
+      "endIndex": 148
     },
-    "semanticShiftMagnitude": 0.9927286932261093,
+    "semanticShiftMagnitude": 0.8271067839873484,
     "keywords": [],
     "quotes": [
-      "You are a different kind of being from me--whether stronger or weaker I do not know--more criminal or not--that doesn't concern me. But you are the stupider, that's proven. Because you were stupid when you forged a man's name instead of begging as I have had to do; you were stupid when you stole out of my book--didn't you realize that I read my books? You were stupid when you thought that you were more intelligent than I am and that you could fool me into becoming a thief; you were stupid when you thought, that the restoration of balance would be accomplished by the world's having two thieves instead of one, and you were most stupid when you believed that I have built my life's happiness without having laid the cornerstone securely. Go and write your anonymous letter to my wife about her husband being a homicide--that she knew as my fiancée. Do you give up now?",
-      "Can I go?"
+      "MR. X: You see, then, there is a difference in people after all"
     ],
-    "emotionalTone": "fear",
+    "emotionalTone": "anger",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-150-151",
+    "label": "Cowardice Accusation",
+    "category": "emotion",
+    "span": {
+      "startId": 150,
+      "endId": 151,
+      "startIndex": 150,
+      "endIndex": 151
+    },
+    "semanticShiftMagnitude": 0.8282617410718549,
+    "keywords": [],
+    "quotes": [
+      "MR. Y: You were too cowardly, just as you were too cowardly to tell your wife that she is married to a murderer."
+    ],
+    "emotionalTone": "anger",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-152-153-merged-153",
+    "label": "Dismissal with Finality / Immediate Departure Directive",
+    "category": "decision",
+    "span": {
+      "startId": 152,
+      "endId": 154,
+      "startIndex": 152,
+      "endIndex": 154
+    },
+    "semanticShiftMagnitude": 0.9399757646153004,
+    "keywords": [],
+    "quotes": [
+      "Now you shall go--immediately. Your things will follow you.",
+      "MR. X: Now you shall go--immediately. Your things will follow you."
+    ],
+    "emotionalTone": "anger",
     "sentiment": "negative",
     "detectionLevel": 0,
     "significance": 1,
