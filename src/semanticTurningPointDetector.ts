@@ -877,6 +877,7 @@ Return your answer as valid JSON.`;
         // Additional vendor-specific parameters if provided
         //@ts-ignore
         repeat_penalty: this.config.endpoint ? 1.005 : undefined,
+        //@ts-ignore
         top_k: this.config.endpoint ? 20 : undefined,
         response_format: formResponseFormatSchema(dimension),
         top_p: 0.9,
@@ -1959,7 +1960,7 @@ async function runTurningPointDetectorExample() {
     // Enable convergence measurement for ARC analysis
     measureConvergence: true,
 
-    classificationModel: "gpt-4o",
+    classificationModel: "gpt-4.1-nano",
     // classificationModel: 'phi-4-mini-Q5_K_M:3.8B',
     // classificationModel: 'gpt-4o-mini',
     // e.g. llmstudio or ollama

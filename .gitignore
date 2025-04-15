@@ -5,6 +5,7 @@ node_modules
 !results/turningPoints.json
 !results/turningPointsGpt4o.json
 !results/turningPointsPariah.json
+!results/turningPointsPariahNano.json
 *.txt
 
 results/*.log

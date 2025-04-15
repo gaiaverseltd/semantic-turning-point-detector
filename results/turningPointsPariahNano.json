@@ -1,0 +1,403 @@
+[
+  {
+    "id": "tp-4-0-0-merged-0",
+    "label": "from weather Discussion",
+    "category": "insight",
+    "span": {
+      "startId": 0,
+      "endId": 0,
+      "startIndex": 0,
+      "endIndex": 0
+    },
+    "semanticShiftMagnitude": 0.0497957303131248,
+    "keywords": [],
+    "quotes": [
+      "MR. X: 'What oppressive heat! We'll surely have a thunder-shower.'",
+      "MR. Y: 'Yes? What makes you think so?'",
+      "Yes? What makes you think so?"
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 4,
+    "significance": 1,
+    "complexityScore": 4.149795730313125
+  },
+  {
+    "id": "tp-2-0-7",
+    "label": "From Reflection to Confrontation",
+    "category": "action",
+    "span": {
+      "startId": 0,
+      "endId": 7,
+      "startIndex": 0,
+      "endIndex": 7,
+      "originalSpan": {
+        "startId": "meta-cat-1",
+        "endId": "meta-cat-2",
+        "startIndex": 0,
+        "endIndex": 1
+      }
+    },
+    "semanticShiftMagnitude": 0.6078091096340932,
+    "keywords": [],
+    "quotes": [
+      "May I look at you?--You think of writing an anonymous letter to my wife, disclosing my secret.",
+      "Humph, I should of course have the whole thing smelted, and then I should have it cast into ducats--full weight, of course--",
+      "Yes, and you cannot prevent it. You dare not have me imprisoned, so you must let me go; and when I have gone I can do what I please."
+    ],
+    "emotionalTone": "anger",
+    "sentiment": "negative",
+    "detectionLevel": 2,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-1-7-11-merged-11",
+    "label": "confrontation Discussion",
+    "category": "action",
+    "span": {
+      "startId": 7,
+      "endId": 24,
+      "startIndex": 7,
+      "endIndex": 24
+    },
+    "semanticShiftMagnitude": 0.8776355044148985,
+    "keywords": [],
+    "quotes": [
+      "May I look at you?--You think of writing an anonymous letter to my wife, disclosing my secret.",
+      "Humph, I should of course have the whole thing smelted, and then I should have it cast into ducats--full weight, of course--",
+      "Yes, and you cannot prevent it. You dare not have me imprisoned, so you must let me go; and when I have gone I can do what I please."
+    ],
+    "emotionalTone": "anger",
+    "sentiment": "negative",
+    "detectionLevel": 1,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-2-24-41",
+    "label": "Shift in Perception of Guilt",
+    "category": "question",
+    "span": {
+      "startId": 24,
+      "endId": 41,
+      "startIndex": 24,
+      "endIndex": 41,
+      "originalSpan": {
+        "startId": "meta-cat-3",
+        "endId": "meta-cat-4",
+        "startIndex": 0,
+        "endIndex": 1
+      }
+    },
+    "semanticShiftMagnitude": 0.15882706672539015,
+    "keywords": [],
+    "quotes": [
+      "Would you have allowed yourself to know him if he had been convicted?",
+      "No, I didn't want to."
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 2,
+    "significance": 1,
+    "complexityScore": 4.258827066725391
+  },
+  {
+    "id": "tp-1-41-96",
+    "label": "Shift in Moral Perspective",
+    "category": "clarification",
+    "span": {
+      "startId": 41,
+      "endId": 96,
+      "startIndex": 41,
+      "endIndex": 96,
+      "originalSpan": {
+        "startId": "meta-cat-4",
+        "endId": "meta-cat-5",
+        "startIndex": 4,
+        "endIndex": 5
+      }
+    },
+    "semanticShiftMagnitude": 0.9021968367652459,
+    "keywords": [],
+    "quotes": [
+      "Do you allude to me?",
+      "No. An accident is not a crime."
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 1,
+    "significance": 0.8999999999999999,
+    "complexityScore": 4.602196836765246
+  },
+  {
+    "id": "tp-0-98-99",
+    "label": "Debate on Crime and Justice",
+    "category": "question",
+    "span": {
+      "startId": 98,
+      "endId": 99,
+      "startIndex": 98,
+      "endIndex": 99
+    },
+    "semanticShiftMagnitude": 0.7669264114599661,
+    "keywords": [],
+    "quotes": [
+      "No. An accident is not a crime.",
+      "So, it's an accident to commit murder?",
+      "I haven't committed any murder."
+    ],
+    "emotionalTone": "anger",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 0.85,
+    "complexityScore": 4.866926411459967
+  },
+  {
+    "id": "tp-0-104-105-merged-105-merged-106-merged-107",
+    "label": "intent Discussion",
+    "category": "insight",
+    "span": {
+      "startId": 104,
+      "endId": 108,
+      "startIndex": 104,
+      "endIndex": 108
+    },
+    "semanticShiftMagnitude": 0.9497400262010953,
+    "keywords": [],
+    "quotes": [
+      "How much do you ask to become accomplice to the homicide?",
+      "Six thousand crowns.",
+      "That's too much. Where am I to get it? [Mr. Y. points to the case.] I don't want to do that, I don't want to become a thief."
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 0,
+    "significance": 0.9358250000000001,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-109-110",
+    "label": "Shift to Criminal Negotiation",
+    "category": "question",
+    "span": {
+      "startId": 109,
+      "endId": 110,
+      "startIndex": 109,
+      "endIndex": 110
+    },
+    "semanticShiftMagnitude": 0.9689316521733485,
+    "keywords": [],
+    "quotes": [
+      "How much do you ask to become accomplice to the homicide?",
+      "Six thousand crowns."
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 0.85,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-111-112",
+    "label": "Shift in Legal and Moral Stance",
+    "category": "insight",
+    "span": {
+      "startId": 111,
+      "endId": 112,
+      "startIndex": 111,
+      "endIndex": 112
+    },
+    "semanticShiftMagnitude": 0.9475588723595791,
+    "keywords": [],
+    "quotes": [
+      "I've never heard that a homicide should pay a fine to a forger, and there is also no accuser."
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 0.85,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-114-115-merged-115",
+    "label": "resolution Discussion",
+    "category": "decision",
+    "span": {
+      "startId": 114,
+      "endId": 116,
+      "startIndex": 114,
+      "endIndex": 116
+    },
+    "semanticShiftMagnitude": 0.9769345720886751,
+    "keywords": [],
+    "quotes": [
+      "Now everything is clear to me! Ah!",
+      "I will go to the sheriff and give myself up.",
+      "You cannot. Sit down at your place at the table, where you've been sitting, and we will talk a little."
+    ],
+    "emotionalTone": "disgust",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 0.935,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-117-118-merged-118-merged-119-merged-120-merged-121-merged-122",
+    "label": "revelation Discussion",
+    "category": "insight",
+    "span": {
+      "startId": 117,
+      "endId": 123,
+      "startIndex": 117,
+      "endIndex": 123
+    },
+    "semanticShiftMagnitude": 0.9444630647594644,
+    "keywords": [],
+    "quotes": [
+      "I see in the mirror that you are a thief, a simple, common thief.",
+      "Now, since you have become my antagonist, my sight is keener, and since you have put on that black coat, that acts as a color contrast against the red backs of the books, which were not noticeable before against your red suspenders, I see that you have been there and read your forgery story in Bernheim's essay on hypnotic suggestion, and returned the book upside down.",
+      "I see in the mirror that you are a thief, a simple, common thief. Just now, when you sat there in your shirt-sleeves, I noticed that something was wrong about my book-shelf, but I couldn't make out what it was, as I wanted to listen to you and observe you."
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-124-125-merged-125-merged-129-merged-130-merged-131",
+    "label": "revelation Discussion",
+    "category": "insight",
+    "span": {
+      "startId": 124,
+      "endId": 132,
+      "startIndex": 124,
+      "endIndex": 132
+    },
+    "semanticShiftMagnitude": 0.8664199277305131,
+    "keywords": [],
+    "quotes": [
+      "Now everything is clear to me! Ah!",
+      "I see that you have been there and read your forgery story in Bernheim's essay on hypnotic suggestion, and returned the book upside down.",
+      "You see that you have been there and read your forgery story in Bernheim's essay on hypnotic suggestion, and returned the book upside down."
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 0,
+    "significance": 0.9363543750000002,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-132-133-merged-133-merged-134-merged-136-merged-140",
+    "label": "power confrontation Discussion",
+    "category": "emotion",
+    "span": {
+      "startId": 132,
+      "endId": 141,
+      "startIndex": 132,
+      "endIndex": 141
+    },
+    "semanticShiftMagnitude": 0.903526795710606,
+    "keywords": [],
+    "quotes": [
+      "May I look at you?--You think of writing an anonymous letter to my wife, disclosing my secret.",
+      "May I go now.",
+      "Yes, you may go now."
+    ],
+    "emotionalTone": "anger",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 1,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-141-142-merged-142",
+    "label": "Confrontation and Escalation / Revelation of the Secret",
+    "category": "insight",
+    "span": {
+      "startId": 141,
+      "endId": 143,
+      "startIndex": 141,
+      "endIndex": 143
+    },
+    "semanticShiftMagnitude": 0.9294784403773354,
+    "keywords": [],
+    "quotes": [
+      "MR. X: 'Shall we have another bout? What evil do you intend to do now?'",
+      "MR. Y: 'You are pretty crafty, but not so crafty as I am.'",
+      "MR. Y: 'That is my secret.'"
+    ],
+    "emotionalTone": "anger",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 0.935,
+    "complexityScore": 5
+  },
+  {
+    "id": "tp-0-144-145",
+    "label": "Confrontation and Finality",
+    "category": "action",
+    "span": {
+      "startId": 144,
+      "endId": 145,
+      "startIndex": 144,
+      "endIndex": 145
+    },
+    "semanticShiftMagnitude": 0.8095495328343505,
+    "keywords": [],
+    "quotes": [
+      "May I look at you?--You think of writing an anonymous letter to my wife, disclosing my secret.",
+      "Yes, and you cannot prevent it. You dare not have me imprisoned, so you must let me go; and when I have gone I can do what I please."
+    ],
+    "emotionalTone": "anger",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 0.85,
+    "complexityScore": 4.909549532834351
+  },
+  {
+    "id": "tp-0-147-148-merged-150",
+    "label": "confrontation Discussion",
+    "category": "emotion",
+    "span": {
+      "startId": 147,
+      "endId": 151,
+      "startIndex": 147,
+      "endIndex": 151
+    },
+    "semanticShiftMagnitude": 0.8276842625296017,
+    "keywords": [],
+    "quotes": [
+      "You were too cowardly, just as you were too cowardly to tell your wife that she is married to a murderer.",
+      "You see, then, there is a difference in people after all, and you feel within you that I cannot commit such deeds as you, and that is your advantage.",
+      "You were stupid when you forged a man's name instead of begging as I have had to do"
+    ],
+    "emotionalTone": "anger",
+    "sentiment": "negative",
+    "detectionLevel": 0,
+    "significance": 0.935,
+    "complexityScore": 4.928261741071855
+  },
+  {
+    "id": "tp-0-152-153",
+    "label": "Shift to Inquiry",
+    "category": "question",
+    "span": {
+      "startId": 152,
+      "endId": 153,
+      "startIndex": 152,
+      "endIndex": 153
+    },
+    "semanticShiftMagnitude": 0.9927282061770336,
+    "keywords": [],
+    "quotes": [
+      "Can I go?"
+    ],
+    "emotionalTone": "curiosity",
+    "sentiment": "positive",
+    "detectionLevel": 0,
+    "significance": 0.75,
+    "complexityScore": 4.6927282061770335
+  }
+]
