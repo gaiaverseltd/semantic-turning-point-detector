@@ -10,3 +10,4 @@ node_modules
 
 results/*.log
 
+output_gpt_pariah_logs

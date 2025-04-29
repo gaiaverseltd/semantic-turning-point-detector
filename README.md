@@ -1,17 +1,27 @@
-# Semantic Turning Point Detector
-
-## Detect meaningful shifts, structure conversations, and extract insights from dialogue.
+# Semantic Turning Point Detector: Detect meaningful shifts, structure conversations, and extract insights from dialogue.
 
 The **Semantic Turning Point Detector** is a lightweight but powerful tool for detecting **semantic turning points** in conversations or textual sequences. It recursively analyzes message chains (dialogues, transcripts, chat logs) and identifies where **key shifts in meaning, topic, or insight** occur. These turning points are crucial for:
 
-- **Conversation segmentation** — breaking down long dialogues into meaningful, coherent sections.
-- **Insight extraction** — detecting where significant moments or topic changes happen in natural conversations.
-- **Dialogue modeling** — preparing structured inputs for downstream AI models or analytics pipelines.
-- **AI reasoning pipelines** — providing higher-level structure to conversational data for further analysis, summarization, or reasoning.
+- **Conversation segmentation** — breaking down long dialogues into meaningful, coherent sections.  
+- **Insight extraction** — detecting where significant moments or topic changes happen in natural conversations.  
+- **Dialogue modeling** — preparing structured inputs for downstream AI models or analytics pipelines.  
+- **AI reasoning pipelines** — providing higher-level structure to conversational data for further analysis, summarization, or reasoning.  
+- **Confidence scoring** — every run returns a **0-to-1 confidence score** that rates how “healthy” (coherent vs. chaotic) the detected structure is.  
 
-Under the hood, it implements a recursive reasoning mechanism based on *semantic distance* between messages. By computing **semantic complexity** and applying **bounded dimensional escalation**, it mimics how humans intuitively recognize when a conversation “shifts gears” or introduces a new idea.
+## Confidence Score and ways to possibly interpret it
 
----
+The confidence score is based essentially on cosine similarity applied between embeddings of texts. Thus, the confidence score provides a notion of the semantic distance from a turning point to another, aggregated together. This flattened number, thus represents a quicker angle in assessing, from a limited but useful perspective, the health or confidence of the results. 
+
+| Score | What it Usually Means | Actionable Take-away |
+|:-----:|-----------------------|----------------------|
+| **0.0 – 0.2** | Almost no semantic movement. Flat or repetitive text. | Segmentation likely not useful. |
+| **0.2 – 0.3** | Weak shifts. Some structure, but still bland. | May need larger chunks or lower thresholds. |
+| **0.3 – 0.4** | **Good** — clear but gentle turning points. | Acceptable for overviews. |
+| **0.4 – 0.6** | **Ideal** — strong, natural conversation flow. | Recommended “sweet-spot” range. |
+| **0.6 – 1.0** | Too many jumps → chaotic / fragmented input. | Clean the transcript or lower shift threshold. |
+
+> **Why high > 0.6 is “bad”**  
+> A very high score means the embedding distances between consecutive messages are huge – the text keeps veering off topic, so the detector sees “turning points” everywhere. That usually signals noisy, disjoint or machine-generated content, not a well-paced human dialogue.
 
 ### Example Use Cases
 - Automatically segment chat logs into meaningful sections.

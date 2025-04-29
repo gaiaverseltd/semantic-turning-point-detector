@@ -1,225 +1,8 @@
-## Test Case
+## Test Case Simple Conversation
 - from `src/conversations.ts`
-### Conversation
-#### Message id: "msg-1" - author: "user":
-Silus, slippage in Sector Gamma-9 of the Cepheid Axis is worsening. The Celestial Resonance Gear, CRG-007, recovered from the Artificer’s cache, is barely documented. Do your sensors reveal material integrity issues?
 
-#### Message id: "msg-2" - author: "assistant":
-Scanning CRG-007 now, Elara. Composition is anomalous—iridium-tungsten alloy showing quantum anomalies. Micro-fractures detected along unusual crystalline boundaries.
-
-#### Message id: "msg-3" - author: "user":
-Exactly! It appears more like phase shifting than mechanical wear. My attempts at temporal stabilization caused a violent backlash. **The gear resists standard chronomantic interventions entirely.**
-
-#### Message id: "msg-4" - author: "assistant":
-Backlash registered as chroniton shear. Perhaps the gear’s 'temporal synchronization' is internally managed rather than externally imposed?
-
-#### Message id: "msg-5" - author: "user":
-Internal management implies CRG-007 might be autonomous. But why is it degrading now and resisting repair?
-
-#### Message id: "msg-6" - author: "assistant":
-**Could the degradation reflect adaptive behavior?** Possibly reacting to temporal disturbances internally or externally.
-
-#### Message id: "msg-7" - author: "user":
-Adaptive degradation could explain external stabilization failures. Cross-reference fractures with Artificer log 77.4 on mnemonic alloys.
-
-#### Message id: "msg-8" - author: "assistant":
-Analyzing Artificer log 77.4—fracture patterns match mnemonic alloy memory-etching effects with 92% certainty.
-
-#### Message id: "msg-9" - author: "user":
-**It's memory, not wear!** CRG-007 is recording temporal stresses into its alloy, actively consuming itself through cognition.
-
-#### Message id: "msg-10" - author: "assistant":
-Significant insight. Repair efforts interrupt a cognitive rather than mechanical process.
-
-#### Message id: "msg-11" - author: "user":
-We need to understand *what* stress CRG-007 is absorbing. **Consulting the Codex of Whispering Metals is essential.**
-
-#### Message id: "msg-12" - author: "assistant":
-**Initiating formal request protocols for Codex access in Noctua Vault, Level 12-Delta.** Warden authorization required; delays likely.
-
-#### Message id: "msg-13" - author: "user":
-We don't have that kind of time. The slippage could cause catastrophic destabilization before the Convergence.
-
-#### Message id: "msg-14" - author: "assistant":
-**Unauthorized Vault access breaches critical security protocols.** I must formally object.
-
-#### Message id: "msg-15" - author: "user":
-Risks understood, but Orrery collapse is worse. My mentor gave me an Artificer's bypass key capable of circumventing older wards.
-
-#### Message id: "msg-16" - author: "assistant":
-Possessing that key has severe penalties.
-
-#### Message id: "msg-17" - author: "user":
-**I've decided—we must use the bypass key.** Map patrol routes and analyze ward frequencies around the Vault.
-
-#### Message id: "msg-18" - author: "assistant":
-Acknowledged. **Mapping security; optimal entry window in 27 minutes.** Preparing sensor dampening.
-
-#### Message id: "msg-19" - author: "user":
-Good. Wait—your sensors pulsed oddly. What's happening?
-
-#### Message id: "msg-20" - author: "assistant":
-Anomalous negative entropy surge detected in Orrery core—Omega sector. **Separate critical issue emerging.**
-
-#### Message id: "msg-21" - author: "user":
-Negative entropy? Could these 'echoes' be causing CRG-007's stress internally?
-
-#### Message id: "msg-22" - author: "assistant":
-Analyzing correlation...
-
-#### Message id: "msg-23" - author: "assistant":
-**Confirmed—echo frequencies precisely match CRG-007’s memory-etching resonance.**
-
-#### Message id: "msg-24" - author: "user":
-**The gear actively absorbs harmful temporal echoes.** It's protecting the Orrery internally!
-
-#### Message id: "msg-25" - author: "assistant":
-Insightful deduction. If the gear fails, echoes propagate unchecked.
-
-#### Message id: "msg-26" - author: "user":
-**Addressing these echoes directly must be our priority.**
-
-#### Message id: "msg-27" - author: "user":
-But something else bothers me—why is the Orrery omitting recently collapsed stars in its predictions?
-
-#### Message id: "msg-28" - author: "assistant":
-**37 prematurely collapsed stars omitted from Orrery projections.** Pattern is systematic, not random.
-
-#### Message id: "msg-29" - author: "user":
-**Could the Orrery itself be curating timelines?** Are we fixing a passive predictor or a cosmic editor?
-
-#### Message id: "msg-30" - author: "assistant":
-Implications immense; restoration ethics uncertain.
-
-#### Message id: "msg-31" - author: "user":
-**Maybe CRG-007’s damage and star omissions are intentional safeguards post-Vorlag’s incident.**
-
-#### Message id: "msg-32" - author: "assistant":
-Hypothesis compelling. Restoration might disable essential protections.
-
-#### Message id: "msg-33" - author: "user":
-Our objective needs revision—no blind restoration without understanding.
-
-#### Message id: "msg-34" - author: "assistant":
-**Revised mission: prioritize comprehensive understanding through the Codex first.**
-
-#### Message id: "msg-35" - author: "user":
-Agreed. I'm heading toward Noctua Vault with the bypass key now.
-
-#### Message id: "msg-36" - author: "assistant":
-Security mapped. Ward harmonics shifting—key causing interference already.
-
-#### Message id: "msg-37" - author: "user":
-**My heart races, Silus.** Fear mixed with intense curiosity.
-
-#### Message id: "msg-38" - author: "assistant":
-Optimal insertion timing now. Insert key precisely three centimeters, rotate 90 degrees counter-clockwise.
-
-#### Message id: "msg-39" - author: "user":
-Inserting key... rotating... wards shifting color—**It's working!** Vault access granted.
-
-#### Message id: "msg-40" - author: "assistant":
-Inner seals retracting. Proceed cautiously—knowledge is paramount.
-
-#### Message id: "msg-41" - author: "user":
-Approaching Codex now. The air feels charged here...
-
-#### Message id: "msg-42" - author: "assistant":
-**Codex located on central dais.** No immediate threats detected.
-
-#### Message id: "msg-43" - author: "user":
-Opening Codex carefully...
-
-#### Message id: "msg-44" - author: "assistant":
-**Codex text mentions entropic echo containment methods via harmonic nullification.**
-
-#### Message id: "msg-45" - author: "user":
-Perfect. Look for safe communication or diagnostic methods.
-
-#### Message id: "msg-46" - author: "assistant":
-**Methods for safe resonance diagnostics confirmed present.**
-
-#### Message id: "msg-47" - author: "user":
-**Do we have the right to alter or repair a potentially sentient system that intentionally self-restricts?**
-
-#### Message id: "msg-48" - author: "assistant":
-Difficult ethical dilemma—data insufficient for definitive answer.
-
-#### Message id: "msg-49" - author: "user":
-**We proceed carefully, respecting possible sentience.**
-
-#### Message id: "msg-50" - author: "assistant":
-Agreed; adjusting protocols accordingly.
-
-#### Message id: "msg-51" - author: "user":
-Exiting Vault now; Codex secured. Prepare containment field components near core chamber.
-
-#### Message id: "msg-52" - author: "assistant":
-Components staged; awaiting your arrival.
-
-#### Message id: "msg-53" - author: "user":
-I'm en route to the staging area. Silus, recheck the containment specs—if the Codex includes harmonic thresholds, we need to calibrate the projector now, before any core interference worsens.
-
-#### Message id: "msg-54" - author: "assistant":
-Affirmative. **Codex specifies a tri-harmonic null field tuned to 3.14, 6.28, and 9.42 petahertz.** Beginning recalibration of the projector array to these values.
-
-#### Message id: "msg-55" - author: "user":
-That matches the dominant frequency of the entropic echoes. If we can cancel out their harmonic signature, we may be able to suppress the instability without damaging CRG-007.
-
-#### Message id: "msg-56" - author: "assistant":
-Calculations confirm suppression field should reduce echo influence by 87%. Residual echo bleed remains possible, but should no longer overload mnemonic alloys.
-
-#### Message id: "msg-57" - author: "user":
-Then it's worth trying. Begin initializing the null field generator—I'll interface CRG-007 manually once the array is active.
-
-#### Message id: "msg-58" - author: "assistant":
-**Warning: interface will expose you to residual chronomantic flux.** Recommend protective incantation layering.
-
-#### Message id: "msg-59" - author: "user":
-Already weaving defensive runes. This gear’s carried so much stress—if we succeed, maybe we can give it peace, not just function.
-
-#### Message id: "msg-60" - author: "assistant":
-Empathetic framework acknowledged. **Array energized. Null field will stabilize in 12 seconds.** Prepare for insertion.
-
-#### Message id: "msg-61" - author: "user":
-CRG-007 seated... aligning spindle housing... null field engaging now. There’s a shift in ambient vibration—it’s working!
-
-#### Message id: "msg-62" - author: "assistant":
-**Temporal turbulence decreasing. Gear surface stabilizing.** Memory etching slowing significantly. Harmonic balance holding steady.
-
-#### Message id: "msg-63" - author: "user":
-Incredible. It's no longer resisting—it’s... harmonizing. Almost like it recognizes the containment as a form of communication.
-
-#### Message id: "msg-64" - author: "assistant":
-That may be accurate. **Mnemonic alloy response patterns show emergent alignment behavior.** CRG-007 is synchronizing with the null field.
-
-#### Message id: "msg-65" - author: "user":
-We’ve calmed it—at least for now. But we still haven’t addressed the root cause: the source of the entropic echoes in the core chamber.
-
-#### Message id: "msg-66" - author: "assistant":
-**Core chamber energy levels are temporarily suppressed but still rising incrementally.** Echo activity persists, albeit dampened.
-
-#### Message id: "msg-67" - author: "user":
-Silus, could Vorlag’s echo still linger in the core? Not just as data, but as an active influence?
-
-#### Message id: "msg-68" - author: "assistant":
-**Unconfirmed. But the Codex warns of echo 'persistence loops'—temporal residues that can achieve semi-sentient recurrence.** Vorlag's imprint may still exist.
-
-#### Message id: "msg-69" - author: "user":
-**Then containment alone isn't enough.** We need a way to dissolve or resolve the echo construct—something beyond nullification.
-
-#### Message id: "msg-70" - author: "assistant":
-**Codex section 9.3 references 'Echo Resolution via Intent Resonance.'** A conscious projection of purpose to counteract embedded intent.
-
-#### Message id: "msg-71" - author: "user":
-**Then I’ll do it.** I’ll enter the chamber and project an intentional resonance—clarity, balance, humility. Not domination like Vorlag.
-
-#### Message id: "msg-72" - author: "assistant":
-**Initiating synchronization field. Core access enabled. Proceed when ready, Elara.** The Orrery listens—and remembers.
-
-
-## Results
-### With Qwen 2.5:7b-instruct-q5_k_m
+### Results By LLM Model
+#### With Qwen 2.5:7b-instruct-q5_k_m
 
  ```bash
  ts-node src/semanticTurningPointDetector.ts
@@ -495,7 +278,7 @@ Silus, could Vorlag’s echo still linger in the core? Not just as data, but as 
  ```
 
 
-### With phi-4-mini-Q5_K_M
+#### With phi-4-mini-Q5_K_M
 
   ```bash
 
@@ -771,7 +554,7 @@ Silus, could Vorlag’s echo still linger in the core? Not just as data, but as 
   Results saved to files.
   ```
 
-### With Gpt-4o
+#### With Gpt-4o
 
  ```sh
   [TurningPointDetector] Initialized with config: {
@@ -1030,4 +813,10 @@ Silus, could Vorlag’s echo still linger in the core? Not just as data, but as 
 ```
 
 
-Note: Be sure to review the results in the `results` directory, as it contains an output from the renowned `Pariah` script.
+Note: Be sure to review the outputs in the `results` directory, which contains the output from the well-known `Pariah` script.
+
+- A full results markdown view is not provided because the `src/conversationPariah.json` file contains over 200 messages, resulting in multiple pages of logs. 
+
+- For complete logs, see the zipped file `results/output_gpt_pariah_logs.zip`, which includes updated logging score outputs featuring the newly added confidence score for the final set of points returned.
+
+

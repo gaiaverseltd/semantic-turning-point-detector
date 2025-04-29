@@ -154,18 +154,104 @@ export interface TurningPointDetectorConfig {
   /** Settable openai compatible embedding endpoint */
   embeddingEndpoint?: string;
 
-  /** Semantic shift threshold for detecting potential turning points */
+  /** 
+   * Threshold that determines when semantic changes between messages constitute a turning point.
+   * 
+   * @remarks
+   * Range: 0.0-1.0 (typically 0.2-0.8)
+   * - Higher values (>0.5) detect only major semantic shifts, resulting in fewer but more significant turning points
+   * - Lower values (<0.3) capture subtle changes in conversation flow, but may produce numerous minor turning points
+   * - At dimension > 0, this threshold is automatically scaled down to accommodate meta-message analysis
+   * - Adjust based on conversation density: use higher values for technical/focused discussions,
+   *   lower values for casual/meandering conversations
+   */
   semanticShiftThreshold: number;
-  /** Minimum tokens per chunk when processing conversation */
+
+  /**
+   * Minimum token count when dividing conversations into processable chunks.
+   * 
+   * @remarks
+   * - Prevents creation of chunks that are too small for meaningful semantic analysis
+   * - Lower values allow finer-grained chunking but may miss broader context
+   * - Typically set between 200-500 tokens for balanced processing
+   * - For highly technical content, consider higher minimum (400+) to maintain context
+   * - For conversations with short messages, lower values (150-250) may be appropriate
+   * - This setting works in conjunction with minMessagesPerChunk
+   */
   minTokensPerChunk: number;
-  /** Maximum tokens per chunk */
+
+  /**
+   * Maximum token count allowed for conversation chunks before splitting.
+   * 
+   * @remarks
+   * - Limits chunk size to prevent context window overflows when processing with LLMs
+   * - Higher values provide more context but consume more computational resources
+   * - Recommended to set below the classification model's context window, accounting for prompt overhead
+   *   (e.g., 4000-8000 for most models, 12000-16000 for larger models)
+   * - If set too low relative to minTokensPerChunk, many chunks will be exactly at the minimum size
+   * - At deeper dimensions, this value is automatically scaled down proportionally
+   */
   maxTokensPerChunk: number;
-  /** Maximum recursive depth (dimensional expansion limit) */
+
+  /**
+   * Maximum dimension level for recursive analysis in the ARC framework.
+   * 
+   * @remarks
+   * - Controls how many levels of meta-analysis are performed on the conversation
+   * - Dimension 0: Direct message analysis
+   * - Dimension 1: Analysis of turning point patterns
+   * - Dimension 2+: Higher-order pattern recognition
+   * - Higher values (3-5) enable detection of complex narrative arcs and subtle theme progressions,
+   *   but significantly increase processing time
+   * - For most conversations, 2-3 levels are sufficient
+   * - Very long conversations may benefit from higher values (4-5)
+   * - Actual escalation to higher dimensions only occurs when complexity saturation is reached
+   */
   maxRecursionDepth: number;
-  /** Whether to filter by significance */
-  onlySignificantTurningPoints: boolean;
-  /** Significance threshold for filtering */
+
+  /**
+   * Minimum significance score required for a turning point to be included in final results.
+   * 
+   * @remarks
+   * Range: 0.0-1.0
+   * - Acts as a quality filter to exclude minor or low-confidence turning points
+   * - Only applied when onlySignificantTurningPoints is true
+   * - Higher thresholds (>0.7) produce fewer, higher-quality turning points
+   * - Lower thresholds (<0.4) include more subtle conversation shifts
+   * - Typical setting: 0.5-0.7 for balanced results
+   * - Significance scores are determined by the classification model based on semantic
+   *   importance, not just embedding distance
+   * - Consider using lower values for technical/educational content where subtle shifts matter
+   */
   significanceThreshold: number;
+  /**
+   * Controls turning point filtering strategy and result prioritization.
+   * 
+   * @remarks
+   * This parameter determines how turning points are filtered and returned:
+   * 
+   * When `true` (focused analysis):
+   * - Enforces filtering based on `significanceThreshold`
+   * - Strictly limits results to `maxTurningPoints`
+   * - Prioritizes results by significance score over chronological order
+   * - Ideal for comparative analysis across different conversations or configurations
+   * 
+   * When `false` (comprehensive analysis):
+   * - Returns all detected turning points regardless of significance
+   * - Ignores the `maxTurningPoints` limit
+   * - Orders results chronologically by position in conversation
+   * - Preferred for detailed conversation analysis and identifying all semantic shifts
+   * 
+   * @example
+   * // For detailed exploration of a single conversation:
+   * detector.onlySignificantTurningPoints = false;
+   * 
+   * // For comparing key shifts across multiple conversations:
+   * detector.onlySignificantTurningPoints = true;
+   */
+  onlySignificantTurningPoints: boolean;
+
+
   /** Minimum messages per chunk */
   minMessagesPerChunk: number;
   /** Maximum turning points in final results */
@@ -338,22 +424,131 @@ export class SemanticTurningPointDetector {
     }
   }
 
+  public getModelName(): string {
+    return this.config.classificationModel;
+  }
+
   /**
    * Main entry point: Detect turning points in a conversation
    * Implements the full ARC/CRA framework
    */
-  public async detectTurningPoints(messages: Message[]): Promise<TurningPoint[]> {
-    this.logger.info('Starting turning point detection using ARC/CRA framework for conversation with', messages.length, 'messages');
+  public async detectTurningPoints(messages: Message[]): Promise<{
+    confidence: number;
+    points: TurningPoint[];
+  }> {
+    this.logger.info(
+      'Starting turning-point detection (ARC/CRA) on',
+      messages.length,
+      'messages'
+    );
     this.convergenceHistory = [];
 
-    // Store original messages for reference
+    // ── cache original conversation for downstream helpers
     const totalTokens = await this.getMessageArrayTokenCount(messages);
     this.logger.info(`Total conversation tokens: ${totalTokens}`);
-    // Ensure originalMessages is a fresh copy if messages might be mutated elsewhere
     this.originalMessages = messages.map(m => ({ ...m }));
 
-    // Begin dimensional analysis at level 0
-    return this.multiLayerDetection(messages, 0);
+    // ── 1️⃣  full multi-layer detection (dim-0 entry)
+    const turningPointsFound = await this.multiLayerDetection(messages, 0);
+    this.logger.info(
+      `Multi-layer detection returned ${turningPointsFound.length} turning points`
+    );
+
+    // ── 2️⃣  compute a per-TP confidence score
+    const confidenceScoresByPoint: number[] = new Array(
+      turningPointsFound.length
+    ).fill(0);
+
+    // helper to collapse per-message embeddings into a single mean vector
+    const meanEmbedding = (embs: MessageEmbedding[]): Float32Array => {
+      if (embs.length === 0) return new Float32Array(1536);
+
+      const dim = embs[0].embedding.length;
+
+      const softMax = (values: number[]): number[] => {
+        const maxVal = Math.max(...values);
+        const exps = values.map(v => Math.exp(v - maxVal));
+        const sumExps = exps.reduce((sum, v) => sum + v, 0);
+        return exps.map(v => v / sumExps);
+      };
+
+      const magnitudes = embs.map(({ embedding }) =>
+        Math.sqrt(embedding.reduce((sum, v) => sum + v * v, 0))
+      );
+
+      const attnWeights = softMax(magnitudes);
+
+      const acc = new Float32Array(dim);
+      for (let idx = 0; idx < embs.length; idx++) {
+        const { embedding } = embs[idx];
+        const weight = attnWeights[idx];
+        for (let i = 0; i < dim; i++) {
+          acc[i] += embedding[i] * weight;
+        }
+      }
+
+      return acc;
+    };
+
+    await async.eachOfLimit(
+      turningPointsFound,
+      2,                                          // concurrency
+      async (tp, idxStr) => {
+        const idx = Number(idxStr);
+
+        // slice conversation around this TP
+        const pre = messages.slice(0, tp.span.startIndex);
+        const turn = messages.slice(tp.span.startIndex, tp.span.endIndex + 1);
+        const post = messages.slice(tp.span.endIndex + 1);
+
+        if (pre.length === 0 || post.length === 0) {
+          this.logger.info(`TP ${tp.id} at edges of convo – skipping confidence`);
+          confidenceScoresByPoint[idx] = 0;
+          return;
+        }
+
+        // generate *per message* embeddings for each slice
+        const [preE, turnE, postE] = await Promise.all([
+          this.generateMessageEmbeddings(pre, 0),
+          this.generateMessageEmbeddings(turn, 0),
+          this.generateMessageEmbeddings(post, 0)
+        ]);
+
+        // collapse to single vectors
+        const vPre = meanEmbedding(preE);
+        const vTurn = meanEmbedding(turnE);
+        const vPost = meanEmbedding(postE);
+
+        // distance (0-1)  – higher when meaning shifts
+        const distPre = this.calculateSemanticDistance(vPre, vTurn);
+        const distPost = this.calculateSemanticDistance(vTurn, vPost);
+
+        // simple confidence: average outward semantic shift
+        confidenceScoresByPoint[idx] = (distPre + distPost) / 2;
+
+        this.logger.info(
+          `TP ${tp.id}: distPre=${distPre.toFixed(3)}, distPost=${distPost.toFixed(
+            3
+          )}, conf=${confidenceScoresByPoint[idx].toFixed(3)}`
+        );
+      }
+    );
+
+    // ── 3️⃣  aggregate conversation-level confidence (mean of non-zero scores)
+    const valid = confidenceScoresByPoint.filter(v => v > 0);
+    const aggregateConfidence =
+      valid.length === 0
+        ? 0
+        : valid.reduce((s, v) => s + v, 0) / valid.length;
+
+    this.logger.info(
+      `Aggregate confidence for conversation: ${aggregateConfidence.toFixed(3)}`
+    );
+
+    return {
+      confidence: aggregateConfidence,
+      points: turningPointsFound
+    };
   }
 
   /**
@@ -1424,7 +1619,7 @@ Return your answer as valid JSON.`;
   private async generateMessageEmbeddings(messages: Message[], dimension = 0): Promise<MessageEmbedding[]> {
     const embeddings: MessageEmbedding[] = new Array(messages.length);
     // Using original concurrency limit of 4
-    console.info(`Generating embeddings for ${messages.length} messages with dimension ${dimension}.`);
+    // console.info(`Generating embeddings for ${messages.length} messages with dimension ${dimension}.`);
     await async.eachOfLimit(messages, 4, async (message, indexStr) => {
 
       let candidateText = message.message;
@@ -1936,21 +2131,25 @@ async function runTurningPointDetectorExample() {
     semanticShiftThreshold: 0.75,
     minTokensPerChunk: 1024,
     maxTokensPerChunk: 16384,
-    // uses for now embeddings only from openai
-    embeddingModel: "text-embedding-snowflake-arctic-embed-l-v2.0",
 
-    // embeddingModel: 'text-embedding-3-large',
     // ARC framework: dynamic recursion depth based on conversation complexity
     maxRecursionDepth: Math.min(determineRecursiveDepth(conversationPariah), 5),
 
-    onlySignificantTurningPoints: false,
+    /**
+     * Setting this to false means that maxTurningPoints will have little effect as a boundary, but still influence the size of results.
+     * - To ensure maxTurningPoints is respected, set this to true. To see more than just significant turning points, set it to false.
+     */
+    onlySignificantTurningPoints: true,
     significanceThreshold: 0.6,
 
     // ARC framework: chunk size scales with complexity
     minMessagesPerChunk: Math.ceil(determineRecursiveDepth(conversationPariah) * 3.5),
 
     // ARC framework: number of turning points scales with conversation length
-    maxTurningPoints: Math.max(6, Math.round(conversationPariah.length / 20)),
+    // maxTurningPoints: Math.max(6, Math.round(conversationPariah.length / 20)),
+
+    // for sake of demostration, between llm models, we set it hardcoded to 16
+    maxTurningPoints: 16,
 
     // CRA framework: explicit complexity saturation threshold for dimensional escalation
     complexitySaturationThreshold: 4.1,
@@ -1963,8 +2162,12 @@ async function runTurningPointDetectorExample() {
     classificationModel: "gpt-4.1-nano",
     // classificationModel: 'phi-4-mini-Q5_K_M:3.8B',
     // classificationModel: 'gpt-4o-mini',
-    // e.g. llmstudio or ollama
-    embeddingEndpoint: 'http://127.0.0.1:7756/v1',
+    // e.g. llmstudio or ollama, leave undefined for OpenAI
+    // embeddingEndpoint: 'http://127.0.0.1:7756/v1',
+    // embeddingModel: "text-embedding-snowflake-arctic-embed-l-v2.0",
+
+
+    embeddingModel: 'text-embedding-3-large',
 
     debug: true,
     // ollama
@@ -1976,8 +2179,10 @@ async function runTurningPointDetectorExample() {
   try {
     // Detect turning points using the ARC/CRA framework
     const tokensInConvoFile = await detector.getMessageArrayTokenCount(conversationPariah);
-    const turningPoints = await detector.detectTurningPoints(conversationPariah);
+    const turningPointResult = await detector.detectTurningPoints(conversationPariah);
 
+    const turningPoints = turningPointResult.points;
+    const confidenceScore = turningPointResult.confidence;
     const endTime = new Date().getTime();
     const difference = endTime - startTime;
     const formattedTimeDateDiff = new Date(difference).toISOString().slice(11, 19);
@@ -1986,6 +2191,7 @@ async function runTurningPointDetectorExample() {
 
     // Display results with complexity scores from the ARC framework
     console.info('\n=== DETECTED TURNING POINTS (ARC/CRA Framework) ===\n');
+    console.info(`Detected ${turningPoints.length} turning points with a confidence score of ${confidenceScore.toFixed(2)} using model ${detector.getModelName()}.`);
 
     turningPoints.forEach((tp, i) => {
       detector.logger.info(`${i + 1}. ${tp.label} (${tp.category})`);
