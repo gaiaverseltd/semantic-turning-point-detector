@@ -426,4 +426,4 @@ This implementation validates the core claims of our paper:
 
 ## References
 
-- "Adaptive Recursive Convergence (ARC) with Cascading Re-Dimensional Attention (CRA) for Multi-Step Reasoning and Dynamic AI Systems" - Ziping Liu, et al. (TBD)
+- "Adaptive Recursive Convergence and Semantic Turning Points: A Self-Verifying Architecture for Progressive AI Reasoning" - Ziping Liu, et al. (TBD)
