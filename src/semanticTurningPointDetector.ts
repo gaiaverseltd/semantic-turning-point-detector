@@ -114,7 +114,7 @@ export class SemanticTurningPointDetector {
       debug: config.debug || false,
       turningPointCategories:
         config?.turningPointCategories &&
-          config?.turningPointCategories.length > 0
+        config?.turningPointCategories.length > 0
           ? config.turningPointCategories
           : turningPointCategories,
       endpoint: config.endpoint,
@@ -221,11 +221,8 @@ export class SemanticTurningPointDetector {
     if (isEndpointOllamaBased) {
       this.endpointType = "ollama";
 
-      // strip away paths from endpint to get host
-      // e.g. https://loollama.liu.netwsdf.network/v1" to "https://ollama.liu.netwsdf.network"
       const url = new URL(this.config.endpoint);
-      const host = `${url.protocol}//${url.hostname}`;
-      //
+      const host = `${url.protocol}//${url.hostname}${url.port ? `:${url.port}` : ""}`;
       this.logger.info(
         `Detected Ollama endpoint: ${host}. Initializing Ollama client.`,
       );
@@ -740,10 +737,10 @@ export class SemanticTurningPointDetector {
     this.logger.info(
       `For a total number of points: ${embeddings.length}, there were ${distances.length} distances found as being greater than the threshold of ${this.config.semanticShiftThreshold}. Across this span of messages of length ${messages.length}, the following distances were found:
         - The top 3 greatest distances are: ${allDistances
-        .slice(0, 3)
-        .sort((a, b) => b.distance - a.distance)
-        .map((d) => d.distance.toFixed(3))
-        .join(", ")}
+          .slice(0, 3)
+          .sort((a, b) => b.distance - a.distance)
+          .map((d) => d.distance.toFixed(3))
+          .join(", ")}
       
       
       This means there were ${distances.length} potential turning points detected ${dimension === 0 ? "with valid user-assistant turn pairs" : "with valid meta-messages"}`,
@@ -786,13 +783,16 @@ export class SemanticTurningPointDetector {
         );
 
         this.logger.info(
-          `    ...${chunkIndex ? `[Chunk ${chunkIndex}] ` : ""
-          }Potential turning point detected between messages ${current.id
+          `    ...${
+            chunkIndex ? `[Chunk ${chunkIndex}] ` : ""
+          }Potential turning point detected between messages ${
+            current.id
           } and ${next.id} (distance: ${distance.toFixed(
             3,
           )}, complexity: ${turningPoint.complexityScore.toFixed(
             1,
-          )}), signif: ${turningPoint.significance.toFixed(2)} category: ${turningPoint.category
+          )}), signif: ${turningPoint.significance.toFixed(2)} category: ${
+            turningPoint.category
           }`,
         );
         if (turningPoint.significance > 1) {
@@ -921,7 +921,7 @@ export class SemanticTurningPointDetector {
     // 1. System Message: Core identity and immutable instructions.
     const systemMessage =
       this.config.customSystemInstruction &&
-        this.config.customSystemInstruction.length > 0
+      this.config.customSystemInstruction.length > 0
         ? this.config.customSystemInstruction
         : `You are an expert conversation analyzer specializing in semantic turning point detection.
 Your primary goal is to identify significant shifts in conversation flow and meaning.
@@ -977,7 +977,7 @@ AFTER MESSAGE:
     // 4. Final Task Instruction User Message: Direct instruction to the LLM.
     const finalInstructionMessage =
       this.config.customUserInstruction &&
-        this.config.customUserInstruction.length > 0
+      this.config.customUserInstruction.length > 0
         ? this.config.customUserInstruction
         : `Using the criteria provided in <analysis_framework> and the detailed context in <conversation_context> along with the specific messages in <messages_to_analyze>, 
 analyze whether the provided messages represent a turning point in the conversation.
@@ -1200,7 +1200,8 @@ Return your answer as valid JSON.`;
     }
 
     this.logger.info(
-      `Created ${metaMessages.length
+      `Created ${
+        metaMessages.length
       } meta-messages for dimensional expansion: ${metaMessages
         .map((m) => m.id)
         .join(", ")}`,
@@ -1433,23 +1434,23 @@ Return your answer as valid JSON.`;
         const mergedDeprecatedSpan =
           currentTp.deprecatedSpan && nextTp.deprecatedSpan
             ? {
-              startIndex: Math.min(
-                currentTp.deprecatedSpan.startIndex,
-                nextTp.deprecatedSpan.startIndex,
-              ),
-              endIndex: Math.max(
-                currentTp.deprecatedSpan.endIndex,
-                nextTp.deprecatedSpan.endIndex,
-              ),
-              startMessageId:
-                mergedSpan.startIndex === currentTp.deprecatedSpan.startIndex
-                  ? currentTp.deprecatedSpan.startMessageId
-                  : nextTp.deprecatedSpan.startMessageId,
-              endMessageId:
-                mergedSpan.endIndex === currentTp.deprecatedSpan.endIndex
-                  ? currentTp.deprecatedSpan.endMessageId
-                  : nextTp.deprecatedSpan.endMessageId,
-            }
+                startIndex: Math.min(
+                  currentTp.deprecatedSpan.startIndex,
+                  nextTp.deprecatedSpan.startIndex,
+                ),
+                endIndex: Math.max(
+                  currentTp.deprecatedSpan.endIndex,
+                  nextTp.deprecatedSpan.endIndex,
+                ),
+                startMessageId:
+                  mergedSpan.startIndex === currentTp.deprecatedSpan.startIndex
+                    ? currentTp.deprecatedSpan.startMessageId
+                    : nextTp.deprecatedSpan.startMessageId,
+                endMessageId:
+                  mergedSpan.endIndex === currentTp.deprecatedSpan.endIndex
+                    ? currentTp.deprecatedSpan.endMessageId
+                    : nextTp.deprecatedSpan.endMessageId,
+              }
             : undefined; // Handle cases where deprecatedSpan might be missing
 
         // Combine keywords and quotes (unique, limited)
@@ -2228,11 +2229,11 @@ Return your answer as valid JSON.`;
       contextualSystemInstruction +=
         originalMessagesNeighborsBefore.length > 0
           ? `\n### Messages Before As Context\n` +
-          originalMessagesNeighborsBefore
-            .map((m) =>
-              returnFormattedMessageContent(this.config, m, dimension),
-            )
-            .join("\n\n")
+            originalMessagesNeighborsBefore
+              .map((m) =>
+                returnFormattedMessageContent(this.config, m, dimension),
+              )
+              .join("\n\n")
           : `\n### There does not exist any messages before this span of messages that encompass a potential ${dimension > 0 ? "meta turning point to formulate based on a grouping of turning points that encapuslate a single conversation" : "a potential turning point of two messages (that are part of a bigger single converation) being analyzed as provided in the user message content."}.\n`;
     }
 
@@ -2278,7 +2279,7 @@ Return your answer as valid JSON.`;
     if (categories.length > 15) {
       this.logger.warn(
         `Warning: ${categories.length} turning point categories provided. ` +
-        `Maximum recommended is 15. Consider reducing for better LLM performance.`,
+          `Maximum recommended is 15. Consider reducing for better LLM performance.`,
       );
     }
 
@@ -2290,7 +2291,7 @@ Return your answer as valid JSON.`;
       if (!categoryConfig || typeof categoryConfig !== "object") {
         this.logger.warn(
           `Warning: Invalid category configuration at index ${index}. ` +
-          `Expected object with 'category' and 'description' properties but found ${JSON.stringify(categoryConfig)}. ${warningClose}`,
+            `Expected object with 'category' and 'description' properties but found ${JSON.stringify(categoryConfig)}. ${warningClose}`,
         );
       }
 
@@ -2304,7 +2305,7 @@ Return your answer as valid JSON.`;
       ) {
         this.logger.warn(
           `Warning: Missing or invalid 'category' field at index ${index}. ` +
-          `Expected non-empty string. Using anyway with fallback value "unknown". ${warningClose}`,
+            `Expected non-empty string. Using anyway with fallback value "unknown". ${warningClose}`,
         );
       }
 
@@ -2316,7 +2317,7 @@ Return your answer as valid JSON.`;
       ) {
         this.logger.warn(
           `Warning: Missing or invalid 'description' field for category "${category}" at index ${index}. ` +
-          `Expected non-empty string, but got ${JSON.stringify(description)}. Using anyway with fallback. ${warningClose}`,
+            `Expected non-empty string, but got ${JSON.stringify(description)}. Using anyway with fallback. ${warningClose}`,
         );
       }
 
@@ -2329,7 +2330,7 @@ Return your answer as valid JSON.`;
       if (seenCategories.has(categoryLower)) {
         this.logger.warn(
           `Warning: Duplicate category "${trimmedCategory}" found at index ${index}. ` +
-          `Categories should be unique. Using anyway. ${warningClose}`,
+            `Categories should be unique. Using anyway. ${warningClose}`,
         );
       }
 
@@ -2338,7 +2339,7 @@ Return your answer as valid JSON.`;
       if (wordCount > 2) {
         this.logger.warn(
           `Warning: Category "${trimmedCategory}" at index ${index} has ${wordCount} words. ` +
-          `Consider using 1-2 words for better categorization. Using anyway. ${warningClose}`,
+            `Consider using 1-2 words for better categorization. Using anyway. ${warningClose}`,
         );
       }
 
@@ -2529,8 +2530,7 @@ async function runTurningPointDetectorExample() {
 Your primary goal is to identify significant shifts in conversation flow and meaning.
 Analyze semantic differences in the provided conversation context and provide a structured JSON output as described\n  `,
 
-    classificationModel: 'qwen3:4b',
-
+    classificationModel: "qwen3:4b",
 
     /**
      * Setting a custom endpoint overrides the default`api.openai.com/v1` endpoint. Allowing for usage of other llm providers that follow the same API structure. Since the Semantic TUrning Point does utilize advanced parameters, namely `format`, or response format, in which instructs the response to be returned as a JSON Schema object, not all openai compatible methods will support this. The examples below all support formatted responses. Semantic Turning Point also does not utilize tool calls.
@@ -2543,11 +2543,11 @@ Analyze semantic differences in the provided conversation context and provide a 
      * - Text Generation API
      *
      */
-    endpoint: 'http://localhost:11434/v1', // e.g. ' (Ollama).
+    endpoint: "http://localhost:11434/v1", // e.g. ' (Ollama).
 
     // embeddingEndpoint: "http://10.3.28.33:7756/v1", // this one points to a LMStudio instance, Apple silicon laptops/macs are quite powerful for this.
     // embeddingModel: "text-embedding-snowflake-arctic-embed-l-v2.0",
-    embeddingModel: 'text-embedding-3-large',
+    embeddingModel: "text-embedding-3-large",
     debug: true,
   });
 

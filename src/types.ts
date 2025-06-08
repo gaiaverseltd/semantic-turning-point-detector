@@ -88,7 +88,7 @@ export type TurningPointCategory = {
   description: string;
 };
 /**
- * Configuration options for the turning point detector. 
+ * Configuration options for the turning point detector.
  * - Detailed descriptions for each option are provided below.
  */
 export interface TurningPointDetectorConfig {
@@ -145,7 +145,6 @@ export interface TurningPointDetectorConfig {
 
   /** Model for generating embeddings, e.g 'text-embedding-3-small', or a custom embedding model if embeddingEndpoint is set and is an OpenAI-compatible endpoint. */
   embeddingModel: string;
-
 
   /**
    * You can also choose to utilize a custom endpoint, that also follows the OpenAI API format for embeddings, to utilize other embedding providers and models. This includes such as LM Studio, Ollama, and most other providers that support OpenAI format via chat requests. If left undefined, it will default to the OpenAI API endpoint, in which you can set an embedding [model](https://platform.openai.com/docs/guides/embeddings/embedding-models) offered by OpenAI.
