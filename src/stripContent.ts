@@ -1,5 +1,5 @@
 import { Message } from "./Message";
-import { TurningPointDetectorConfig } from "./semanticTurningPointDetector";
+import { TurningPointDetectorConfig } from "./types";
 
 /**
  * Defines the formatting style for replaced headings.

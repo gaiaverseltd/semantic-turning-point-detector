@@ -1,194 +1,99 @@
 [
   {
-    "id": "tp-3-0-0",
-    "label": "Meta-Reflection on the Subject of Possession and U",
-    "category": "Emotion, Meta-Reflection, Decision, Topic, Insight, Question, Problem, Action, Clarification, Objection, Other, Keywords: [list of keywords here] - keywords: [list of keywords here] - quotes: [list of quotes here] - emotionalTone: [string] - sentiment: [string] - significance: [number] - best_id: [string] - spanIndices: [list of span indices here] - spanMessageIds: [list of span message ids here] - spanMessageIds: [list of span message ids here]",
+    "id": "tp-4-0-0",
+    "label": "Decision to Act",
+    "category": "Decision",
     "span": {
       "startId": 0,
       "endId": 0,
       "startIndex": 0,
       "endIndex": 0,
       "originalSpan": {
-        "startId": "meta-cat-1",
-        "endId": "meta-cat-2",
-        "startIndex": 1,
-        "endIndex": 2
-      }
-    },
-    "semanticShiftMagnitude": 0.4392823545317737,
-    "keywords": [],
-    "quotes": [
-      "You scoff, you, you who have behaved like a man of the stone age! And you are allowed to live in the gold age!",
-      "H'm! Pardon! No, I could hardly pardon what the law does not, and I must confess that it would be hard for me to accuse a collector for taking an antique that he did not have in his collection, which he had dug up on some one else's property."
-    ],
-    "emotionalTone": "negative",
-    "sentiment": "negative",
-    "detectionLevel": 3,
-    "significance": 0.7585919999999999,
-    "complexityScore": 2.895282354531774
-  },
-  {
-    "id": "tp-err-3-0-merged-0-merged-0-merged-18-merged-19-merged-23-merged-25-merged-28-merged-32-merged-37-merged-42-merged-49-merged-50-merged-56-merged-57-merged-61-merged-67-merged-74-merged-76",
-    "label": "LLM Error - Unclassified",
-    "category": "Other",
-    "span": {
-      "startId": 0,
-      "endId": 80,
-      "startIndex": 0,
-      "endIndex": 80
-    },
-    "semanticShiftMagnitude": 0.9999999806981696,
-    "keywords": [],
-    "quotes": [],
-    "emotionalTone": "neutral",
-    "sentiment": "neutral",
-    "detectionLevel": 3,
-    "significance": 0.2111991855589873,
-    "complexityScore": 1
-  },
-  {
-    "id": "tp-2-80-82",
-    "label": "Meta-Reflection Turning Point",
-    "category": "emotional_expression_turning_point",
-    "span": {
-      "startId": 80,
-      "endId": 82,
-      "startIndex": 80,
-      "endIndex": 82,
-      "originalSpan": {
-        "startId": "meta-cat-42",
-        "endId": "meta-cat-43",
-        "startIndex": 1,
-        "endIndex": 2
-      }
-    },
-    "semanticShiftMagnitude": 0.18708019680723703,
-    "keywords": [],
-    "quotes": [
-      "I love it!",
-      "I'm so happy with my new plan!"
-    ],
-    "emotionalTone": "positive",
-    "sentiment": "positive",
-    "detectionLevel": 2,
-    "significance": 1,
-    "complexityScore": 4.887080196807237
-  },
-  {
-    "id": "tp-2-84-87",
-    "label": "turning point",
-    "category": "positive",
-    "span": {
-      "startId": 84,
-      "endId": 87,
-      "startIndex": 84,
-      "endIndex": 87,
-      "originalSpan": {
-        "startId": "meta-cat-44",
-        "endId": "meta-cat-45",
+        "startId": "meta-cat-0",
+        "endId": "meta-cat-1",
         "startIndex": 0,
         "endIndex": 1
       }
     },
-    "semanticShiftMagnitude": 0.7992390196929794,
+    "semanticShiftMagnitude": 0.06392870801190587,
     "keywords": [],
     "quotes": [
-      "\"That was a remarkable day, everyone!\"",
-      "\"Thank you, you're the best.\""
+      "Now you shall go--immediately.",
+      "Now you shall go--immediately. Your things will follow you."
     ],
-    "emotionalTone": "positive",
+    "emotionalTone": "Authoritative",
     "sentiment": "positive",
+    "detectionLevel": 4,
+    "significance": 1,
+    "complexityScore": 4.763928708011906
+  },
+  {
+    "id": "tp-3-0-0-merged-0",
+    "label": "emotional Discussion",
+    "category": "Problem",
+    "span": {
+      "startId": 0,
+      "endId": 7,
+      "startIndex": 0,
+      "endIndex": 7
+    },
+    "semanticShiftMagnitude": 0.31397573259404793,
+    "keywords": [],
+    "quotes": [
+      "The bells sound like it, the flies bite so, and the hens are cackling. I wanted to go fishing, but I couldn't find a single worm. Don't you feel rather nervous?",
+      "Well, as you are to start off on your travels again tomorrow, it's not to be wondered at if you have the knapsack fever. What's the news? Here's the post. [Takes up letters from the table.] Oh, I have palpitation of the heart every time I open a letter. Nothing but debts, debts! Did you ever have any debts?",
+      "The rent owing--the landlord clamoring--and my wife in despair."
+    ],
+    "emotionalTone": "concerned",
+    "sentiment": "negative",
+    "detectionLevel": 3,
+    "significance": 1,
+    "complexityScore": 4.526546176636553
+  },
+  {
+    "id": "tp-2-7-26-merged-7-merged-26",
+    "label": "emotional Discussion",
+    "category": "Emotion",
+    "span": {
+      "startId": 7,
+      "endId": 92,
+      "startIndex": 7,
+      "endIndex": 92
+    },
+    "semanticShiftMagnitude": 0.92175269592304,
+    "keywords": [],
+    "quotes": [
+      "[Worried] At the--sh-sheriff's!",
+      "Now you hate me.",
+      "I cannot recall when they are out of my sight"
+    ],
+    "emotionalTone": "Tense",
+    "sentiment": "negative",
     "detectionLevel": 2,
     "significance": 1,
     "complexityScore": 5
   },
   {
-    "id": "tp-err-3-87-merged-90",
-    "label": "LLM Error - Unclassified",
-    "category": "Other",
-    "span": {
-      "startId": 87,
-      "endId": 91,
-      "startIndex": 87,
-      "endIndex": 91
-    },
-    "semanticShiftMagnitude": 1,
-    "keywords": [],
-    "quotes": [],
-    "emotionalTone": "neutral",
-    "sentiment": "neutral",
-    "detectionLevel": 3,
-    "significance": 0.19008,
-    "complexityScore": 1
-  },
-  {
-    "id": "tp-1-92-95",
-    "label": "Meta-Grouping Turning Point",
-    "category": "Insightful Analysis of the Narrative Progression and Subjective Reflections in the Conversation Context with MR. Y's Perspective on Human Relations and Accident Statistics. Turning Points (within this Meta Grouping)",
+    "id": "tp-1-92-130-merged-130",
+    "label": "Shift in Power Dynamics / Conflict Resolution",
+    "category": "Conflict",
     "span": {
       "startId": 92,
-      "endId": 95,
+      "endId": 154,
       "startIndex": 92,
-      "endIndex": 95,
-      "originalSpan": {
-        "startId": "meta-cat-76",
-        "endId": "meta-cat-77",
-        "startIndex": 5,
-        "endIndex": 6
-      }
+      "endIndex": 154
     },
-    "semanticShiftMagnitude": 0.9467253585076277,
+    "semanticShiftMagnitude": 0.981082466769915,
     "keywords": [],
     "quotes": [
-      "The unpunished.",
-      "Do you allude to me?"
+      "You can't do it.",
+      "That is my secret.",
+      "You timid creature!"
     ],
-    "emotionalTone": "neutral",
-    "sentiment": "positive",
+    "emotionalTone": "Tense",
+    "sentiment": "negative",
     "detectionLevel": 1,
     "significance": 1,
     "complexityScore": 5
-  },
-  {
-    "id": "tp-0-96-97",
-    "label": "Turning point in the conversation",
-    "category": "Meta-Reflection or Insight about human nature and accident categories in crime law and human behavior analysis with intent and intent subcategories in decision-making and decision-making structure analysis in the field of law and human behavior analysis of MR. X and MR. Y in the conversation context.",
-    "span": {
-      "startId": 96,
-      "endId": 97,
-      "startIndex": 96,
-      "endIndex": 97
-    },
-    "semanticShiftMagnitude": 0.9884336609025139,
-    "keywords": [],
-    "quotes": [
-      "Yes.",
-      "Legitimate? The law decrees that a man's life is worth at the minimum fifty crowns.",
-      "We understand each other.--H'm! How much do you consider legitimate?"
-    ],
-    "emotionalTone": "positive",
-    "sentiment": "positive",
-    "detectionLevel": 0,
-    "significance": 0.988,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-err-0-97-merged-98-merged-99-merged-101-merged-102-merged-103-merged-104-merged-105-merged-106-merged-107-merged-108-merged-109-merged-110-merged-111-merged-112-merged-113-merged-114-merged-115-merged-116-merged-117-merged-118-merged-119-merged-120-merged-121-merged-122-merged-123-merged-124-merged-125-merged-126-merged-127-merged-128-merged-129-merged-130-merged-131-merged-132-merged-133-merged-134-merged-135-merged-136-merged-137-merged-138-merged-138-merged-139-merged-139-merged-140-merged-141-merged-142-merged-143-merged-144-merged-145-merged-146-merged-147-merged-148-merged-149-merged-150-merged-151-merged-152-merged-153",
-    "label": "LLM Error - Unclassified",
-    "category": "Other",
-    "span": {
-      "startId": 97,
-      "endId": 154,
-      "startIndex": 97,
-      "endIndex": 154
-    },
-    "semanticShiftMagnitude": 0.9999999999999908,
-    "keywords": [],
-    "quotes": [],
-    "emotionalTone": "neutral",
-    "sentiment": "neutral",
-    "detectionLevel": 0,
-    "significance": 0.12222222222222223,
-    "complexityScore": 1
   }
 ]

@@ -1,7 +1,7 @@
 import { ResponseFormatJSONSchema } from "openai/resources/shared";
 import { Message, MetaMessage } from "./Message";
 import { returnFormattedMessageContent } from "./stripContent";
-import { TurningPointDetectorConfig } from "./semanticTurningPointDetector";
+import type { TurningPointDetectorConfig, TurningPointCategory } from "./types";
 
 export const emotionalTones: string[] = [
   "delight",
@@ -16,28 +16,7 @@ export const emotionalTones: string[] = [
   "curiosity",
 ];
 
-export const categories = {
-  topic:
-    "This category is for content that is primarily focused on a specific area, domain, or subject. Use this when the content warrants categorization by topic.",
-  insight:
-    "This category applies to content that provides a unique insight or perspective. Use this when the content warrants categorization by insight.",
-  emotion:
-    "This category is for content that holds significant emotional impact. Use this when the content warrants categorization by emotion.",
-  "meta-reflection":
-    "This category applies to content that reflects on the conversation or interaction. Use this when the content warrants categorization by meta-reflection.",
-  decision:
-    "This category is for content that involves a decision or choice that has been made. Use this when the content warrants categorization by decision.",
-  question:
-    "This category applies to content that poses a question or inquiry. Use this when the content warrants categorization by question.",
-  problem:
-    "This category is for content that presents a problem or issue. Use this when the content warrants categorization by problem.",
-  action:
-    "This category applies to content that involves an action or activity, or serves as a call to action. Use this when the content warrants categorization by action.",
-  clarification:
-    "This category is for content that seeks or provides clarification. Use this when the content warrants categorization by clarification.",
-  objection:
-    "This category applies to content that expresses an objection or disagreement. Use this when the content warrants categorization by objection.",
-};
+
 export function formSystemMessage({
   distance,
   dimension,
@@ -83,7 +62,8 @@ export function formUserMessage({
   dimension,
   config,
   addUserInstructions = true,
-  
+
+
 }: {
   /** The dimensionlity of the currentl potential turning point, where if dimension > 0, it means that it contains a group of turning points, recursively. */
   dimension: number;
@@ -93,15 +73,14 @@ export function formUserMessage({
   beforeMessage: Message | MetaMessage;
   /** The second message to be analyzed */
   afterMessage: Message | MetaMessage;
-
   /** Returns only the content to analyze if set to false, defaults to true */
   addUserInstructions?: boolean;
 }): string {
 
 
-  const authorsContext = dimension === 0 ? 
-    [beforeMessage.author, afterMessage.author] :[];
- 
+  const authorsContext = dimension === 0 ?
+    [beforeMessage.author, afterMessage.author] : [];
+
   const userMessageStart =
     `
 Analyze the content below to determine the classification and labels as instructed in the previous message. Carefully scrutinize the information provided, and ${
@@ -111,9 +90,9 @@ Analyze the content below to determine the classification and labels as instruct
       ? "Refer to the contextual information from the system message to assist with your analysis. This information is designed to enhance your understanding of the surrounding messages, but it should not be used as a basis for formulating your response. The relevant content is included below (within this message), which lists the two messages being assessed as potential turning points within the broader conversation."
       : "Refer to the contextual information from the system message to assist with your analysis. This information aims to enhance your understanding of the surrounding turning points outside the two being assessed. Furthermore, the contextual information from the system prompt provides the actual content of messages related to those turning points for your analysis.\n- Use the system context solely to aid in comprehending the task at hand, rather than as a foundation for your response.\n\nThe relevant content below (pertaining to the two turning points) should primarily guide your analysis. You may refer to the system context for the actual conversation messages and their content associated with the two turning points if the provided content below is insufficient for formulating your response:"
     }`; // further content below truncated but implemented as added dynamic string
-    const userMessageContent = `[${dimension === 0
-      ? "First Message of the two messages being analyzed as a potential turning point in the entire conversation"
-      : 'First Turning Point within the Group of Turning Points that encapsulate a single conversation being assessed into a Single, "Meta" Turning Point'
+  const userMessageContent = `[${dimension === 0
+    ? "First Message of the two messages being analyzed as a potential turning point in the entire conversation"
+    : 'First Turning Point within the Group of Turning Points that encapsulate a single conversation being assessed into a Single, "Meta" Turning Point'
     } ${dimension === 0 ? "Author" : "Source"}: ${beforeMessage.author}, ID: "${beforeMessage.id}"]
 ${dimension === 0
       ? returnFormattedMessageContent(config, beforeMessage, dimension)
@@ -133,39 +112,35 @@ ${dimension === 0
         .split("\n")
         .map((line) => `   ${line}`)
         .join("\n")
-    }` 
+    }`
     + `\n\n------ end of content to analyze, now see below for you response instructions and task as a reminder ------\n\n# Response Format and Task Reminder\n- With the given content above, as well as contextual info and in accordance with the system instructions:`;
-    
-    
-    const endUserMessageInstructions = `\n\nPlease respond with a JSON object containing the following fields. Do not include any text outside the JSON object
+
+
+  const endUserMessageInstructions = `\n\nPlease respond with a JSON object containing the following fields. Do not include any text outside the JSON object
     \n{
     "label": "<YOUR CREATIVE TITLE LABEL HERE> e.g 'Progressing from General Budgets to Budget Concerns', or 'Analysis on the notions of Leadership and Teamwork'",
-    "quotes": ["Author: Some quote here from the content", ... ],${
-      authorsContext.length > 0 ? `The provided quotes must always begin first the author or speaker's name, and are either ${
-        authorsContext.join(' or ')}` : ''}
+    "quotes": ["Author: Some quote here from the content", ... ],${authorsContext.length > 0 ? `The provided quotes must always begin first the author or speaker's name, and are either ${authorsContext.join(' or ')}` : ''}
     }
     "sentiment": "<SENTIMENT HERE>, as one of the following: 'positive', 'negative'",
     "significance": <SIGNIFICANCE SCORE HERE, from 0-100>,   
-    "category": "<Insert your categorization here using one of the following options: ${Object.keys(
-      categories
-    )
+    "category": "<Insert your categorization here using one of the following options: ${config.turningPointCategories.map(tp => tp.category)
       .sort(() => Math.random() - 0.5)
       .map((c) => `\`${c}\``)
-      .join(", ")}>",\n`  +
+      .join(", ")}>",\n` +
     `   "emotionalTone": "<Select your emotional tone from these values: ${emotionalTones
       .sort(() => Math.random() - 0.5)
       .map((c) => `'${c}'`)
       .join(", ")}>"\n` +
     `}\n`;
 
-   if (addUserInstructions) {
+  if (addUserInstructions) {
     return userMessageStart + userMessageContent + endUserMessageInstructions;
   } else {
     return userMessageContent;
   }
 }
 
-export const formResponseFormatSchema = (dimension: number) => ({
+export const formResponseFormatSchema = (dimension: number, config: TurningPointDetectorConfig) => ({
   type: "json_schema",
   json_schema: {
     name: "turning_point_classification_format",
@@ -205,9 +180,9 @@ export const formResponseFormatSchema = (dimension: number) => ({
           "description": "Quotes from the content to analyze, in which must also comprise of the author name, quotes without the author name (from the message content is invalid).",
           "items": {
             "type": "string",
-           }
+          }
         },
- 
+
         significance: {
           type: "number",
           description:
@@ -215,15 +190,15 @@ export const formResponseFormatSchema = (dimension: number) => ({
         },
         category: {
           type: "string",
-          
-      
-     
-          description: `A value from one of the following values only: ${Object.keys(
-            categories,
+
+
+
+          description: `A value from one of the following values only: ${config.turningPointCategories.map(
+            (tp) => tp.category,
           )
-            .sort(() => Math.random() - 0.5)
-            .map((c) => `\`${c}\``)
-            .join(", ")}`,
+              .sort(() => Math.random() - 0.5)
+              .map((c) => `\`${c}\``)
+              .join(", ")}`,
         },
       },
       required: [
@@ -241,7 +216,7 @@ export const formResponseFormatSchema = (dimension: number) => ({
 } as ResponseFormatJSONSchema);
 
 
-export const formSystemPromptEnding = (dimension: number) => {
+export const formSystemPromptEnding = (dimension: number, config: TurningPointDetectorConfig) => {
 
   const ending = `# **Analysis Steps and Response Format:**\n\nTo clarify your task and the expected output, please follow these steps:\n
 1. Review the 'Contextual Aid' messages (if provided) to grasp the conversational flow.
@@ -252,11 +227,13 @@ export const formSystemPromptEnding = (dimension: number) => {
 4. A short, specific creative, title label for this turning point (e.g., "Shift from Discussion of General Budgets to Argument over Budget Concerns")
   - This should infact utilize not only the content provided in the following user message, but also the contextual information provided above which provides the content of neighboring ${dimension === 0 ? "messages" : "turning points"
     } that occur before and/or after the two ${dimension === 0 ? "messages" : "turning points"} being analyzed to creatively capture the essence of this potential turning point being analyzed (as provided of the two ${dimension === 0 ? "messages" : "turning points"} in the user message content).
-6. A significance score (0-100) representing how important this turning point is to the overall conversation
-7. A category, one of the following values: ${Object.keys(
-      categories
-    ).sort(() => Math.random() - 0.5)}, which categorizes the ocntent presented in the user message content.
+6. A _significance score_ **(\`0-100\`)** representing how important this turning point is to the overall conversation
+7. **Category Selection** - Choose ONE category from the following options. You must select exactly one category from this list and cannot use any other values, listed in the format of “[category_string]” - [description phrase of the category if any]
+${config.turningPointCategories.map(
+  (tp) => `   - "${tp.category}" - ${tp.description}`,
+).join("\n")}
 8. Respond with only one exact categorization for the emotionalTone of the content, from the provided list of emotional tones above. DO NOT USE ANY OTHER VALUES, ONLY ONES FROM THE LISTED EMOTIONAL TONES, DO NOT CONFUSE THE NOTION OF emotionalTone to sentiment, emotionalTone MAY NEVER BE associated with a value of 'postiive' or 'negative', please refer to the list of emotional tones above for the correct values to use.       
-Respond with a JSON object containing these fields. Do not include any text outside the JSON object.   `  
+Respond with a JSON object containing these fields. Do not include any text outside the JSON object.   `
   return ending;
 } 
+

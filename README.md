@@ -46,6 +46,9 @@ The Semantic Turning Point Detector is a concrete implementation of the ARC/CRA 
 
 ## Example Usage 
 
+
+
+
 ```typescript
 /**
  * Example function demonstrating how to use the SemanticTurningPointDetector
@@ -157,11 +160,20 @@ async function runTurningPointDetectorExample() {
 }
 ```
 
+### Configuration Options
+
+All configuration options are detailed and documented in the `SemanticTurningPointDetectorConfig` interface. Refer to the interface and its jSDoc comments for descriptions of each parameter at 
+[src/types.ts](src/types.ts#L93).
+
+#### Notes on environment variables that exist:
+
+- `OPENAI_API_KEY`: Your OpenAI API key for embedding and classification models.
+- `LLM_API_KEY`: If setting a custom `endpoint` for an LLM, this key will be used to authenticate requests.
+- `EMBEDDINGS_API_KEY`: If using a custom embedding endpoint with authentication, this key will be used to authenticate requests.
+
 ### Installation
 
 - `npm i @gaiaverse/semantic-turning-point-detector`
-
-
 
 ## Relation to the ARC/CRA Framework
 

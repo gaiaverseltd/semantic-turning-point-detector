@@ -1,3 +1,4 @@
+.env
 results/*.json
 .DS_Store
 dist

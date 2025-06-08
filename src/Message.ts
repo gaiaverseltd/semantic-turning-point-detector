@@ -1,5 +1,5 @@
 import { returnFormattedMessageContent } from './stripContent';
-import type { TurningPoint } from './semanticTurningPointDetector';
+import type { TurningPoint } from './types';
 
 /**
  * Message span identifies a range of messages
