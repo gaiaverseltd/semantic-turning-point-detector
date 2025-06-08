@@ -1,7 +1,7 @@
 {
   "name": "@gaiaverse/semantic-turning-point-detector",
   "description": "Detects key semantic turning points in conversations using recursive semantic distance analysis. Ideal for conversation analysis, dialogue segmentation, insight detection, and AI-assisted reasoning tasks.",
-  "version": "3.3.1",
+  "version": "3.3.5",
   "license": "MIT",
   "author": "gaiaverseltd, Ziping Liu <ziping@gaiaverse.ai>",
   "type": "commonjs",
@@ -57,5 +57,5 @@
     "@types/fs-extra": "^11.0.4",
     "typescript": "^5.8.2"
   },
-  "doi": "10.5281/zenodo.15616960"
+  "doi": "10.5281/zenodo.15616959"
 }

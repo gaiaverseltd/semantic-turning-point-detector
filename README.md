@@ -1,5 +1,5 @@
 # Semantic Turning Point Detector: Detect meaningful shifts, structure conversations, and extract insights from dialogue.
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15616960.svg)](https://doi.org/10.5281/zenodo.15616960)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15616959.svg)](https://doi.org/10.5281/zenodo.15616960)
 [![DOI](https://img.shields.io/badge/DOI-10.21203/rs.3.rs--6605714/v1-blue.svg)](https://doi.org/10.21203/rs.3.rs-6605714/v1)
 
 The **Semantic Turning Point Detector** is a lightweight but powerful tool for detecting **semantic turning points** in conversations or textual sequences. It recursively analyzes message chains (dialogues, transcripts, chat logs) and identifies where **key shifts in meaning, topic, or insight** occur. These turning points are crucial for:
