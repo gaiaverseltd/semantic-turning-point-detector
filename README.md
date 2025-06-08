@@ -1,4 +1,6 @@
 # Semantic Turning Point Detector: Detect meaningful shifts, structure conversations, and extract insights from dialogue.
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15616960.svg)](https://doi.org/10.5281/zenodo.15616960)
+[![DOI](https://img.shields.io/badge/DOI-10.21203/rs.3.rs--6605714/v1-blue.svg)](https://doi.org/10.21203/rs.3.rs-6605714/v1)
 
 The **Semantic Turning Point Detector** is a lightweight but powerful tool for detecting **semantic turning points** in conversations or textual sequences. It recursively analyzes message chains (dialogues, transcripts, chat logs) and identifies where **key shifts in meaning, topic, or insight** occur. These turning points are crucial for:
 
@@ -426,6 +428,8 @@ This implementation validates the core claims of our paper:
 - Dimensional escalation is bounded and occurs only when necessary
 - The framework is model-agnostic and works across different LLM architectures
 
-## References
+# References
 
-- "Adaptive Recursive Convergence and Semantic Turning Points: A Self-Verifying Architecture for Progressive AI Reasoning" - Ziping Liu, et al. (TBD)
+Liu, Ziping, and Moriba Jah. (2025). "Adaptive Recursive Convergence and Semantic Turning Points: A Self-Verifying Architecture for Progressive AI Reasoning." *Research Square*, PREPRINT. Version 1<sup>\*</sup> published 19 May 2025. <a href="https://doi.org/10.21203/rs.3.rs-6605714/v1"><img src="https://img.shields.io/badge/DOI-10.21203/rs.3.rs--6605714/v1-blue.svg" alt="DOI" style="vertical-align: middle;"></a>.
+
+<sup>\* A second version is under review.</sup>
