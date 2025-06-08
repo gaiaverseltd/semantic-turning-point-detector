@@ -10,4 +10,8 @@ node_modules
 
 results/*.log
 
-output_gpt_pariah_logs
+output_pariah_logs
+descriptoin_drafting.md
+descriptoin_drafting.pdf
+masked_confidence_scoring_overview.md
+*.jinja

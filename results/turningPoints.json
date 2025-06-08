@@ -1,316 +1,194 @@
 [
   {
-    "id": "tp-4-0-11-merged-0-merged-11",
-    "label": "from reflection Discussion / Moral Dilemma and Guilt Revelation",
-    "category": "insight",
+    "id": "tp-3-0-0",
+    "label": "Meta-Reflection on the Subject of Possession and U",
+    "category": "Emotion, Meta-Reflection, Decision, Topic, Insight, Question, Problem, Action, Clarification, Objection, Other, Keywords: [list of keywords here] - keywords: [list of keywords here] - quotes: [list of quotes here] - emotionalTone: [string] - sentiment: [string] - significance: [number] - best_id: [string] - spanIndices: [list of span indices here] - spanMessageIds: [list of span message ids here] - spanMessageIds: [list of span message ids here]",
     "span": {
       "startId": 0,
-      "endId": 11,
+      "endId": 0,
       "startIndex": 0,
-      "endIndex": 11
-    },
-    "semanticShiftMagnitude": 0.732477350958298,
-    "keywords": [],
-    "quotes": [
-      "No. An accident is not a crime.",
-      "So? Isn't it murder to slay a man?",
-      "No, not always. There is manslaughter, homicide, assault resulting in death, with the subdivisions, with or without intent."
-    ],
-    "emotionalTone": "curiosity",
-    "sentiment": "positive",
-    "detectionLevel": 4,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-3-11-82",
-    "label": "Moral and Legal Clarification Shift",
-    "category": "clarification",
-    "span": {
-      "startId": 11,
-      "endId": 82,
-      "startIndex": 11,
-      "endIndex": 82,
+      "endIndex": 0,
       "originalSpan": {
-        "startId": "meta-cat-2",
-        "endId": "meta-cat-3",
-        "startIndex": 2,
-        "endIndex": 3
+        "startId": "meta-cat-1",
+        "endId": "meta-cat-2",
+        "startIndex": 1,
+        "endIndex": 2
       }
     },
-    "semanticShiftMagnitude": 0.9947631502180709,
+    "semanticShiftMagnitude": 0.4392823545317737,
     "keywords": [],
     "quotes": [
-      "No. An accident is not a crime.",
-      "So? Isn't it murder to slay a man?",
-      "No, not always. There is manslaughter, homicide, assault resulting in death, with the subdivisions, with or without intent."
+      "You scoff, you, you who have behaved like a man of the stone age! And you are allowed to live in the gold age!",
+      "H'm! Pardon! No, I could hardly pardon what the law does not, and I must confess that it would be hard for me to accuse a collector for taking an antique that he did not have in his collection, which he had dug up on some one else's property."
     ],
-    "emotionalTone": "curiosity",
-    "sentiment": "positive",
+    "emotionalTone": "negative",
+    "sentiment": "negative",
     "detectionLevel": 3,
-    "significance": 1,
-    "complexityScore": 5
+    "significance": 0.7585919999999999,
+    "complexityScore": 2.895282354531774
   },
   {
-    "id": "tp-2-82-99",
-    "label": "Moral and Legal Clarification Shift",
-    "category": "clarification",
+    "id": "tp-err-3-0-merged-0-merged-0-merged-18-merged-19-merged-23-merged-25-merged-28-merged-32-merged-37-merged-42-merged-49-merged-50-merged-56-merged-57-merged-61-merged-67-merged-74-merged-76",
+    "label": "LLM Error - Unclassified",
+    "category": "Other",
     "span": {
-      "startId": 82,
-      "endId": 99,
-      "startIndex": 82,
-      "endIndex": 99,
+      "startId": 0,
+      "endId": 80,
+      "startIndex": 0,
+      "endIndex": 80
+    },
+    "semanticShiftMagnitude": 0.9999999806981696,
+    "keywords": [],
+    "quotes": [],
+    "emotionalTone": "neutral",
+    "sentiment": "neutral",
+    "detectionLevel": 3,
+    "significance": 0.2111991855589873,
+    "complexityScore": 1
+  },
+  {
+    "id": "tp-2-80-82",
+    "label": "Meta-Reflection Turning Point",
+    "category": "emotional_expression_turning_point",
+    "span": {
+      "startId": 80,
+      "endId": 82,
+      "startIndex": 80,
+      "endIndex": 82,
       "originalSpan": {
-        "startId": "meta-cat-4",
-        "endId": "meta-cat-5",
+        "startId": "meta-cat-42",
+        "endId": "meta-cat-43",
+        "startIndex": 1,
+        "endIndex": 2
+      }
+    },
+    "semanticShiftMagnitude": 0.18708019680723703,
+    "keywords": [],
+    "quotes": [
+      "I love it!",
+      "I'm so happy with my new plan!"
+    ],
+    "emotionalTone": "positive",
+    "sentiment": "positive",
+    "detectionLevel": 2,
+    "significance": 1,
+    "complexityScore": 4.887080196807237
+  },
+  {
+    "id": "tp-2-84-87",
+    "label": "turning point",
+    "category": "positive",
+    "span": {
+      "startId": 84,
+      "endId": 87,
+      "startIndex": 84,
+      "endIndex": 87,
+      "originalSpan": {
+        "startId": "meta-cat-44",
+        "endId": "meta-cat-45",
         "startIndex": 0,
         "endIndex": 1
       }
     },
-    "semanticShiftMagnitude": 0.9722745719577581,
+    "semanticShiftMagnitude": 0.7992390196929794,
     "keywords": [],
     "quotes": [
-      "No. An accident is not a crime.",
-      "So? Isn't it murder to slay a man?",
-      "No, not always. There is manslaughter, homicide, assault resulting in death, with the subdivisions, with or without intent."
+      "\"That was a remarkable day, everyone!\"",
+      "\"Thank you, you're the best.\""
     ],
-    "emotionalTone": "curiosity",
+    "emotionalTone": "positive",
     "sentiment": "positive",
     "detectionLevel": 2,
     "significance": 1,
     "complexityScore": 5
   },
   {
-    "id": "tp-1-99-103",
-    "label": "Debate on Murder and Stupidity",
-    "category": "topic",
+    "id": "tp-err-3-87-merged-90",
+    "label": "LLM Error - Unclassified",
+    "category": "Other",
     "span": {
-      "startId": 99,
-      "endId": 103,
-      "startIndex": 99,
-      "endIndex": 103,
+      "startId": 87,
+      "endId": 91,
+      "startIndex": 87,
+      "endIndex": 91
+    },
+    "semanticShiftMagnitude": 1,
+    "keywords": [],
+    "quotes": [],
+    "emotionalTone": "neutral",
+    "sentiment": "neutral",
+    "detectionLevel": 3,
+    "significance": 0.19008,
+    "complexityScore": 1
+  },
+  {
+    "id": "tp-1-92-95",
+    "label": "Meta-Grouping Turning Point",
+    "category": "Insightful Analysis of the Narrative Progression and Subjective Reflections in the Conversation Context with MR. Y's Perspective on Human Relations and Accident Statistics. Turning Points (within this Meta Grouping)",
+    "span": {
+      "startId": 92,
+      "endId": 95,
+      "startIndex": 92,
+      "endIndex": 95,
       "originalSpan": {
-        "startId": "meta-cat-7",
-        "endId": "meta-cat-8",
-        "startIndex": 7,
-        "endIndex": 8
+        "startId": "meta-cat-76",
+        "endId": "meta-cat-77",
+        "startIndex": 5,
+        "endIndex": 6
       }
     },
-    "semanticShiftMagnitude": 0.9470748538168777,
+    "semanticShiftMagnitude": 0.9467253585076277,
     "keywords": [],
     "quotes": [
-      "No. An accident is not a crime.",
-      "So? Isn't it murder to slay a man?",
-      "No, not always. There is manslaughter, homicide, assault resulting in death, with the subdivisions, with or without intent."
+      "The unpunished.",
+      "Do you allude to me?"
     ],
-    "emotionalTone": "curiosity",
+    "emotionalTone": "neutral",
     "sentiment": "positive",
     "detectionLevel": 1,
     "significance": 1,
     "complexityScore": 5
   },
   {
-    "id": "tp-1-103-108-merged-108",
-    "label": "Shift to Final Decision and Action / Moral and Personal Shift in Justi",
-    "category": "decision",
+    "id": "tp-0-96-97",
+    "label": "Turning point in the conversation",
+    "category": "Meta-Reflection or Insight about human nature and accident categories in crime law and human behavior analysis with intent and intent subcategories in decision-making and decision-making structure analysis in the field of law and human behavior analysis of MR. X and MR. Y in the conversation context.",
     "span": {
-      "startId": 103,
-      "endId": 108,
-      "startIndex": 103,
-      "endIndex": 108
+      "startId": 96,
+      "endId": 97,
+      "startIndex": 96,
+      "endIndex": 97
     },
-    "semanticShiftMagnitude": 0.9879021431164448,
+    "semanticShiftMagnitude": 0.9884336609025139,
     "keywords": [],
     "quotes": [
-      "So? Isn't it murder to slay a man?",
-      "No, not always. There is manslaughter, homicide, assault resulting in death, with the subdivisions, with or without intent.",
-      "Can I go?"
+      "Yes.",
+      "Legitimate? The law decrees that a man's life is worth at the minimum fifty crowns.",
+      "We understand each other.--H'm! How much do you consider legitimate?"
     ],
-    "emotionalTone": "curiosity",
-    "sentiment": "positive",
-    "detectionLevel": 1,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-110-111",
-    "label": "Shift to Criminal Confession",
-    "category": "decision",
-    "span": {
-      "startId": 110,
-      "endId": 111,
-      "startIndex": 110,
-      "endIndex": 111
-    },
-    "semanticShiftMagnitude": 0.9811425830923552,
-    "keywords": [],
-    "quotes": [
-      "Now I'll go to the sheriff and give myself up."
-    ],
-    "emotionalTone": "disgust",
-    "sentiment": "negative",
-    "detectionLevel": 0,
-    "significance": 0.85,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-113-114-merged-114-merged-115-merged-116-merged-117-merged-118-merged-119-merged-120",
-    "label": "revelation Discussion",
-    "category": "insight",
-    "span": {
-      "startId": 113,
-      "endId": 121,
-      "startIndex": 113,
-      "endIndex": 121
-    },
-    "semanticShiftMagnitude": 0.9792228625081814,
-    "keywords": [],
-    "quotes": [
-      "Ah, now things are beginning to clear up. How much do you ask to become accomplice to the homicide?",
-      "Now everything is clear to me! Ah!",
-      "MR. X: Now everything is clear to me! Ah!"
-    ],
-    "emotionalTone": "curiosity",
+    "emotionalTone": "positive",
     "sentiment": "positive",
     "detectionLevel": 0,
-    "significance": 1,
+    "significance": 0.988,
     "complexityScore": 5
   },
   {
-    "id": "tp-0-122-123-merged-123-merged-124-merged-125-merged-126-merged-127-merged-128-merged-129-merged-130-merged-131",
-    "label": "revelation Discussion",
-    "category": "insight",
+    "id": "tp-err-0-97-merged-98-merged-99-merged-101-merged-102-merged-103-merged-104-merged-105-merged-106-merged-107-merged-108-merged-109-merged-110-merged-111-merged-112-merged-113-merged-114-merged-115-merged-116-merged-117-merged-118-merged-119-merged-120-merged-121-merged-122-merged-123-merged-124-merged-125-merged-126-merged-127-merged-128-merged-129-merged-130-merged-131-merged-132-merged-133-merged-134-merged-135-merged-136-merged-137-merged-138-merged-138-merged-139-merged-139-merged-140-merged-141-merged-142-merged-143-merged-144-merged-145-merged-146-merged-147-merged-148-merged-149-merged-150-merged-151-merged-152-merged-153",
+    "label": "LLM Error - Unclassified",
+    "category": "Other",
     "span": {
-      "startId": 122,
-      "endId": 132,
-      "startIndex": 122,
-      "endIndex": 132
-    },
-    "semanticShiftMagnitude": 0.9548993800853064,
-    "keywords": [],
-    "quotes": [
-      "You see? The first time I mentioned the sheriff in connection with the thunderbolt, you wanted to run then, too; and when a man has been in that prison he never wants to go to the windmill hill every day to look at it, or put himself behind a window-pane to--to conclude, you have served one sentence, but not another.",
-      "I see in the mirror that you are a thief, a simple, common thief.",
-      "Now everything is clear to me! Ah!"
-    ],
-    "emotionalTone": "curiosity",
-    "sentiment": "positive",
-    "detectionLevel": 0,
-    "significance": 0.9625000000000001,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-132-133-merged-133-merged-134-merged-136-merged-137-merged-139",
-    "label": "confrontation escalation Discussion",
-    "category": "emotion",
-    "span": {
-      "startId": 132,
-      "endId": 140,
-      "startIndex": 132,
-      "endIndex": 140
-    },
-    "semanticShiftMagnitude": 0.9042663951298759,
-    "keywords": [],
-    "quotes": [
-      "May I go now?",
-      "Yes, you may go now.",
-      "Are you angry with me?"
-    ],
-    "emotionalTone": "anger",
-    "sentiment": "negative",
-    "detectionLevel": 0,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-142-143-merged-143",
-    "label": "revelation Discussion",
-    "category": "insight",
-    "span": {
-      "startId": 142,
-      "endId": 144,
-      "startIndex": 142,
-      "endIndex": 144
-    },
-    "semanticShiftMagnitude": 0.9746668636573111,
-    "keywords": [],
-    "quotes": [
-      "That is my secret.",
-      "MR. Y: 'That is my secret.'",
-      "MR. X: 'May I look at you?--You think of writing an anonymous letter to my wife, disclosing my secret.'"
-    ],
-    "emotionalTone": "curiosity",
-    "sentiment": "positive",
-    "detectionLevel": 0,
-    "significance": 0.935,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-145-146-merged-146",
-    "label": "escalation Discussion",
-    "category": "emotion",
-    "span": {
-      "startId": 145,
-      "endId": 147,
-      "startIndex": 145,
-      "endIndex": 147
-    },
-    "semanticShiftMagnitude": 0.9464855858033994,
-    "keywords": [],
-    "quotes": [
-      "Ah, you devil! You've struck my Achilles heel--will you force me to become a murderer?",
-      "You see, then, there is a difference in people after all, and you feel within you that I cannot commit such deeds as you, and that is your advantage.",
-      "You are a different kind of being from me--whether stronger or weaker I do not know--more criminal or not--that doesn't concern me. But you are the stupider, that's proven."
-    ],
-    "emotionalTone": "anger",
-    "sentiment": "negative",
-    "detectionLevel": 0,
-    "significance": 0.935,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-148-149-merged-149-merged-150-merged-151",
-    "label": "escalation Discussion / Confrontational Shift and Challenge",
-    "category": "emotion",
-    "span": {
-      "startId": 148,
-      "endId": 152,
-      "startIndex": 148,
-      "endIndex": 152
-    },
-    "semanticShiftMagnitude": 0.9305885032025913,
-    "keywords": [],
-    "quotes": [
-      "You were too cowardly, just as you were too cowardly to tell your wife that she is married to a murderer.",
-      "You are a different kind of being from me--whether stronger or weaker I do not know--more criminal or not--that doesn't concern me.",
-      "Then you don't believe that I ever took from the case?"
-    ],
-    "emotionalTone": "anger",
-    "sentiment": "negative",
-    "detectionLevel": 0,
-    "significance": 1,
-    "complexityScore": 5
-  },
-  {
-    "id": "tp-0-153-154",
-    "label": "Shift to Command",
-    "category": "decision,",
-    "span": {
-      "startId": 153,
+      "startId": 97,
       "endId": 154,
-      "startIndex": 153,
+      "startIndex": 97,
       "endIndex": 154
     },
-    "semanticShiftMagnitude": 0.9667733602368356,
+    "semanticShiftMagnitude": 0.9999999999999908,
     "keywords": [],
-    "quotes": [
-      "MR. Y: Can I go?",
-      "MR. X: Now you shall go--immediately. Your things will follow you."
-    ],
-    "emotionalTone": "curiosity",
-    "sentiment": "positive",
+    "quotes": [],
+    "emotionalTone": "neutral",
+    "sentiment": "neutral",
     "detectionLevel": 0,
-    "significance": 0.75,
-    "complexityScore": 4.666773360236835
+    "significance": 0.12222222222222223,
+    "complexityScore": 1
   }
 ]

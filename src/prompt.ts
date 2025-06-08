@@ -83,6 +83,7 @@ export function formUserMessage({
   dimension,
   config,
   addUserInstructions = true,
+  
 }: {
   /** The dimensionlity of the currentl potential turning point, where if dimension > 0, it means that it contains a group of turning points, recursively. */
   dimension: number;
@@ -255,7 +256,7 @@ export const formSystemPromptEnding = (dimension: number) => {
 7. A category, one of the following values: ${Object.keys(
       categories
     ).sort(() => Math.random() - 0.5)}, which categorizes the ocntent presented in the user message content.
-8. Respond with only one exact categorization for the emotionalTone of the content, from the provided list of emotional tones above. DO NOT USE ANY OTHER VALUES, ONLY ONES FROM THE LISTED EMOTIONAL TONES, DO NOT CONFUSE THE NOTION OF emotionalTone to sentiment, emotionalTone MAY NEVER BE associated with a value of 'postiive' or 'negative', please refer to the list of emotional tones above for the correct values to use.
-Respond with a JSON object containing these fields. Do not include any text outside the JSON object.`
+8. Respond with only one exact categorization for the emotionalTone of the content, from the provided list of emotional tones above. DO NOT USE ANY OTHER VALUES, ONLY ONES FROM THE LISTED EMOTIONAL TONES, DO NOT CONFUSE THE NOTION OF emotionalTone to sentiment, emotionalTone MAY NEVER BE associated with a value of 'postiive' or 'negative', please refer to the list of emotional tones above for the correct values to use.       
+Respond with a JSON object containing these fields. Do not include any text outside the JSON object.   `  
   return ending;
-}
+} 

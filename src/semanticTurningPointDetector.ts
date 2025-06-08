@@ -604,7 +604,7 @@ export class SemanticTurningPointDetector {
           const index = Number(indexStr);
           const startTime = Date.now();
 
-          if (index % 10 === 0 || limit === 1 || this.config.debug) {
+          if (index % 10 === 0 || limit < 10 || this.config.debug) {
             this.logger.info(` - Dimension ${dimension}: Processing chunk ${index + 1}/${chunks.length} (${chunk.length} messages)`);
           }
 
@@ -613,7 +613,7 @@ export class SemanticTurningPointDetector {
           const durationSecs = (Date.now() - startTime) / 1000;
           durationsSeconds[index] = durationSecs;
 
-          if (index % 10 === 0 || limit === 1 || this.config.debug) {
+          if (index % 10 === 0 || limit < 10 || this.config.debug) {
             const processedCount = durationsSeconds.filter(d => d > 0).length;
             if (processedCount > 0) {
               const averageDuration = durationsSeconds.filter(d => d > 0).reduce((a, b) => a + b, 0) / processedCount;
@@ -2158,20 +2158,17 @@ async function runTurningPointDetectorExample() {
 
     // Enable convergence measurement for ARC analysis
     measureConvergence: true,
-
-    classificationModel: "gpt-4.1-nano",
-    // classificationModel: 'phi-4-mini-Q5_K_M:3.8B',
-    // classificationModel: 'gpt-4o-mini',
-    // e.g. llmstudio or ollama, leave undefined for OpenAI
-    // embeddingEndpoint: 'http://127.0.0.1:7756/v1',
-    // embeddingModel: "text-embedding-snowflake-arctic-embed-l-v2.0",
-
+    customSystemInstruction: `\no_think\n\nYou are an expert conversation analyzer specializing in semantic turning point detection.\n\nYour primary goal is to identify significant shifts in conversation flow and meaning.
+Analyze semantic differences in the provided conversation context and provide a structured output response as described.`,
+    classificationModel: "qwen3:0.6b",
+  
+    endpoint: "http://10.3.28.24:7223/v1",
 
     embeddingModel: 'text-embedding-3-large',
 
     debug: true,
     // ollama
-    // endpoint: 'http:/localhost:11434/v1',
+    // endpoint:"https://openrouter.ai/api/v1",
     // or lmstudio
     // endpoint: 'http://localhost:7756/v1'
   });

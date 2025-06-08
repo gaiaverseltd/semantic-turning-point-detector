@@ -815,8 +815,8 @@
 
 Note: Be sure to review the outputs in the `results` directory, which contains the output from the well-known `Pariah` script.
 
-- A full results markdown view is not provided because the `src/conversationPariah.json` file contains over 200 messages, resulting in multiple pages of logs. 
+- A full results markdown view is not provided because the `src/conversationPariah.json` file contains over 200 messages, resulting in multiple pages of logs.    
 
 - For complete logs, see the zipped file `results/output_gpt_pariah_logs.zip`, which includes updated logging score outputs featuring the newly added confidence score for the final set of points returned.
-
+    
 
