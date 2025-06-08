@@ -100,17 +100,19 @@ async function runTurningPointDetectorExample() {
   try {
     // Detect turning points using the ARC/CRA framework
     const tokensInConvoFile = await detector.getMessageArrayTokenCount(conversation);
-    const turningPoints = await detector.detectTurningPoints(conversation);
-    
+    const turningPointResult = await detector.detectTurningPoints(conversation);
+    const turningPoints = turningPointResult.points;
+    const confidenceScore = turningPointResult.confidence;
     const endTime = new Date().getTime();
     const difference = endTime - startTime;
     const formattedTimeDateDiff = new Date(difference).toISOString().slice(11, 19);
-    
-    console.log(`\nTurning point detection took as MM:SS: ${formattedTimeDateDiff} for ${tokensInConvoFile} tokens in the conversation`);
+ 
     
     // Display results with complexity scores from the ARC framework
     console.log('\n=== DETECTED TURNING POINTS (ARC/CRA Framework) ===\n');
-    
+    console.info(`Detected ${turningPoints.length} turning points with a confidence score of ${confidenceScore.toFixed(2)} using model ${detector.getModelName()} - on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}`);
+   
+    console.log(`\nTurning point detection took as MM:SS: ${formattedTimeDateDiff} for ${tokensInConvoFile} tokens in the conversation\n`);
     turningPoints.forEach((tp, i) => {
       console.log(`${i + 1}. ${tp.label} (${tp.category})`);
       console.log(`   Messages: "${tp.span.startId}" → "${tp.span.endId}"`);
